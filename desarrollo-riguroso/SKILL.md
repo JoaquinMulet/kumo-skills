@@ -76,6 +76,15 @@ VERIFY-REAL confronta contra "la verdad", pero la verdad no es igual en todos la
 
 Identificar cuál tiene el proyecto es parte de sembrar su `CLAUDE.md`.
 
+## Branching y deploy: el trunk es lo que se despliega
+
+El **trunk es la rama que se despliega** — nómbralo explícitamente y **deploya SIEMPRE desde él**:
+
+- **Nombra el trunk en el `CLAUDE.md`.** Si no está escrito cuál es la rama viva, cada agente arranca en frío sin saberlo y el trabajo deriva a la rama activa por default. *(ej. real: un `feature/*` juntó 60 commits y se volvió el trunk de facto sin que ningún doc lo dijera; el script de deploy zippeaba el working tree de esa rama → prod == donde estabas parado, incluso sin commitear.)*
+- **Ramas cortas: días, no semanas.** Una feature merge al trunk apenas está lista + preflight verde. Si una rama junta decenas de commits sin mergear, dejó de ser una feature branch: es un fork, y el trunk nominal se vuelve ficción.
+- **La dependencia se mergea primero.** Si B depende de A, mergea A al trunk y branchea B desde ahí — nunca apiles B sobre un A sin mergear; si no, "aislar B" es solo la etiqueta (arrastra todo A).
+- **Un solo trunk vivo** para un equipo chico. Un modelo multi-rama (feature→dev→main) sin CI que lo *enforce* se abandona en días y produce justo este drift — no lo declares como vigente si no hay quien lo haga cumplir.
+
 ## Estilo que se hace cumplir
 
 - **Cambios quirúrgicos.** Tocar solo lo que la tarea pide. Dead code o smells no relacionados se **flaggean, no se borran** en el mismo cambio.
@@ -95,6 +104,8 @@ Lo esencial al rellenarlo:
 - Los **invariantes de dominio** + **cuál es el oráculo de verdad** (duro/blando).
 - **Marca lo inventado** con `⚠️ confirmar` — un puerto o un default asumido no es verdad hasta confirmarlo.
 - **Lessons Learned arranca casi vacía** (semilla); la llena `retrospectiva-de-sesion` sesión a sesión.
+- **Déjalo CRECER (efecto compounding), pero léelo completo.** El CLAUDE.md se enriquece con cada `retrospectiva-de-sesion`; **NO lo limites por tamaño** — recortar el contenido mata el aprendizaje acumulado, que es justo el punto. El riesgo no es el largo, es leer solo una página parcial: por eso la **PRIMERA LÍNEA del CLAUDE.md ordena explícitamente** *"si tu Read se trunca, sigue paginando hasta el final antes de actuar — este doc crece con cada sesión"*. Además, pon los anclas operacionales críticos (trunk, deploy, comandos) ARRIBA, para que hasta un lector apurado los capte. *(ej. real: un CLAUDE.md de 730 líneas se cortó en la 601 y la sección de deploy quedó sin leer — el fix es la directiva de paginar, jamás achicar el doc.)*
+- **Nada aspiracional en presente.** Un flujo FUTURO escrito en imperativo presente —aunque lo califiques "(modelo objetivo)"— engaña: el lector no sabe si aplica YA. Si el CI o el flujo no existen aún, documenta el flujo MANUAL real (desde qué rama se despliega hoy), no el automatizado que viene. Es la misma regla "estado ACTUAL, no historia" — y su violación más común.
 
 Los principios de esta skill son el default; el `CLAUDE.md` los **aterriza y adapta** con lo propio del proyecto — nunca los contradice sin dejarlo dicho. La filosofía general vive acá; el `CLAUDE.md` no la repite, la concreta.
 

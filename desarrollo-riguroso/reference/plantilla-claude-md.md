@@ -16,6 +16,10 @@ El `CLAUDE.md` es el **manual operativo** del proyecto para cualquier agente o d
 ```markdown
 # <Proyecto> — CLAUDE.md
 
+> ⚠️ **LEE ESTE ARCHIVO COMPLETO ANTES DE ACTUAR.** Crece con cada sesión (efecto compounding)
+> y puede exceder el límite de una sola lectura: **si tu Read se trunca, continúa con `offset=`
+> hasta el final.** No respondas ni actúes desde una página parcial.
+
 Guía operativa del repo. Describe el estado ACTUAL del sistema, no su historia.
 
 ## Qué es esto
@@ -30,6 +34,14 @@ Comandos EXACTOS del stack (pegar-y-correr), cada uno con su gotcha si lo tiene:
 - correr UN test: `<cmd -run/-t/--filter ...>`
 - **preflight** (checks pre-commit que NINGÚN commit saltea): `<cmd>` — lista qué
   corre (formato, lint, tipos, tests, build) y en qué orden; si uno falla, no se commitea.
+
+## Ramas y deploy
+Cuál es el TRUNK (la rama viva = la que se despliega) y cómo se despliega — arriba y explícito,
+porque si no está escrito, el trabajo deriva a la rama activa por default:
+- trunk: `<rama>` — commitea y branchea desde acá; ramas cortas que mergean al trunk cuando están verdes.
+- deploy a prod: `<cmd>` — se corre SIEMPRE desde el trunk. Di si el mecanismo empaqueta el
+  working tree o un ref git; si es lo primero, prod == la rama en que estás parado (incluso sin commitear).
+- ⚠️ Si el flujo multi-rama/CI todavía es FUTURO, dilo como futuro; documenta el flujo MANUAL de HOY.
 
 ## Arquitectura
 Estructura de carpetas/módulos con QUÉ hace cada uno (una línea por módulo). El
