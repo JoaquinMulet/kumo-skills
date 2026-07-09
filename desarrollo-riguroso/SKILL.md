@@ -86,16 +86,25 @@ Identificar cuál tiene el proyecto es parte de sembrar su `CLAUDE.md`.
 
 ## Sembrar el CLAUDE.md de un proyecto nuevo
 
-Desde el día 1, el `CLAUDE.md` del proyecto CONCRETA estos principios con lo propio del proyecto:
+El `CLAUDE.md` es el **manual operativo** del proyecto — comandos densos y accionables, no un ensayo. **No improvises su estructura: usa el esqueleto probado en [`reference/plantilla-claude-md.md`](reference/plantilla-claude-md.md)**, que trae las secciones en orden (qué es → build & comandos → arquitectura → invariantes y oráculo → bug-fix workflow → testing → patterns → lessons → gotchas → deploy) + las reglas de densidad y un ejemplo trabajado.
 
-1. **Qué es** el proyecto en una frase + fuentes de datos.
-2. **Comandos reales**: build, test, el preflight (checks pre-commit que ningún commit saltea), cómo correr un test único.
-3. **El bug-fix workflow de 6 pasos** (arriba), con los comandos concretos del stack.
-4. **Invariantes de dominio** (las verdades que el código nunca debe violar) y **cuál es el oráculo de verdad** (duro/blando).
-5. **Patterns to Follow** propios del proyecto y una sección **Lessons Learned** (arranca vacía; la llena `retrospectiva-de-sesion`).
-6. **Honestidad y observabilidad** como reglas explícitas.
+Lo esencial al rellenarlo:
 
-Los principios de esta skill son el default; el `CLAUDE.md` del proyecto los aterriza y los adapta — nunca los contradice sin dejarlo dicho.
+- **Comandos EXACTOS del stack**, pegar-y-correr, con su gotcha (`# NUNCA X`) — no "corre los tests".
+- **Nombres reales** (rutas, funciones, tablas), no "el módulo de datos".
+- Los **invariantes de dominio** + **cuál es el oráculo de verdad** (duro/blando).
+- **Marca lo inventado** con `⚠️ confirmar` — un puerto o un default asumido no es verdad hasta confirmarlo.
+- **Lessons Learned arranca casi vacía** (semilla); la llena `retrospectiva-de-sesion` sesión a sesión.
+
+Los principios de esta skill son el default; el `CLAUDE.md` los **aterriza y adapta** con lo propio del proyecto — nunca los contradice sin dejarlo dicho. La filosofía general vive acá; el `CLAUDE.md` no la repite, la concreta.
+
+## Los documentos también se testean
+
+Un `CLAUDE.md`, una skill o un spec son artefactos de información — y como el código, **pueden "leerse bien" y ser inútiles**. "Un test verde puede mentir" aplica a la prosa: un doc que pasa un control de coherencia todavía puede fallar en su propósito. Kumo los endurece con un pipeline de tres skills **en orden**:
+
+`doc-completeness-loop` (que no falte nada) → `doc-storytelling-restructure` (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío débil pueda EJECUTAR la tarea que el doc habilita).
+
+La prueba de uso es a la prosa lo que **VERIFY-REAL es al código**: se le pasa el documento a un modelo débil con una tarea real y se mira si puede hacerla; lo que tuvo que adivinar es lo que falta concretar. **Explicar ≠ poder hacer.** Antes de dar por bueno un CLAUDE.md o una skill, pásalos por la prueba de uso — es el equivalente documental de no desplegar sin confrontar datos reales.
 
 ## Cómo crece este estándar
 
