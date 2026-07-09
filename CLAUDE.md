@@ -125,9 +125,15 @@ Cuando duden, escribir el prompt directo primero. Si lo repiten tres veces, reci
 
 ## Checklist obligatorio antes de mergear
 
+> **Gate automático (no confíes en la memoria).** Un pre-commit hook corre `scripts/validar-skills.py`
+> y **bloquea el commit** si algún `SKILL.md` tiene `name` != carpeta, `description` vacía o > 1024
+> chars, > 500 líneas, o voseo. Cubre los puntos 1 y 6 de este checklist de forma mecánica — nació
+> porque una vez se pusheó una `description` de 1086 chars por medir *después* de commitear. Actívalo
+> una vez por clon: `git config core.hooksPath .githooks`. Lo demás (2, 3, 5, 7) sigue siendo revisión humana.
+
 Ningún PR se mergea sin completar esto en la descripción:
 
-1. **Frontmatter válido** — `name` coincide con la carpeta, `description` en tercera persona con QUÉ + CUÁNDO, dentro de los límites de caracteres.
+1. **Frontmatter válido** — `name` coincide con la carpeta, `description` en tercera persona con QUÉ + CUÁNDO, dentro de los límites de caracteres. *(El gate lo verifica.)*
 2. **Test de descubrimiento** — el autor probó la skill con **al menos 3 prompts representativos** y Claude la invocó cuando correspondía (y NO la invocó en un cuarto prompt no relacionado). Pegar los prompts y los resultados en el PR.
 3. **Coexistencia** — la nueva skill no canibaliza disparadores de skills ya existentes en el repo. Si dos skills compiten por los mismos prompts, decidir en el PR: fusionar, o angostar una de las dos descriptions.
 4. **Seguridad** — si la skill incluye scripts ejecutables, llamadas de red, lectura de archivos fuera de su carpeta, o referencias a servidores MCP, justificarlo explícitamente. Secretos hardcoded = bloqueador.

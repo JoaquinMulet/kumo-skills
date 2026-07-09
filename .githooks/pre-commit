@@ -1,0 +1,14 @@
+#!/bin/sh
+# Gate de kumo-skills — valida el frontmatter de cada SKILL.md ANTES de cada commit.
+# Bloquea lo que la disciplina manual no sostiene (description >1024, name != carpeta,
+# >500 líneas, voseo). Activar UNA vez por clon:  git config core.hooksPath .githooks
+PY=$(command -v python3 || command -v python)
+if [ -z "$PY" ]; then
+  echo "gate de skills: no encontré python — instálalo o corre el check a mano." >&2
+  exit 1
+fi
+"$PY" scripts/validar-skills.py || {
+  echo "" >&2
+  echo "Commit BLOQUEADO por el gate de skills. Arregla lo de arriba y reintenta." >&2
+  exit 1
+}
