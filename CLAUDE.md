@@ -125,11 +125,15 @@ Cuando duden, escribir el prompt directo primero. Si lo repiten tres veces, reci
 
 ## Checklist obligatorio antes de mergear
 
-> **Gate automático (no confíes en la memoria).** Un pre-commit hook corre `scripts/validar-skills.py`
-> y **bloquea el commit** si algún `SKILL.md` tiene `name` != carpeta, `description` vacía o > 1024
-> chars, > 500 líneas, o voseo. Cubre los puntos 1 y 6 de este checklist de forma mecánica — nació
-> porque una vez se pusheó una `description` de 1086 chars por medir *después* de commitear. Actívalo
-> una vez por clon: `git config core.hooksPath .githooks`. Lo demás (2, 3, 5, 7) sigue siendo revisión humana.
+> **Gate automático (no confíes en la memoria).** Un pre-commit hook corre el validador
+> (`scripts/validar-skills.py`) y **bloquea el commit** si algún `SKILL.md` tiene YAML de frontmatter
+> inválido, `name` != carpeta o no-string, `description` vacía / no-string / > 1024 chars, > 500
+> líneas, o voseo. **Parsea el YAML de verdad** (vía `uv run --with pyyaml`, con fallback a checks
+> manuales) — no lo raspa con regex — porque el gate viejo aprobó una `description` con `: ` sin
+> comillas que el cargador real rechazó, y antes una de 1086 chars por medir *después* de commitear.
+> Cubre los puntos 1 y 6 de este checklist de forma mecánica. Actívalo una vez por clon:
+> `git config core.hooksPath .githooks` (necesita `uv`, ya estándar en Kumo). Lo demás (2, 3, 5, 7)
+> sigue siendo revisión humana.
 
 Ningún PR se mergea sin completar esto en la descripción:
 
