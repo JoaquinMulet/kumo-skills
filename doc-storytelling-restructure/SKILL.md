@@ -152,3 +152,7 @@ return { plan, faltantes: verif?.faltantes || [], veredicto: verif?.veredicto ||
 - **Combo con completitud:** corre primero `doc-completeness-loop` (que no falte
   nada) y luego este (que se lea bien); este loop ya re-verifica completitud al
   final, así no deshace el trabajo del primero.
+- **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible, corre las lentes
+  con uno o dos `Agent` secuenciales en vez del fan-out y sintetiza el plan tú mismo. El
+  método no cambia —lentes → plan → reescritura → verificación de que no se perdió nada—,
+  solo va en serie; conviene igual pausar en el plan para aprobación (variante de arriba).
