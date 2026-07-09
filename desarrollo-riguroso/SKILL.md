@@ -117,6 +117,14 @@ Un `CLAUDE.md`, una skill o un spec son artefactos de información — y como el
 
 La prueba de uso es a la prosa lo que **VERIFY-REAL es al código**: se le pasa el documento a un modelo débil con una tarea real y se mira si puede hacerla; lo que tuvo que adivinar es lo que falta concretar. **Explicar ≠ poder hacer.** Antes de dar por bueno un CLAUDE.md o una skill, pásalos por la prueba de uso — es el equivalente documental de no desplegar sin confrontar datos reales.
 
+## La trampa del validador autorreferencial
+
+El error más peligroso no es el bug — es **creer que lo validaste**. Correr tu aparato de validación sobre datos SINTÉTICOS (proyectos inventados, fixtures de juguete, tests diseñados para pasar) se *siente* como rigor y es un lazo cerrado: mide *"¿la herramienta funciona?"*, no *"¿mi realidad es correcta?"*. Un validador validado contra sí mismo nunca toca el mundo. *(ej. real: se validó un set de skills con discovery + prueba de uso SINTÉTICOS —"15/15, 5/5"— mientras un drift de 62 commits en el repo real, visible con un solo `git rev-list --count`, quedó invisible a todo el aparato y lo encontró el usuario, no el sistema.)*
+
+- **Corre tus tests sobre tus artefactos REALES de alto riesgo, no sobre juguetes.** La prueba de uso, sobre el CLAUDE.md que de verdad usas; VERIFY-REAL, contra el prod que de verdad tienes.
+- **Un ritual sin enforcement es teatro.** VERIFY-REAL y la retrospectiva derivan si dependen de que alguien se acuerde. Conviértelos en GATES automáticos (un hook, un deploy que se niega fuera del trunk, un check del harness). Lo hace cumplir el harness, no la buena voluntad.
+- **Cierra toda sesión con la pregunta adversarial-contra-la-realidad:** *"¿qué problema real y grave es invisible para mi aparato AHORA?"* — sobre el repo/prod real, no un fixture. **Encontrar un error por suerte (porque un humano lo señaló) NO cuenta como que el sistema funciona.**
+
 ## Cómo crece este estándar
 
 Este estándar no es estático. Tras cada sesión de código sustantiva, correr `retrospectiva-de-sesion`: destila las correcciones del usuario y los descubrimientos, y decide qué es **específico del proyecto** (va a su `CLAUDE.md`) y qué es **universal** (vuelve acá, endureciendo el estándar de toda la empresa).
