@@ -217,3 +217,7 @@ el Workflow (paso 3c) hasta que `verdict` sea `SIN_VACIOS` o `SOLO_MENORES`.
   fiable de "ejecutable / bloqueado".
 - **Doc muy largo:** si el archivo es enorme, parte el documento y corre el loop por
   secciones para que el lector no se sature.
+- **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible (o el doc es
+  corto), corre el paso de auditoría con un solo `Agent` (`model: haiku`) por ronda en vez
+  del fan-out. El método es idéntico —lector ciego audita → el orquestador parcha → lector
+  nuevo re-audita— y solo pierdes los lectores en paralelo; para una o dos secciones alcanza.
