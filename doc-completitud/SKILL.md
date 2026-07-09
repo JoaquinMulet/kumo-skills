@@ -1,5 +1,5 @@
 ---
-name: doc-completeness-loop
+name: doc-completitud
 description: >-
   Endurece un documento hasta que un lector "en frío" (un modelo débil, sin
   contexto previo y leyendo SOLO el archivo) pueda explicar cada sección sin
@@ -46,7 +46,7 @@ En una frase: **el ciego encuentra, el que sabe arregla.**
   entienda solo".
 
 NO la uses para mejorar el estilo o la narrativa de un documento — para eso está
-la skill hermana `doc-storytelling-restructure`. Esta solo sube el **piso** (que
+la skill hermana `doc-narrativa`. Esta solo sube el **piso** (que
 nada falte), no el techo (que se lea lindo).
 
 ## Cómo ejecutar

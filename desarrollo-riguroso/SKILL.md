@@ -102,7 +102,7 @@ Los principios de esta skill son el default; el `CLAUDE.md` los **aterriza y ada
 
 Un `CLAUDE.md`, una skill o un spec son artefactos de información — y como el código, **pueden "leerse bien" y ser inútiles**. "Un test verde puede mentir" aplica a la prosa: un doc que pasa un control de coherencia todavía puede fallar en su propósito. Kumo los endurece con un pipeline de tres skills **en orden**:
 
-`doc-completeness-loop` (que no falte nada) → `doc-storytelling-restructure` (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío débil pueda EJECUTAR la tarea que el doc habilita).
+`doc-completitud` (que no falte nada) → `doc-narrativa` (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío débil pueda EJECUTAR la tarea que el doc habilita).
 
 La prueba de uso es a la prosa lo que **VERIFY-REAL es al código**: se le pasa el documento a un modelo débil con una tarea real y se mira si puede hacerla; lo que tuvo que adivinar es lo que falta concretar. **Explicar ≠ poder hacer.** Antes de dar por bueno un CLAUDE.md o una skill, pásalos por la prueba de uso — es el equivalente documental de no desplegar sin confrontar datos reales.
 

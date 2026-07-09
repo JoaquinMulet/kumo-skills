@@ -10,7 +10,7 @@ description: >-
   y "bien escrito" igual no le sirve a quien debe actuar con él, cuando el
   usuario diga "no se entiende nada", "con esto no se puede construir",
   "pruébalo con la tarea real", "pásaselo a haiku y que lo haga", o después de
-  correr doc-completeness-loop y doc-storytelling-restructure (esta es la
+  correr doc-completitud y doc-narrativa (esta es la
   prueba más exigente de las tres: explicar ≠ poder hacer). Orquesta lectores
   débiles con el tool Workflow; el rubric, la verificación de fantasmas y el
   parchado son SIEMPRE del orquestador.
@@ -50,7 +50,7 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
 - Antes de entregar un documento a quien debe ACTUAR con él (un desarrollador,
   un CFO, un abogado, un socio que decide).
 - Como tercera etapa del pipeline de calidad documental:
-  `doc-completeness-loop` (que no falte nada) → `doc-storytelling-restructure`
+  `doc-completitud` (que no falte nada) → `doc-narrativa`
   (que se lea bien) → **`doc-prueba-de-uso` (que sirva para hacer)**.
 
 ## El método, paso a paso

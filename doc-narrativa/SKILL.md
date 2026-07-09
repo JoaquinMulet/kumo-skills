@@ -1,5 +1,5 @@
 ---
-name: doc-storytelling-restructure
+name: doc-narrativa
 description: >-
   Reestructura un documento denso en un relato claro (storytelling) con más prosa
   explicativa, SIN perder contenido. Úsala cuando un documento técnico esté
@@ -28,7 +28,7 @@ contenido original.
   "que el equipo lo entienda sin sufrir".
 - Pide un "plan de redacción" o "reestructurar con más sentido narrativo".
 
-Es la hermana de `doc-completeness-loop`: aquélla asegura que **nada falte**;
+Es la hermana de `doc-completitud`: aquélla asegura que **nada falte**;
 ésta asegura que **se lea bien**. Si quieres ambas, corre primero completitud y
 luego storytelling (este loop termina verificando que no se haya perdido nada).
 
@@ -56,7 +56,7 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 
 ```js
 export const meta = {
-  name: 'doc-storytelling-restructure',
+  name: 'doc-narrativa',
   description: 'Reestructura un documento denso en un relato sin perder contenido',
   phases: [
     { title: 'Inventario' },
@@ -149,7 +149,7 @@ return { plan, faltantes: verif?.faltantes || [], veredicto: verif?.veredicto ||
   archivo. Recomendado para documentos grandes o sensibles.
 - **Más lentes:** agrega editores (p. ej. "tono para sponsor no técnico",
   "ruta de lectura por rol") al arreglo `LENTES`.
-- **Combo con completitud:** corre primero `doc-completeness-loop` (que no falte
+- **Combo con completitud:** corre primero `doc-completitud` (que no falte
   nada) y luego este (que se lea bien); este loop ya re-verifica completitud al
   final, así no deshace el trabajo del primero.
 - **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible, corre las lentes
