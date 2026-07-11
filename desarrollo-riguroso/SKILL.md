@@ -74,6 +74,8 @@ VERIFY-REAL confronta contra "la verdad", pero la verdad no es igual en todos la
 - **Oráculo DURO** (un test suite de referencia, un estándar bit-exacto, una spec): espejar fiel — no "corrijas" la referencia; una desviación es tu bug.
 - **Oráculo BLANDO** (un humano, un sistema legado que se atrasa o se equivoca, un proceso manual): espejar para cuadrar, PERO cuando la realidad difiere del oráculo (llegó plata que él aún no registró), **no espejes su error: nombra el residual** y déjalo visible hasta reconciliar. Sobre-indexar en "la referencia es la spec" con un oráculo blando te vuelve *menos* correcto.
 
+**Convergencia contra el oráculo = auditar el oráculo.** Cuando varios sistemas INDEPENDIENTES (modelos distintos, implementaciones distintas, personas distintas) convergen en la misma respuesta "incorrecta" según tu oráculo, la probabilidad se invierte: deja de depurar los sistemas y ve a la fuente primaria que el oráculo dice resumir. Lo típico que encuentras: la fuente admite DOS lecturas válidas y el oráculo capturó solo una — el fix es una decisión de convención explícita del dueño del dominio, no un parche. *(Caso real: dos LLMs distintos convergían en un valor "errado" contra el ground truth; el documento fuente tenía dos configuraciones legítimas y el GT había fijado la otra.)*
+
 Identificar cuál tiene el proyecto es parte de sembrar su `CLAUDE.md`.
 
 ## Branching y deploy: el trunk es lo que se despliega
