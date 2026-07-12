@@ -184,10 +184,13 @@ export const meta = {
   phases: [{ title: 'Auditar', detail: 'N lectores ciegos independientes marcan vacíos' }],
 }
 
-// args: { docPaths: string[] | docPath: string, readerModel?, readers?, maxRounds? (ignorado aquí) }
-const docs = args.docPaths || (args.docPath ? [args.docPath] : [])
-const readerModel = args.readerModel || 'haiku'
-const readers = args.readers || 2
+// RUTAS INCRUSTADAS, no `args`: si el harness entrega los args como string, docPaths
+// queda undefined y los lectores auditan el VACÍO devolviendo SIN_VACIOS (modo de fallo
+// documentado arriba). Editar estas constantes antes de invocar:
+const docs = ['<RUTA-ABSOLUTA-DEL-DOCUMENTO>']  // bundle: agregar más rutas literales
+const readerModel = 'haiku'
+const readers = 2
+if (docs.some(d => d.includes('<RUTA'))) throw new Error('Incrusta las rutas reales en el script antes de correrlo')
 const fileList = docs.map(f => `- ${f}`).join('\n')
 
 const GAP_SCHEMA = {
@@ -207,8 +210,9 @@ const GAP_SCHEMA = {
       },
     },
     verdict: { type: 'string', enum: ['SIN_VACIOS', 'HAY_VACIOS'] },
+    resumen_leido: { type: 'string', description: 'una frase con el título y el tema del documento — la prueba de que lo leíste' },
   },
-  required: ['gaps', 'verdict'],
+  required: ['gaps', 'verdict', 'resumen_leido'],
 }
 
 const prompt =
@@ -221,6 +225,7 @@ const prompt =
   `ANTES de marcar un vacío, búscalo en TODOS los archivos (otras secciones, tablas, referencias, glosario): si está, no es vacío. ` +
   `Clasifica cada vacío: 'bloqueante' (no se puede ejecutar/entender sin esto) o 'menor' (se entiende, pero sería más claro). ` +
   `Si el documento delega explícitamente un caso al juicio del lector, eso NO es vacío. ` +
+  `En 'resumen_leido' escribe una frase con el título del documento y su tema — la prueba de que lo leíste. ` +
   `Devuelve la lista de vacíos (file + section + missing + severidad) y el veredicto.`
 
 const runs = await parallel(
