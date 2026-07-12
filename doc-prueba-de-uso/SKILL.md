@@ -68,7 +68,10 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    constraints exactos; para finanzas: los supuestos y cifras que deben poder
    reconstruirse). Sin rubric previo, la calificación se contamina con lo que
    el lector haya producido. Separa CRÍTICOS (si falla uno, iterar) de
-   IMPORTANTES.
+   IMPORTANTES. Para documentos que enseñan un MÉTODO (una fórmula, un
+   protocolo): inventa casos con números que **NO estén en el documento** —
+   obliga a aplicar, no a copiar — y **precalcula tú las respuestas correctas**
+   en el rubric antes de lanzar al lector.
 
 3. **Extracción aislada.** Cada sección se copia a un archivo propio en el
    scratchpad. El lector recibe SOLO ese archivo — si lee el documento entero,
@@ -96,6 +99,13 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    diagrama, ignoró convenciones declaradas en la leyenda). Señales de lector
    degradado: responde en otro idioma, inventa valores que el documento niega,
    demasiadas herramientas usadas. Un hallazgo sin verificación no se parcha.
+   Y una clase de fantasma descubierta en producción: **el vacío puede ser del
+   ENUNCIADO del caso, no del documento**. Cuando el orquestador inventa el caso
+   de prueba, una ambigüedad del enunciado ("¿el 9 % es crecimiento total o
+   per-share?") llega reportada como vacío del documento. Verifica cada vacío
+   contra AMBOS — el documento y tu propio enunciado —: si la duda nace del
+   enunciado y el documento contiene la convención que la resuelve (y el lector
+   la aplicó bien), no se parcha nada.
 
 6. **Parche mínimo, del orquestador.** Se corrige SOLO lo real, con la
    aclaración más pequeña que desbloquea la tarea (una frase, una fila, una
@@ -107,7 +117,10 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    rubric **y** el lector declara explícitamente que no encontró ambigüedades
    reales. Típico: 2-3 rondas. En la última ronda conviene variar la prueba de
    lectura hacia lo recién agregado, para confirmar que las correcciones se
-   captan en frío.
+   captan en frío. Si el documento ya pasó `doc-completitud` y `doc-narrativa`,
+   la prueba de uso puede converger en UNA ronda (caso real: rubric 6/6 críticos
+   al primer intento) — el criterio de parada es el rubric, no un número de
+   rondas ritual; una ronda perfecta no se repite por ceremonia.
 
 ## Reglas de oro
 
