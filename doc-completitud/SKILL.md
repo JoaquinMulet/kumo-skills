@@ -97,6 +97,27 @@ propias ediciones:
 > que auditaron `CLAUDE.md`/`SKILL.md` en vez del HTML objetivo, y un `sonnet` que marcó "WACC"
 > y "clean surplus" como vacíos cuando esos términos no estaban en el documento.)
 
+> **⚠ Modo de fallo conocido — la auditoría que audita el VACÍO (el peor de todos, porque parece
+> éxito).** Si la lista de archivos llega al script por `args` y el harness la entrega como string
+> (o el placeholder no se interpola), `docPaths` queda `undefined`, el prompt dice "estos archivos:"
+> seguido de NADA, y los lectores — obligados por el schema — devuelven `SIN_VACIOS` con cero
+> vacíos: una auditoría perfecta de ningún documento. El output estructurado **enmascara** el fallo:
+> el lector rellena el schema obedientemente en vez de gritar. Tres defensas, en orden: (1)
+> **incrusta las rutas literalmente en el script** (una constante `DOC`), no las pases por `args`;
+> (2) agrega al schema un campo obligatorio **`resumen_leido`** ("una frase con el título y el tema
+> del documento — la prueba de que lo leíste") y descarta la ronda como inválida si falta o es
+> genérico; (3) **cero hallazgos en la primera ronda es señal de instrumento roto hasta demostrar
+> lo contrario** — verifica las pruebas de lectura antes de celebrar. (Caso real: dos rondas
+> "limpias" de 2 lectores cada una fueron inválidas por esto; la ronda con las tres defensas
+> encontró 1 bloqueante y un error matemático real del autor.)
+
+> **Nota — la cláusula aritmética paga su costo.** Exigir al lector que pueda «reproducir cada paso
+> aritmético» no solo caza prosa floja: caza errores del AUTOR. (Caso real: en un capítulo de
+> finanzas, un lector recalculó un ejemplo y descubrió que una afirmación era matemáticamente falsa
+> — el despeje trataba como constante una variable que dependía del precio evaluado; obligó a
+> reformular la fórmula central de la sección, no la prosa.) No quites esa cláusula del prompt
+> para acelerar la ronda.
+
 > **⚠ Modo de fallo conocido — el glosario remoto no basta para términos *load-bearing*; defínelos
 > inline.** En un bundle, un término *crítico* (uno que sostiene un riesgo, una cifra o el argumento
 > central) definido SOLO en el glosario de otro archivo se marca igual como **bloqueante**, ronda tras
