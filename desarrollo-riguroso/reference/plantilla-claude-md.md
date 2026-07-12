@@ -22,6 +22,11 @@ El `CLAUDE.md` es el **manual operativo** del proyecto para cualquier agente o d
 
 Guía operativa del repo. Describe el estado ACTUAL del sistema, no su historia.
 
+**Estándar de la casa (OBLIGATORIO):** este proyecto sigue la skill `desarrollo-riguroso` —
+LÉELA antes de escribir o corregir código o diseñar tests: este archivo la CONCRETA, no la
+repite, y sus términos (IDENTIFY→VERIFY-REAL, preflight, oráculo duro/blando, trunk) vienen
+definidos allá. Al cerrar una sesión sustantiva, corre `retrospectiva-de-sesion`.
+
 ## Qué es esto
 <Una o dos frases: qué hace el proyecto y para quién.> Más las FUENTES DE DATOS y
 dependencias externas (DB, APIs, servicios) con cómo se accede a cada una.
