@@ -1,0 +1,40 @@
+#!/bin/sh
+# Hook post-commit: distribuye los archivos de skills tocados por el commit a la
+# copia instalada (~/.claude/skills), cerrando MECANICAMENTE el ciclo "dos lugares"
+# (CLAUDE.md, seccion "Cuando Claude edite una skill INSTALADA"). Un ritual sin
+# enforcement es teatro: la copia repo->instalada ya no depende de la memoria.
+#
+# Guardia anti-clobber: si la copia instalada difiere TANTO de la version previa
+# del repo COMO de la nueva, tiene ediciones locales no portadas -> avisa por
+# stderr y NO la pisa (merge manual). Nunca bloquea: ante fallo, termina 0.
+
+raiz=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0
+cd "$raiz" || exit 0
+dest="$HOME/.claude/skills"
+[ -d "$dest" ] || exit 0
+
+git diff-tree --no-commit-id --name-only -r HEAD | while IFS= read -r f; do
+  # Solo artefactos de skills: <skill>/SKILL.md, <skill>/reference/*, <skill>/scripts/*.
+  # (Los scripts e hooks del ROOT del repo no se distribuyen.)
+  case "$f" in
+    */SKILL.md|*/reference/*|*/scripts/*) ;;
+    *) continue ;;
+  esac
+  [ -f "$f" ] || continue   # archivo borrado: no distribuir
+  inst="$dest/$f"
+  if [ -f "$inst" ] && ! diff -q "$f" "$inst" >/dev/null 2>&1; then
+    if git show "HEAD~1:$f" >/dev/null 2>&1; then
+      tmp="$raiz/.git/sync-prev.tmp"
+      git show "HEAD~1:$f" > "$tmp" 2>/dev/null
+      if ! diff -q "$tmp" "$inst" >/dev/null 2>&1; then
+        echo "[sync] AVISO: $inst difiere de la version previa Y de la nueva del repo — posible edicion local no portada; NO se copia (merge manual)." >&2
+        rm -f "$tmp"
+        continue
+      fi
+      rm -f "$tmp"
+    fi
+  fi
+  mkdir -p "$(dirname "$inst")"
+  cp "$f" "$inst" && echo "[sync] instalada actualizada: $f"
+done
+exit 0
