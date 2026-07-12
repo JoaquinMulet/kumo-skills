@@ -173,3 +173,18 @@ Si una instancia de Claude (Code u otra) edita o crea una skill acá:
 3. Tras cualquier cambio en `name` o `description`, recorrer el checklist de "Antes de mergear" punto por punto antes de declarar la skill lista.
 4. **No mezclar cambios a múltiples skills en un solo commit.** Una skill, un commit (o una serie de commits sobre la misma skill).
 5. Si el cambio toca el flujo de descubrimiento (frontmatter), correr los 3 prompts del test de descubrimiento antes de commitear y dejarlos registrados.
+
+## Cuando Claude edite una skill INSTALADA (desde otro proyecto): el ciclo completo
+
+El caso típico: una retrospectiva u otra sesión que trabaja en OTRO proyecto quiere mejorar una skill que está en `~/.claude/skills/`. Esa carpeta es la **copia instalada** — no tiene `.git`, y que no sea un repo NO significa que no exista el repo. La fuente única de verdad es este repo (`github.com/JoaquinMulet/kumo-skills`; localizar el clon en el disco o clonarlo).
+
+El ciclo, en orden — saltarse un paso crea **drift bidireccional silencioso** que nadie ve hasta que las dos versiones divergen en direcciones opuestas:
+
+1. **`diff` ANTES de editar** — la copia instalada contra la del repo. El drift puede preexistir **en ambas direcciones** (lecciones que quedaron solo en la instalada; mejoras commiteadas que nunca se re-distribuyeron). Si lo hay, el punto de partida es el **merge (unión)** de ambos lados, nunca una copia ciega en ninguna dirección.
+2. **Editar y commitear en el repo** — con las reglas de la sección anterior (una skill, un commit; gate verde).
+3. **Copiar al instalado en el mismo acto** — y verificar que el `diff` quedó vacío.
+4. **Push** — las skills distribuidas no se actualizan solas; un commit sin push es drift en potencia para el resto de las máquinas.
+
+*(Caso real que originó esta sección, 12-jul-2026: la copia instalada de `desarrollo-riguroso` acumuló cinco lecciones de retros que nunca llegaron al repo, mientras el repo recibió una mejora que nunca llegó a la copia — lo descubrió el usuario preguntando, no el sistema.)*
+
+Las skills que instruyen editar skills (`retrospectiva-de-sesion`, `desarrollo-riguroso`) **referencian esta sección** en lugar de duplicar el procedimiento: el procedimiento vive en un solo lugar, que es este.
