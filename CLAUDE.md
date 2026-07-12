@@ -141,7 +141,7 @@ Ningún PR se mergea sin completar esto en la descripción:
 2. **Test de descubrimiento** — el autor probó la skill con **al menos 3 prompts representativos** y Claude la invocó cuando correspondía (y NO la invocó en un cuarto prompt no relacionado). Pegar los prompts y los resultados en el PR.
 3. **Coexistencia** — la nueva skill no canibaliza disparadores de skills ya existentes en el repo. Si dos skills compiten por los mismos prompts, decidir en el PR: fusionar, o angostar una de las dos descriptions.
 4. **Seguridad** — si la skill incluye scripts ejecutables, llamadas de red, lectura de archivos fuera de su carpeta, o referencias a servidores MCP, justificarlo explícitamente. Secretos hardcoded = bloqueador.
-5. **Autocontenida** — la carpeta de la skill funciona si se copia sola a `~/.claude/skills/`. No depende de archivos del root del repo ni de otras skills.
+5. **Autocontenida** — la carpeta de la skill funciona si se copia sola a `~/.claude/skills/`. No depende de archivos del root del repo ni de ASSETS de otras skills (scripts, `reference/`). Referenciar OTRA skill por su nombre («ver `desarrollo-riguroso`») sí está permitido — esa dependencia se resuelve en runtime invocando la otra skill, no copiando archivos — pero entonces rige la **regla de la ruta de lectura**: si el flujo de la skill REQUIERE contenido de la otra, debe ORDENAR su lectura en el punto donde la necesita (un puntero que nadie sigue es letra muerta).
 6. **Idioma consistente** — todo en un mismo idioma a lo largo del `SKILL.md` y archivos referenciados.
 7. **Lectura rápida** — alguien que abre el `SKILL.md` por primera vez entiende qué hace y cuándo usarla en menos de un minuto.
 
