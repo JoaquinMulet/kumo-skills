@@ -143,7 +143,10 @@ export const meta = {
   description: 'Prueba de uso por seccion: lectores frios ejecutan la tarea de cada seccion',
   phases: [{ title: 'Prueba de uso' }],
 }
-// args: [{ id, file, rol, tarea, pruebaLectura }, ...]  — preparado por el orquestador
+// SECCIONES INCRUSTADAS por el orquestador — no `args` (args-como-string ⇒ undefined
+// y la prueba correría sobre NADA; ver el modo de fallo de doc-completitud):
+const SECCIONES = [ /* { id, file, rol, tarea, pruebaLectura }, ... — literales */ ]
+if (!SECCIONES.length) throw new Error('Incrusta las secciones en el script antes de correrlo')
 const SCHEMA = {
   type: 'object',
   properties: {
@@ -157,7 +160,7 @@ const SCHEMA = {
   },
   required: ['prueba_lectura', 'artefacto', 'vacios_bloqueantes', 'vacios_menores', 'referencias_externas'],
 }
-const res = await parallel(args.map(s => () =>
+const res = await parallel(SECCIONES.map(s => () =>
   agent(
     `Eres ${s.rol}, recién llegado al proyecto. Tu ÚNICA fuente es este archivo ` +
     `(no tienes acceso a nada más; léelo COMPLETO, por partes si es largo): ${s.file}\n\n` +
