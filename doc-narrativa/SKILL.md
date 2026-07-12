@@ -82,8 +82,10 @@ export const meta = {
   ],
 }
 
-const doc = args.docPath
-const weak = args.editorModel || 'haiku'
+// Ruta INCRUSTADA, no `args` (ver paso 3 arriba: args-como-string ⇒ undefined):
+const doc = '<RUTA-ABSOLUTA-DEL-DOCUMENTO>'
+const weak = 'haiku'
+if (doc.includes('<RUTA')) throw new Error('Incrusta la ruta real en el script antes de correrlo')
 
 // 1 · INVENTARIO — checklist exhaustivo del contenido original (para verificar al final)
 phase('Inventario')
