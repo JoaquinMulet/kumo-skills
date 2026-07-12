@@ -141,3 +141,5 @@ El error más peligroso no es el bug — es **creer que lo validaste**. Correr t
 ## Cómo crece este estándar
 
 Este estándar no es estático. Tras cada sesión de código sustantiva, correr `retrospectiva-de-sesion`: destila las correcciones del usuario y los descubrimientos, y decide qué es **específico del proyecto** (va a su `CLAUDE.md`) y qué es **universal** (vuelve acá, endureciendo el estándar de toda la empresa).
+
+Y "acá" significa **el repo `kumo-skills`**, no la copia instalada en `~/.claude/skills/`: la mecánica completa de editar una skill (diff previo, merge del drift, gate, resync, push) vive en el `CLAUDE.md` de ese repo, sección «Cuando Claude edite una skill INSTALADA». Este archivo que estás leyendo puede SER una copia instalada — edítalo en el repo y re-distribuye.
