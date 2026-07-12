@@ -182,7 +182,7 @@ El ciclo, en orden — saltarse un paso crea **drift bidireccional silencioso** 
 
 1. **`diff` ANTES de editar** — la copia instalada contra la del repo. El drift puede preexistir **en ambas direcciones** (lecciones que quedaron solo en la instalada; mejoras commiteadas que nunca se re-distribuyeron). Si lo hay, el punto de partida es el **merge (unión)** de ambos lados, nunca una copia ciega en ninguna dirección.
 2. **Editar y commitear en el repo** — con las reglas de la sección anterior (una skill, un commit; gate verde).
-3. **Copiar al instalado en el mismo acto** — y verificar que el `diff` quedó vacío.
+3. **Copiar al instalado en el mismo acto** — y verificar que el `diff` quedó vacío. (En máquinas con `core.hooksPath` configurado, el hook `post-commit` hace esta copia automáticamente al commitear, con guardia: si la instalada tenía ediciones no portadas, avisa por stderr y NO la pisa. Verifica igual el diff final: el hook cubre la dirección repo→instalada, no la inversa.)
 4. **Push** — las skills distribuidas no se actualizan solas; un commit sin push es drift en potencia para el resto de las máquinas.
 
 *(Caso real que originó esta sección, 12-jul-2026: la copia instalada de `desarrollo-riguroso` acumuló cinco lecciones de retros que nunca llegaron al repo, mientras el repo recibió una mejora que nunca llegó a la copia — lo descubrió el usuario preguntando, no el sistema.)*
