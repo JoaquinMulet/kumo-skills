@@ -111,6 +111,21 @@ propias ediciones:
 > "limpias" de 2 lectores cada una fueron inválidas por esto; la ronda con las tres defensas
 > encontró 1 bloqueante y un error matemático real del autor.)
 
+> **⚠ Punto ciego estructural — la completitud de NODOS no compone a completitud del SISTEMA.**
+> La regla «una referencia explícita a otro documento cuenta como definición» es correcta para medir
+> la autosuficiencia de UN documento — y exime exactamente las ARISTAS: ningún lector individual
+> audita si el puntero apunta a algo que existe y contiene lo prometido, si las obligaciones
+> cruzadas están operacionalizadas en AMBOS lados (A declara «B lo hace rutina» pero B no lo
+> incluye), ni si existe una **ruta de lectura garantizada** que haga que el documento apuntado se
+> lea cuando se necesita — un puntero que nadie sigue es letra muerta. Para un conjunto de
+> documentos vinculados (skills que se referencian entre sí, un `CLAUDE.md` + su estándar), corre
+> además la **auditoría de grafo**: lectores con TODOS los archivos del conjunto cuya única tarea es
+> auditar las aristas — (1) cada referencia resuelve a contenido real en el destino, (2) cada
+> obligación cruzada existe en los dos lados, (3) cada dependencia funcional declara cuándo y cómo
+> se lee el documento del que depende. (Caso real: cuatro rondas de lectores dieron por completa una
+> skill cuyo estándar de referencia podía no leerse NUNCA en una sesión real — la regla de género
+> eximió la arista y nadie la miró; lo encontró el usuario, no el aparato.)
+
 > **Nota — la cláusula aritmética paga su costo.** Exigir al lector que pueda «reproducir cada paso
 > aritmético» no solo caza prosa floja: caza errores del AUTOR. (Caso real: en un capítulo de
 > finanzas, un lector recalculó un ejemplo y descubrió que una afirmación era matemáticamente falsa
