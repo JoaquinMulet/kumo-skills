@@ -38,7 +38,10 @@ export const meta = {
   description: 'Agentes frescos escepticos hurgan el estado REAL con pregunta abierta',
   phases: [{ title: 'Auditar la realidad' }],
 }
-// args: [{ id, ruta, superficie }]  — preparado por el orquestador
+// SUPERFICIES INCRUSTADAS por el orquestador — no `args` (args-como-string => undefined
+// y la auditoria correria sobre NADA):
+const SUPERFICIES = [ /* { id, ruta, superficie }, ... — literales */ ]
+if (!SUPERFICIES.length) throw new Error('Incrusta las superficies en el script antes de correrlo')
 const SCHEMA = {
   type: 'object', additionalProperties: false,
   properties: {
@@ -55,7 +58,7 @@ const BASE = `Eres un ingeniero senior ESCEPTICO que acaba de heredar esto en fr
   `— nada de sospechas sin prueba. Por cada uno di "porque_invisible": por que el equipo estuvo ciego. Al final, ` +
   `"lo_mas_peligroso": el unico que te quitaria el sueno. Incluye las superficies ABURRIDAS (backup del trunk, ` +
   `secretos en el filesystem, que se despliega de verdad), no solo la logica elegante.`
-const res = await parallel(args.map(s => () =>
+const res = await parallel(SUPERFICIES.map(s => () =>
   agent(`${BASE}\n\nSUPERFICIE (${s.superficie}), en: ${s.ruta}\n` +
     `Pregunta abierta: que aca es peligroso o mentira que nadie esta mirando? No te limites a lo conocido.`,
     { label: `auditar:${s.id}`, phase: 'Auditar la realidad', schema: SCHEMA })
