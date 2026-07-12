@@ -39,9 +39,13 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 2. **Parámetros opcionales:**
    - `editorModel` — modelo de los editores/verificador (lectores baratos).
      Default `haiku`.
-3. **Invoca el tool `Workflow`** con `args: { docPath, editorModel }` y el `script`
-   de abajo. (La skill orquesta varios subagentes; está bien llamar a Workflow
-   porque esta skill lo instruye explícitamente.)
+3. **Invoca el tool `Workflow`** con el `script` de abajo, **incrustando la ruta del
+   documento como constante en el script** — no la pases por `args`: si el harness
+   entrega los args como string, `args.docPath` llega `undefined`, los editores
+   reciben «Lee SOLO undefined» y la fase de inventario devuelve un checklist-error
+   perfectamente schema-válido (caso real). Al recibir el resultado, **verifica el
+   inventario antes de seguir**: si no nombra contenido real del documento, la
+   corrida entera es inválida.
 4. **Al terminar**, muestra al usuario: (a) el **plan de redacción** sintetizado
    (para que lo apruebe o ajuste), (b) el **veredicto de completitud** (COMPLETO /
    qué se repuso). Si el usuario quiere afinar el plan antes de aceptar, puedes
@@ -51,6 +55,17 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 > nada), pide recomendaciones a **editores con lentes distintas** (narrativa,
 > densidad, estructura), **sintetiza** un plan de redacción, **reescribe** según
 > el plan, y **verifica** contra el inventario — reponiendo lo que falte.
+
+> **⚠ Documentos con contenido gestionado por generador (citas numeradas, notas al
+> pie, numeración continua entre archivos): la variante "Solo el plan" es OBLIGATORIA.**
+> Un agente reescritor a ciegas puede separar un marcador de cita de su frase o romper
+> el anclaje de la numeración. El flujo correcto: los editores recomiendan → el plan
+> lista EDICIONES PUNTUALES (no reescritura total) → **el orquestador ejecuta con
+> `Edit`** (marcadores pegados a su frase; cortes de párrafo solo entre oraciones
+> completas) → cierre doble: verificación de inventario + **corrida del generador**
+> confirmando que el conteo y el anclaje de las citas no cambiaron. (Caso real: 8
+> ediciones sobre un capítulo con 21 citas gestionadas — inventario 351/351 presente
+> y generador sin cambios.)
 
 ## Script para el tool Workflow
 
@@ -84,7 +99,7 @@ const checklist = (inv?.items || []).map((s, i) => `${i + 1}. ${s}`).join('\n')
 // 2 · EDITORIAL — recomendadores con lentes distintas, en paralelo
 phase('Editorial')
 const LENTES = [
-  { k: 'narrativa', p: 'Eres EDITOR de arco narrativo / storytelling. Define en 1 frase el MENSAJE CENTRAL del documento; identifica el GANCHO (el problema o dato que arrastra al lector); propón el arco en 5-7 actos con título (problema → descubrimiento → solución → prueba); señala el "momento ajá". Da 5-8 recomendaciones concretas.' },
+  { k: 'narrativa', p: 'Eres EDITOR de arco narrativo / storytelling. Define en 1 frase el MENSAJE CENTRAL del documento; identifica el GANCHO (el problema o dato que arrastra al lector); propón el arco en 5-7 actos con título (problema → descubrimiento → solución → prueba); señala el "momento ajá". Da 5-8 recomendaciones concretas Y di explícitamente cuáles partes YA funcionan y no hay que tocar.' },
   { k: 'densidad', p: 'Eres EDITOR de legibilidad. El documento está demasiado denso. Señala las 5 zonas más densas (tablas, listas de campos, código apilado); di qué PROSA explicativa agregar y dónde; qué ANALOGÍAS cotidianas ayudarían; y qué conviene mover a un APÉNDICE de referencia para aligerar el cuerpo.' },
   { k: 'estructura', p: 'Eres EDITOR de estructura/arquitectura de la información. Diagnostica el orden de secciones, las REDUNDANCIAS (ideas repetidas) y la MEZCLA DE NIVELES (relato vs referencia técnica). Propón una estructura reordenada (lista de secciones con una línea de propósito) y la SEÑALIZACIÓN a agregar (transiciones entre secciones, "qué te llevas" al cierre de cada una).' },
 ]
@@ -99,7 +114,7 @@ const recs = (await parallel(
 phase('Plan')
 const plan = await agent(
   `Eres el REDACTOR JEFE. Con estas recomendaciones de tres editores:\n\n${recs.join('\n\n---\n\n')}\n\n` +
-  `Sintetiza UN plan de redacción accionable para reescribir ${doc} como relato. Incluye: (a) el mensaje ` +
+  `Sintetiza UN plan de redacción accionable para reescribir ${doc} como relato (léelo tú también con Read antes de decidir: los editores pueden estar criticando una impresión desactualizada del documento, y tu plan debe declarar los NO-OPS con su porqué). Incluye: (a) el mensaje ` +
   `central y el gancho de apertura; (b) los actos en orden, cada uno con su propósito y de qué sección ` +
   `actual sale; (c) qué baja a APÉNDICES de referencia; (d) reglas de prosa (un párrafo introduce cada ` +
   `tabla/figura, un "qué te llevas" cierra cada acto, analogías donde ayuden, transiciones entre actos); ` +
@@ -146,7 +161,9 @@ return { plan, faltantes: verif?.faltantes || [], veredicto: verif?.veredicto ||
 ## Variantes
 - **Solo el plan (sin reescribir):** corta el workflow tras la fase `Plan` y
   muéstrale el plan de redacción al usuario para que lo apruebe antes de tocar el
-  archivo. Recomendado para documentos grandes o sensibles.
+  archivo. Recomendado para documentos grandes o sensibles; **obligatorio** para
+  archivos con contenido gestionado por generador (ver advertencia arriba) — ahí
+  el plan no va al usuario sino al orquestador, que lo ejecuta con `Edit`.
 - **Más lentes:** agrega editores (p. ej. "tono para sponsor no técnico",
   "ruta de lectura por rol") al arreglo `LENTES`.
 - **Combo con completitud:** corre primero `doc-completitud` (que no falte
