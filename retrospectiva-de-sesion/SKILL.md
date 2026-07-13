@@ -29,6 +29,8 @@ Recorrer la sesión completa y cosechar dos cosas:
 - **Cada punto donde el usuario te corrigió, redirigió o mostró fricción** — verbatim cuando se pueda. Una corrección es oro: es la distancia exacta entre lo que hiciste y lo que el proyecto esperaba.
 - **Los descubrimientos técnicos no obvios**: un gotcha del stack, un supuesto roto, una forma de dato que no habías considerado.
 
+Si durante la sesión operó la **paranoia del compounding** (`desarrollo-riguroso` §«Cómo crece este estándar»), la cosecha debe encontrar los principios YA escritos en el momento de cada corrección: esta retro los **verifica y completa**, no los estrena. Cada corrección que aparezca aquí sin compoundear es, en sí misma, un hallazgo — el reflejo no disparó, y el porqué va a la cosecha.
+
 ### 2. Destilar el principio, no el caso
 
 Por cada corrección, extraer el **principio general** detrás, no el arreglo puntual. El caso puntual se olvida; el principio se reusa.
