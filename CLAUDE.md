@@ -173,6 +173,7 @@ Si una instancia de Claude (Code u otra) edita o crea una skill acá:
 3. Tras cualquier cambio en `name` o `description`, recorrer el checklist de "Antes de mergear" punto por punto antes de declarar la skill lista.
 4. **No mezclar cambios a múltiples skills en un solo commit.** Una skill, un commit (o una serie de commits sobre la misma skill).
 5. Si el cambio toca el flujo de descubrimiento (frontmatter), correr los 3 prompts del test de descubrimiento antes de commitear y dejarlos registrados.
+6. **Si editas un `SKILL.md`, revisa en la misma pasada sus assets (`reference/`, `scripts/`).** Son nodos del mismo grafo y quedan desactualizados en silencio: una enumeración en el SKILL.md que describe la plantilla, un ejemplo que contradice la instrucción nueva. *(Caso real: la plantilla de CLAUDE.md quedó atrás de dos evoluciones de la skill — la enumeración de secciones y el gate de claims — hasta que el usuario lo notó, no el aparato.)*
 
 ## Cuando Claude edite una skill INSTALADA (desde otro proyecto): el ciclo completo
 
