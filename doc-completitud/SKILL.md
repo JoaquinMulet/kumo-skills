@@ -112,6 +112,8 @@ propias ediciones:
 > encontró 1 bloqueante y un error matemático real del autor.)
 
 > **⚠ Punto ciego estructural — la completitud de NODOS no compone a completitud del SISTEMA.**
+> (La metáfora es de grafos: cada documento es un **nodo**; cada referencia o dependencia de un
+> documento hacia otro es una **arista**. Esta skill audita nodos — un documento a la vez.)
 > La regla «una referencia explícita a otro documento cuenta como definición» es correcta para medir
 > la autosuficiencia de UN documento — y exime exactamente las ARISTAS: ningún lector individual
 > audita si el puntero apunta a algo que existe y contiene lo prometido, si las obligaciones
