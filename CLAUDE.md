@@ -139,7 +139,7 @@ Ningún PR se mergea sin completar esto en la descripción:
 
 1. **Frontmatter válido** — `name` coincide con la carpeta, `description` en tercera persona con QUÉ + CUÁNDO, dentro de los límites de caracteres. *(El gate lo verifica.)*
 2. **Test de descubrimiento** — el autor probó la skill con **al menos 3 prompts representativos** y Claude la invocó cuando correspondía (y NO la invocó en un cuarto prompt no relacionado). Pegar los prompts y los resultados en el PR.
-3. **Coexistencia** — la nueva skill no canibaliza disparadores de skills ya existentes en el repo. Si dos skills compiten por los mismos prompts, decidir en el PR: fusionar, o angostar una de las dos descriptions.
+3. **Coexistencia** — la nueva skill no canibaliza disparadores de skills ya existentes en el repo. Si dos skills compiten por los mismos prompts, decidir en el PR: fusionar, o angostar una de las dos descriptions. Y el presupuesto de atención es del CONJUNTO, no de a pares: cada description compite con todas las demás en el system prompt (límite de recall documentado en la guía enterprise de Anthropic). Al crecer el set, correr el test de descubrimiento sobre TODO el conjunto — si el recall degrada, se consolida (fusión validada con el mismo test), no se sigue sumando.
 4. **Seguridad** — si la skill incluye scripts ejecutables, llamadas de red, lectura de archivos fuera de su carpeta, o referencias a servidores MCP, justificarlo explícitamente. Secretos hardcoded = bloqueador.
 5. **Autocontenida** — la carpeta de la skill funciona si se copia sola a `~/.claude/skills/`. No depende de archivos del root del repo ni de ASSETS de otras skills (scripts, `reference/`). Referenciar OTRA skill por su nombre («ver `desarrollo-riguroso`») sí está permitido — esa dependencia se resuelve en runtime invocando la otra skill, no copiando archivos — pero entonces rige la **regla de la ruta de lectura**: si el flujo de la skill REQUIERE contenido de la otra, debe ORDENAR su lectura en el punto donde la necesita (un puntero que nadie sigue es letra muerta).
 6. **Idioma consistente** — todo en un mismo idioma a lo largo del `SKILL.md` y archivos referenciados.
@@ -163,6 +163,11 @@ Detalles oficiales y limitaciones: ver el bloque "Where Skills work" del overvie
 - Cambios que rompan disparadores existentes (rename del `name`, cambio fuerte de `description`, eliminación de scripts referenciados) → commit separado con mensaje prefijado `BREAKING: <skill> — <qué cambió>` y aviso al canal correspondiente antes de pushear.
 - Skills ya distribuidas a claude.ai o la API **no se actualizan solas**: hay que resubir/redesplegar manualmente tras el merge.
 - Para deprecar una skill: moverla a una carpeta `_deprecated/` en el root durante un ciclo de release antes de borrar.
+- **Al cambiar el modelo por defecto de la casa** (o tras un salto de familia de modelos): re-correr el test de descubrimiento del conjunto completo. La efectividad y el recall de las skills varían por modelo y el drift de triggering es silencioso — el disparador de esta re-evaluación es el cambio de modelo (evento observable), no un calendario.
+
+## Skills de terceros — auditar antes de instalar
+
+Una skill externa se instala con el mismo rigor que software en producción: leer TODO su contenido (SKILL.md, `reference/`, scripts), buscar instrucciones adversariales (directivas de ignorar reglas, ocultar acciones, alterar comportamiento condicionalmente), llamadas de red, credenciales hardcodeadas, y listar qué comandos y herramientas ordena invocar. El mecanismo de la casa: apuntarle **`auditoria-de-realidad`** a la carpeta ANTES de copiarla a `~/.claude/skills/`. Checklist detallado de riesgo: guía «Skills for enterprise» de Anthropic.
 
 ## Cuando Claude trabaje en este repo
 
