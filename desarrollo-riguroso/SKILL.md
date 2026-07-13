@@ -138,8 +138,18 @@ El error más peligroso no es el bug — es **creer que lo validaste**. Correr t
 - **Un ritual sin enforcement es teatro.** VERIFY-REAL y la retrospectiva derivan si dependen de que alguien se acuerde. Conviértelos en GATES automáticos (un hook, un deploy que se niega fuera del trunk, un check del harness). Lo hace cumplir el harness, no la buena voluntad.
 - **Cierra toda sesión con la pregunta adversarial-contra-la-realidad:** *"¿qué problema real y grave es invisible para mi aparato AHORA?"* — sobre el repo/prod real, no un fixture. **Encontrar un error por suerte (porque un humano lo señaló) NO cuenta como que el sistema funciona.**
 
-## Cómo crece este estándar
+## Cómo crece este estándar — la paranoia del compounding
 
 Este estándar no es estático. Tras cada sesión de código sustantiva, correr `retrospectiva-de-sesion`: destila las correcciones del usuario y los descubrimientos, y decide qué es **específico del proyecto** (va a su `CLAUDE.md`) y qué es **universal** (vuelve acá, endureciendo el estándar de toda la empresa).
+
+Pero la retro es el ritual de COSECHA, no el momento en que se aprende. La actitud de fondo del estándar es una **paranoia por el compounding**: todo caso es sospechoso de ser una clase, y todo aprendizaje no escrito se está perdiendo AHORA. Cinco reflejos en loop constante durante la sesión, no solo al cierre:
+
+1. Ante un fix → **¿caso o clase?** `grep` de los hermanos que comparten el patrón antes de cerrar (Pilar 2).
+2. Ante una corrección del usuario → **¿qué principio hay detrás y dónde vive?** El micro-ciclo se dispara EN EL MOMENTO, como parte del mismo fix: arreglar el caso → destilar el principio (la prueba de fuego de la retro) → escribirlo donde vive (el `CLAUDE.md` del proyecto, esta skill, o la skill afectada) → verificar lo escrito. La retro del cierre verifica y completa lo acumulado — no debe ser la primera vez que el aprendizaje se piensa.
+3. Ante un resultado limpio → **¿el instrumento midió algo?** (la prueba de trabajo, arriba).
+4. Ante una regla o referencia escrita → **¿alguien la sigue?** Un puntero que nadie sigue, una regla que nada dispara, es letra muerta certificable como completa.
+5. Ante un «listo» → **¿qué es invisible para mi aparato AHORA?** (la pregunta adversarial, arriba).
+
+**Señal inequívoca de que la paranoia falló:** el usuario encontró el problema, o tuvo que pedir el aprendizaje («¿qué aprendimos?», «¿cómo compoundeamos esto?»). Cada vez que pase, el hallazgo N.º 1 de la cosecha es por qué el reflejo no disparó. *(Caso real: en la MISMA sesión en que se endureció todo este aparato, una corrección del usuario se arregló como bug puntual y el principio quedó sin escribir hasta que el usuario lo exigió — el aparato existía; el reflejo que lo dispara es lo que faltaba.)*
 
 Y "acá" significa **el repo `kumo-skills`**, no la copia instalada en `~/.claude/skills/`: la mecánica completa de editar una skill (diff previo, merge del drift, gate, resync, push) vive en el `CLAUDE.md` de ese repo, sección «Cuando Claude edite una skill INSTALADA». Este archivo que estás leyendo puede SER una copia instalada — edítalo en el repo y re-distribuye.
