@@ -108,4 +108,4 @@ Compara con la versión genérica que NO sirve: *"Compila con Go. Corre los test
 
 ## Cómo se valida que un CLAUDE.md quedó bien
 
-Un CLAUDE.md es un documento de información, y **los documentos se testean** (ver la sección "Los documentos también se testean" del `SKILL.md`): pásaselo a un lector frío débil con una tarea real ("con SOLO este archivo, levanta el proyecto y corre un test") y mira si puede ejecutarla. Lo que tuvo que adivinar es lo que falta concretar.
+Un CLAUDE.md es un documento de información, y **los documentos se testean** (ver la sección "Los documentos también se testean" del `SKILL.md`): pásaselo a un lector frío débil con una tarea real ("con SOLO este archivo, levanta el proyecto y corre un test") y mira si puede ejecutarla. Lo que tuvo que adivinar es lo que falta concretar. Y crúzale los **claims contra el código** (misma sección del `SKILL.md`): cada afirmación verificable que el CLAUDE.md haga — rutas, comandos, conteos, «validado» — contra el repo real; el status derivable se pudre en silencio.

@@ -104,7 +104,7 @@ El **trunk es la rama que se despliega** — nómbralo explícitamente y **deplo
 
 ## Sembrar el CLAUDE.md de un proyecto nuevo
 
-El `CLAUDE.md` es el **manual operativo** del proyecto — comandos densos y accionables, no un ensayo. **No improvises su estructura: usa el esqueleto probado en [`reference/plantilla-claude-md.md`](reference/plantilla-claude-md.md)**, que trae las secciones en orden (qué es → build & comandos → arquitectura → invariantes y oráculo → bug-fix workflow → testing → patterns → lessons → gotchas → deploy) + las reglas de densidad y un ejemplo trabajado.
+El `CLAUDE.md` es el **manual operativo** del proyecto — comandos densos y accionables, no un ensayo. **No improvises su estructura: usa el esqueleto probado en [`reference/plantilla-claude-md.md`](reference/plantilla-claude-md.md)**, que trae las secciones en orden (qué es → build & comandos → ramas y deploy → arquitectura → invariantes y oráculo → bug-fix workflow → testing → patterns → lessons → gotchas → deploy) + las reglas de densidad y un ejemplo trabajado.
 
 Lo esencial al rellenarlo:
 
@@ -153,6 +153,15 @@ La actitud que se sigue de la base es la **paranoia por el compounding**: todo c
 3. Ante un resultado limpio → **¿el instrumento midió algo?** (la prueba de trabajo, arriba).
 4. Ante una regla o referencia escrita → **¿alguien la sigue?** Un puntero que nadie sigue, una regla que nada dispara, es letra muerta certificable como completa.
 5. Ante un «listo» → **¿qué es invisible para mi aparato AHORA?** (la pregunta adversarial, arriba).
+
+**El disparador mecánico del reflejo 2 — instalación por máquina.** El reflejo de compounding no puede depender de la memoria del agente (violaría la propia ley del disparador). Se mecaniza con un hook `UserPromptSubmit` en `~/.claude/settings.json`, que inyecta el check en CADA mensaje del usuario:
+
+```json
+"hooks": { "UserPromptSubmit": [ { "hooks": [ { "type": "command", "timeout": 10,
+  "command": "echo \"[check-compounding] Si este mensaje del usuario contiene una correccion, una preferencia o una friccion: compoundeala EN ESTE TURNO como parte del mismo fix (caso->clase, principio en una frase, escribirlo donde vive) - ver desarrollo-riguroso, seccion 'paranoia del compounding'. Si el usuario tuvo que repetir algo o pedir el aprendizaje, el reflejo ya fallo.\"" } ] } ] }
+```
+
+Sin este hook (u otro disparador equivalente), el reflejo 2 corre como **deuda declarada** en esa máquina — decláralo al sembrar un entorno nuevo. Refuerzo opcional: la misma postura en dos líneas en el `~/.claude/CLAUDE.md` global del usuario.
 
 **Señal inequívoca de que la paranoia falló:** el usuario encontró el problema, o tuvo que pedir el aprendizaje («¿qué aprendimos?», «¿cómo compoundeamos esto?»). Cada vez que pase, el hallazgo N.º 1 de la cosecha es por qué el reflejo no disparó. *(Caso real: en la MISMA sesión en que se endureció todo este aparato, una corrección del usuario se arregló como bug puntual y el principio quedó sin escribir hasta que el usuario lo exigió — el aparato existía; el reflejo que lo dispara es lo que faltaba.)*
 
