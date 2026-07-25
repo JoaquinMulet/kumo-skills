@@ -65,11 +65,60 @@ Preguntarse explícitamente por el proyecto de esta sesión (es un marco de aná
 - **Verificar honestamente — y no solo releyendo.** La relectura propia es la forma más débil de verificación: el autor es ciego a su propio drift. Escala según lo que escribiste: (a) una viñeta o lección puntual → releerla como la leería alguien sin contexto (¿se entiende el principio sin haber vivido la sesión? si no, reescribir); (b) una skill nueva o reestructurada, o una sección sustantiva de `CLAUDE.md` → pasarla por el pipeline documental de `desarrollo-riguroso` §«Los documentos también se testean» (`doc-completitud` → `doc-narrativa` → `doc-prueba-de-uso`; como mínimo, una ronda de lector frío de completitud). (c) Si tocaste un `CLAUDE.md`, correr además el gate de **claims contra el código** sobre lo escrito — cada afirmación verificable (rutas, nombres, conteos, «validado») cruzada contra código/tests/`git` — que ese mismo apartado de `desarrollo-riguroso` ordena hacer rutina de la retro.
 - **Cerrar con la pregunta adversarial** que `desarrollo-riguroso` ordena para toda sesión (§«La trampa del validador autorreferencial»): *«¿qué problema real y grave es invisible para mi aparato AHORA?»* — contra el repo/prod real, no un fixture. Lo que aparezca es cosecha de esta misma retro (vuelve al paso 1); si no aparece nada, decirlo explícitamente.
 
+### 5b. La aduana de los aprendizajes (con agentes, sobre el umbral)
+
+`desarrollo-riguroso` ya exige aduana adversarial de contexto fresco para el **código** que va
+al trunk y para toda **propuesta** que ve el operador. Las lecciones de esta retro son el
+tercer producto que sale de tu cabeza y hasta ahora salía sin aduana — y peor: el estándar que
+podrías estar relajando lo revisa el único agente con incentivo de bajar la vara. Eso no se
+arregla con fuerza de voluntad, se arregla estructuralmente.
+
+**Umbral.** Corre la aduana completa si (a) hay **tres o más** lecciones candidatas, o (b)
+alguna se propone para **ascender a universal** (editar `desarrollo-riguroso` afecta a todos
+los proyectos de la empresa). Con una o dos lecciones específicas del proyecto, el paso 5
+normal alcanza: un grafo ahí es sobrecosto, y la retro es justo el momento donde más quieres
+leer y aprobar tú. Rige la puerta de la casa: presenta la cuenta de agentes y espera el visto
+bueno.
+
+**El diseño, con el presupuesto barato de la casa (≤6 agentes):**
+
+1. **Un nodo por lección — ¿es nueva, y dónde vive?** (hasta 4; si hay más, agrúpalas). Lee el
+   `CLAUDE.md` del proyecto y `desarrollo-riguroso`, y responde dos cosas: si el principio **ya
+   está escrito** (resuelve mecánicamente la paranoia del compounding que el paso 1 pide
+   verificar a ojo) y si es **específico o universal** aplicando la regla de la duda. Que ya
+   esté escrito es el resultado más común y el más valioso: te ahorra escribir por segunda vez
+   lo que la retro misma prohíbe duplicar.
+2. **Un nodo de claims.** Ejecuta `grep` y `git` sobre TODO lo que escribiste en el paso 5 —
+   rutas, nombres de funciones, conteos, cada «validado». No es una intención de verificar: es
+   un nodo que corre los comandos. Es el ancla dura de la retro entera.
+3. **El juez frío, sobre la señal CRUDA.** Recibe (a) los turnos del usuario extraídos
+   mecánicamente y (b) las lecciones propuestas — nunca tu lista de correcciones cosechada, ni
+   la sesión completa con tu razonamiento dentro. Y responde **dos** preguntas:
+   - ¿cada lección **captura** la corrección que dice capturar, o es una versión suavizada que
+     le da la razón al agente?
+   - **¿hay correcciones del usuario que no produjeron ninguna lección?**
+
+   La segunda es la que importa y hoy no la hace nadie: si el cosechador del paso 1 omitió la
+   corrección incómoda, un juez que solo mira la lista cosechada la valida felizmente. Por eso
+   la señal se extrae con un script y no con tu memoria:
+
+   ```bash
+   uv run python scripts/extraer-turnos-usuario.py --ultima -o turnos.md
+   ```
+
+   (Acepta también la ruta explícita del `.jsonl`; cero turnos extraídos es señal de
+   instrumento roto, no de sesión vacía.)
+
+El andamiaje reusable —schemas con prueba de trabajo, topes, por qué el ancla va primero— vive
+en `desarrollo-riguroso`, `reference/esqueleto-de-verificacion.md`: **léelo antes de escribir el
+workflow.** Lo que el juez devuelva vuelve al paso 1 como cosecha: una lección suavizada se
+reescribe, y una corrección sin lección es el hallazgo más importante de la retro.
+
 ## Errores de la propia retro (evitarlos)
 
 - **Transcribir el caso como si fuera el principio** → se sobre-ajusta y no se reusa.
 - **Subir todo al estándar universal** → lo infla; la mayoría es específico del proyecto.
-- **Relajar un estándar existente para justificar lo que hiciste** → si un estándar estorbó, cuestiónalo **explícitamente** (di por qué y qué lo reemplaza), nunca lo borres o lo ablandes en silencio. Bajar la vara es exactamente lo contrario de endurecer el proceso.
+- **Relajar un estándar existente para justificar lo que hiciste** → si un estándar estorbó, cuestiónalo **explícitamente** (di por qué y qué lo reemplaza), nunca lo borres o lo ablandes en silencio. Bajar la vara es exactamente lo contrario de endurecer el proceso. *(Este error es estructural, no de disciplina: quien lo comete es el único con incentivo de cometerlo. Sobre el umbral, lo caza el juez frío del paso 5b; bajo el umbral, lo cazas leyendo tu propia lección al lado de la corrección verbatim que la origina.)*
 - **Inventar aprendizajes para llenar** → una retro honesta a veces concluye "esta sesión no dejó nada durable".
 - **Escribir un markdown que narre el código** → los aprendizajes son convenciones, lecciones y contratos; el "cómo funciona" vive en el código (ver `desarrollo-riguroso`).
 
