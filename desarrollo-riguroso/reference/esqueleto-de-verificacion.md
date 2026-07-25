@@ -6,11 +6,14 @@ convertir un flujo lineal en grafo. Las skills que ya lo instancian (`doc-comple
 `doc-narrativa`, `doc-prueba-de-uso`, `auditoria-de-realidad`,
 `verificacion-adversarial`) apuntan acá en vez de recontarlo.
 
-**Estado: v0.** Destilado de esas cinco instancias, que son todas de documentos e
-infraestructura. Todavía NO se ha aplicado a otras formas (comparar variantes de un
-prompt, auditar aprendizajes de una retro): lo que esas conversiones pidan y no
-encuentren acá es el diff hacia v1. Máximo dos rondas de destilación — un esqueleto que
-se reescribe en cada uso no es un esqueleto.
+**Estado: v1**, y esta es la última ronda de destilación por decisión explícita — un esqueleto
+que se reescribe en cada uso no es un esqueleto. La v0 salió de esas cinco instancias; la v1
+cerró los vacíos que encontró su propia **prueba de uso**: un lector frío débil, con este
+archivo como única fuente, escribió el workflow para auditar una librería ajena. Cumplió 6 de
+8 criterios del rubric y dejó al descubierto lo que faltaba: el guard mal generalizado, el
+contrato del tool que el archivo daba por sabido, qué hace el orquestador con un hallazgo
+dudoso, y un presupuesto que estaba escrito arriba pero no operativo en el andamiaje. Los
+cuatro están corregidos abajo.
 
 ## Antes de nada: ¿esto merece un grafo?
 
@@ -88,8 +91,14 @@ constante literal en el script**, con un guard que revienta si quedó el placeho
 
 ```js
 const DOC = '<RUTA-ABSOLUTA>'
-if (DOC.includes('<RUTA')) throw new Error('Incrusta la ruta real antes de correr')
+if (!DOC || DOC.includes('<RUTA')) throw new Error('Incrusta la ruta real antes de correr')
 ```
+
+El guard chequea **el placeholder y el vacío**, nunca el valor real. Escribirlo como
+`if (DOC === 'C:/ruta/real/...') throw` —comparar contra el valor que sí quieres— hace que
+el script reviente exactamente cuando está bien configurado. *(Lo produjo un lector frío
+generalizando mal este ejemplo: el guard es una lista negra de "sin configurar", no una
+comparación con lo esperado.)*
 
 El tool `Workflow` sí acepta `args` cuando se pasa como JSON real; lo que llega
 `undefined` es el caso —fácil de cometer— en que se pasa como string JSON-encodeado. Ahí
@@ -139,11 +148,32 @@ original, otro SOLO la versión nueva, ninguno ve al otro— y se comparan sus d
 descripciones. Si divergen, hubo drift y se revierte. Es evidencia, no impresión, y aplica
 a cualquier transformación de texto, no solo a las skills de documentos.
 
+## Qué hace el orquestador con lo que vuelve
+
+El grafo **no cierra el loop solo**. Cuando un nodo de verificación marca un hallazgo como
+dudoso, el script no lo descarta ni lo arregla: lo devuelve etiquetado y **para**. El
+orquestador entonces (1) abre el artefacto real y confirma o mata el hallazgo a mano —
+verificación de fantasmas—, (2) rankea por daño real, no por sofisticación, y (3) escribe.
+Automatizar ese paso convierte una disciplina de fantasmas en un agente parchando sobre
+alucinaciones, y ningún nodo tiene el contexto para decidirlo. Corolario práctico: el `return`
+del script es un informe con etiquetas, nunca un veredicto ejecutado.
+
 ## Andamiaje mínimo
 
-`pipeline` por default (cada ítem avanza sin esperar a los demás); `parallel` solo cuando
-la etapa siguiente necesita de verdad todos los resultados juntos (deduplicar, cortar por
-total cero, comparar entre sí).
+Esto **no es JavaScript autónomo**: `agent()`, `pipeline()`, `parallel()`, `phase()`, `log()`
+y `args` los inyecta el tool `Workflow`, y su contrato exacto (firmas, opciones, límites de
+concurrencia) vive en la descripción de ese tool — **léela ahí antes de escribir el script**;
+este archivo cubre la forma del grafo, no la API. No hay acceso a filesystem ni a APIs de
+Node: todo lo que necesite leer disco lo hace un `agent()` con sus propias tools, o lo derivas
+tú antes y lo incrustas.
+
+Presupuesto, siempre a la vista: **`agentes = ancla + (lentes × objetos) + verificadores +
+síntesis`**. Cuéntalo antes de correr y compáralo con el tope de ≤6; un grafo de 4 lentes con
+un verificador cada una ya son 10 y necesita visto bueno explícito.
+
+`pipeline` por default (cada ítem avanza por todas sus etapas sin esperar a los demás ítems —
+es concurrente, no serial); `parallel` solo cuando la etapa siguiente necesita de verdad todos
+los resultados juntos (deduplicar, cortar por total cero, comparar entre sí).
 
 ```js
 export const meta = {
