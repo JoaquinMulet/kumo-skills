@@ -131,7 +131,10 @@ Cuando duden, escribir el prompt directo primero. Si lo repiten tres veces, reci
 > líneas, o voseo. **Parsea el YAML de verdad** (vía `uv run --with pyyaml`, con fallback a checks
 > manuales) — no lo raspa con regex — porque el gate viejo aprobó una `description` con `: ` sin
 > comillas que el cargador real rechazó, y antes una de 1086 chars por medir *después* de commitear.
-> Cubre los puntos 1 y 6 de este checklist de forma mecánica. Actívalo una vez por clon:
+> También cubre el `README.md`: falla si una skill del disco no está enlazada ahí, si el numeral
+> escrito a mano («las siete») no coincide con el conteo real, o si hay voseo en el `README.md` o en
+> este archivo — el gate viejo solo miraba los `SKILL.md` y el README acumuló ambos defectos sin que
+> nadie los viera. Cubre los puntos 1, 6 y 8 de este checklist de forma mecánica. Actívalo una vez por clon:
 > `git config core.hooksPath .githooks` (necesita `uv`, ya estándar en Kumo). Lo demás (2, 3, 5, 7)
 > sigue siendo revisión humana.
 
@@ -144,6 +147,7 @@ Ningún PR se mergea sin completar esto en la descripción:
 5. **Autocontenida** — la carpeta de la skill funciona si se copia sola a `~/.claude/skills/`. No depende de archivos del root del repo ni de ASSETS de otras skills (scripts, `reference/`). Referenciar OTRA skill por su nombre («ver `desarrollo-riguroso`») sí está permitido — esa dependencia se resuelve en runtime invocando la otra skill, no copiando archivos — pero entonces rige la **regla de la ruta de lectura**: si el flujo de la skill REQUIERE contenido de la otra, debe ORDENAR su lectura en el punto donde la necesita (un puntero que nadie sigue es letra muerta).
 6. **Idioma consistente** — todo en un mismo idioma a lo largo del `SKILL.md` y archivos referenciados.
 7. **Lectura rápida** — alguien que abre el `SKILL.md` por primera vez entiende qué hace y cuándo usarla en menos de un minuto.
+8. **README actualizado** — el `README.md` es la puerta de entrada de un integrante nuevo: si una skill no aparece ahí, para él no existe. Toda skill nueva entra en la tabla, en el mapa del conjunto y —si es un grafo de agentes— en la tabla «qué enchufa cada skill en cada nodo». *(El gate verifica la EXISTENCIA de cada nodo y el numeral escrito a mano; que el grafo describa bien el flujo es revisión humana.)* Regla de fondo: los diagramas del README son una **segunda fuente de verdad** del conjunto — se mantienen al nivel de la topología (que cambia poco) y nunca reproducen el detalle del `SKILL.md`, que es donde vive el flujo real. *(Caso real: el README decía «las siete» con ocho skills en disco, y una skill entera era invisible para cualquiera que llegara por GitHub.)*
 
 ## Distribución a las superficies de Claude
 

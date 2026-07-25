@@ -165,6 +165,41 @@ def check_skill(skill_md, yaml_ok):
     return errs
 
 
+def check_docs_raiz(root, folders):
+    """El README es la puerta de entrada de un integrante nuevo: si una skill no aparece
+    ahi, para el no existe. Y el mapa/grafo del README es una SEGUNDA fuente de verdad del
+    conjunto — sin este check se pudre en silencio (paso: el README decia "las siete" con
+    ocho skills en disco). Chequea cobertura y idioma; el CONTENIDO del grafo es revision
+    humana, la EXISTENCIA de cada nodo es mecanica."""
+    errs = []
+    readme = os.path.join(root, "README.md")
+    if not os.path.exists(readme):
+        return ["README.md: no existe"]
+    texto = read_normalized(readme)
+    for f in folders:
+        # el link canonico de la tabla de skills: [`nombre`](nombre/)
+        if f"]({f}/)" not in texto:
+            errs.append(f"README.md: la skill '{f}' no esta enlazada — agregala a la tabla "
+                        f"y al mapa antes de commitear (un integrante nuevo no la vera)")
+    n = len(folders)
+    NUMEROS = {7: "siete", 8: "ocho", 9: "nueve", 10: "diez", 11: "once", 12: "doce"}
+    palabra = NUMEROS.get(n)
+    for otra, pal in NUMEROS.items():
+        if otra != n and re.search(rf"\bLas {pal}\b", texto):
+            errs.append(f"README.md: dice \"Las {pal}\" pero hay {n} skills"
+                        + (f" — deberia decir \"Las {palabra}\"" if palabra else ""))
+    # idioma: el gate cubria solo los SKILL.md y el README acumulo voseo sin que nadie lo viera
+    for doc in ("README.md", "CLAUDE.md"):
+        p = os.path.join(root, doc)
+        if not os.path.exists(p):
+            continue
+        t = read_normalized(p)
+        if VOSEO.search(t):
+            vs = sorted({v.lower() for v in VOSEO.findall(t)})
+            errs.append(f"{doc}: voseo detectado ({', '.join(vs[:5])})")
+    return errs
+
+
 def main():
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     skills = sorted(glob.glob(os.path.join(root, "*", "SKILL.md")))
@@ -183,6 +218,7 @@ def main():
     errors = []
     for skill_md in skills:
         errors.extend(check_skill(skill_md, yaml_ok))
+    errors.extend(check_docs_raiz(root, [os.path.basename(os.path.dirname(s)) for s in skills]))
     if errors:
         print(f"GATE kumo-skills — FALLO ({len(errors)}):", file=sys.stderr)
         for e in errors:
