@@ -6,14 +6,26 @@ convertir un flujo lineal en grafo. Las skills que ya lo instancian (`doc-comple
 `doc-narrativa`, `doc-prueba-de-uso`, `auditoria-de-realidad`,
 `verificacion-adversarial`) apuntan acá en vez de recontarlo.
 
-**Estado: v1**, y esta es la última ronda de destilación por decisión explícita — un esqueleto
-que se reescribe en cada uso no es un esqueleto. La v0 salió de esas cinco instancias; la v1
-cerró los vacíos que encontró su propia **prueba de uso**: un lector frío débil, con este
-archivo como única fuente, escribió el workflow para auditar una librería ajena. Cumplió 6 de
-8 criterios del rubric y dejó al descubierto lo que faltaba: el guard mal generalizado, el
-contrato del tool que el archivo daba por sabido, qué hace el orquestador con un hallazgo
-dudoso, y un presupuesto que estaba escrito arriba pero no operativo en el andamiaje. Los
-cuatro están corregidos abajo.
+**Estado: v1.** La destilación está cerrada —no se agrega doctrina nueva; un esqueleto que se
+reescribe en cada uso no es un esqueleto— pero los **defectos que un test exponga sí se
+arreglan**: eso no es otra ronda, es mantenimiento.
+
+La v0 salió de cinco instancias de este patrón. La v1 cerró lo que encontraron **dos pruebas de
+uso con calibraciones distintas**, que es la disciplina de `doc-prueba-de-uso`:
+
+- **Lector débil** (mide si la información alcanza): cumplió 6 de 8 criterios del rubric y
+  expuso el guard mal generalizado, el contrato del tool que el archivo daba por sabido, qué
+  hace el orquestador con un hallazgo dudoso, y un presupuesto escrito pero no operativo.
+- **Lector fuerte** (mide si el texto admite una sola lectura): rellenó los huecos sin
+  esfuerzo y en cambio encontró cinco **ambigüedades** — qué cuenta como «objeto» y su default,
+  si `verificadores` suma o multiplica, si un ancla puede ser puramente estructural cuando la
+  tarea es juzgar calidad, cuándo aplica el nodo juez, y una contradicción real entre `pipeline`
+  y el chequeo de «cero hallazgos». Aplicando la fórmula al pie de la letra presupuestó 43
+  agentes donde el default correcto son 10.
+
+Todos corregidos abajo. La lección de método: el lector débil encuentra lo que **falta**; el
+fuerte encuentra lo que se puede **entender mal**, y esos son los defectos que sobreviven toda
+revisión porque nadie los ve como vacíos.
 
 ## Antes de nada: ¿esto merece un grafo?
 
@@ -64,6 +76,14 @@ un vacío. Deriva mecánicamente todo lo que sea contable (`grep` de cifras, tab
 encabezados, rutas) y deja al agente solo lo semántico. Si el ancla igual la produce un
 agente, **duplícala con un segundo agente independiente** — pero ver la regla siguiente
 antes de unir las dos listas.
+
+**Cuando la tarea ES juzgar calidad, el ancla puede ser puramente estructural.** Si lo que
+se evalúa es inherentemente semántico («¿este mensaje de error es bueno?», «¿esta prosa
+convence?»), no hay nada contable que anclar más allá del inventario de qué existe — y ese
+inventario estructural **basta como ancla**. El criterio de calidad no es un ancla: es un
+**rubric que escribes TÚ** y que va incrustado en el prompt de cada lente. No gastes un
+agente en producir el rubric: sería un ancla blanda innecesaria, con el fantasma que eso
+arrastra, para algo que puedes escribir a mano y congelar.
 
 ### No mezcles un oráculo duro con uno blando en la misma lista
 
@@ -122,6 +142,12 @@ combinación barata que uno elige para las corridas grandes. Tres defensas:
 3. **Reporta la cuenta de vacíos junto a la de aciertos.** «11 de 14 respondieron, 11
    correctos» y «11 de 14 correctos» son afirmaciones distintas y solo una es honesta.
 
+El chequeo de «cero hallazgos» es **del orquestador sobre el conjunto ya devuelto**, no un gate
+dentro del grafo: se hace cuando la corrida terminó y tienes todos los resultados en la mano.
+No lo implementes como una condición intermedia entre etapas —eso obligaría a una barrera que
+mata la concurrencia de `pipeline`, y con ítems a medio camino daría falsos «instrumento roto»
+sobre los pocos que ya terminaron.
+
 *(Caso real: en un test de descubrimiento de 14 casos, 2 agentes no llamaron al schema. El
 resumen decía 11 aciertos y 0 fallos — cierto y engañoso: dos disparadores, uno de ellos
 central, no se habían medido.)*
@@ -143,6 +169,11 @@ orquestador no miraba. Su schema lleva tope explícito: *máximo N, ordenadas po
 real*. Sin tope, el presupuesto de la corrida lo fija el agente menos informado del grafo.
 
 ### El juez: ciego no basta
+
+**Aplica solo cuando el grafo produce varios candidatos que COMPITEN** y hay que elegir o
+rankear entre ellos (variantes de un prompt, reescrituras alternativas, propuestas rivales). Si
+la síntesis solo reconcilia hallazgos complementarios de lentes distintas —el caso más común—
+no hay nada que juzgar y un nodo juez es presupuesto tirado. Cuando sí aplica:
 
 Anonimizar quita la señal de autoría, no la de estilo propio — el sesgo de
 auto-preferencia correlaciona con familiaridad, y el sesgo posicional es un efecto
@@ -193,9 +224,30 @@ este archivo cubre la forma del grafo, no la API. No hay acceso a filesystem ni 
 Node: todo lo que necesite leer disco lo hace un `agent()` con sus propias tools, o lo derivas
 tú antes y lo incrustas.
 
-Presupuesto, siempre a la vista: **`agentes = ancla + (lentes × objetos) + verificadores +
-síntesis`**. Cuéntalo antes de correr y compáralo con el tope de ≤6; un grafo de 4 lentes con
-un verificador cada una ya son 10 y necesita visto bueno explícito.
+Presupuesto, siempre a la vista y **contado antes de correr**:
+
+```
+agentes = ancla + (lentes × objetos × (1 + verificadores_por_lente)) + síntesis
+```
+
+Dos aclaraciones que la fórmula sola no da, y que sin ellas se subestima el costo por un
+factor de N:
+
+- **`verificadores_por_lente` es un multiplicador, no un sumando.** El andamiaje de abajo
+  corre un verificador por CADA salida de lente, no uno final para toda la corrida. Con 4
+  lentes y un verificador cada una son 8, no 5.
+- **`objetos` es cuántas veces se repite el fan-out completo, y su default es 1.** Cuando el
+  target es un conjunto (una carpeta, un bundle, varias secciones), la decisión de si es **un
+  objeto lógico** —las lentes lo leen entero, `objetos = 1`— o **N objetos independientes** es
+  tuya y hay que tomarla explícitamente, porque cambia el costo linealmente. Colapsar a un
+  objeto lógico es el default; separar en N se justifica solo si los ítems se juzgan de forma
+  independiente y el veredicto de uno no informa al de otro.
+
+*(Cuenta real de un lector que aplicó la fórmula al pie de la letra sobre una carpeta de 5
+archivos con 4 lentes y no vio el default: 43 agentes. Con `objetos = 1`, la misma tarea son
+10 — que igual cruza el tope de ≤6 y por lo tanto necesita visto bueno explícito. La lección
+no es que la fórmula esté mal: es que hacer la cuenta ANTES es la única forma de que la puerta
+de la casa signifique algo.)*
 
 `pipeline` por default (cada ítem avanza por todas sus etapas sin esperar a los demás ítems —
 es concurrente, no serial); `parallel` solo cuando la etapa siguiente necesita de verdad todos
@@ -234,10 +286,11 @@ return hallazgos.filter(Boolean)   // fantasmas, ranking y escritura: del ORQUES
 ## Por qué es un `.md` y no un workflow guardado
 
 Un archivo que los agentes copian a mano sigue siendo **biblioteca**; la versión
-**máquina** sería un workflow guardado que las skills invocan por nombre. El runtime lo
-soporta —el contrato del tool `Workflow` documenta `workflow(nombre | {scriptPath}, args)`
-y una carpeta `.claude/workflows/`, con anidamiento de un solo nivel— ⚠️ confirmar con una
-corrida real, todavía no ejecutada.
+**máquina** sería un workflow guardado que las skills invocan por nombre. **El runtime lo
+soporta: verificado con una corrida real** — un workflow padre invocó
+`workflow({ scriptPath })` y recibió de vuelta el objeto completo del hijo, schema-válido
+(anidamiento de un solo nivel; el hijo comparte el cupo de concurrencia y el presupuesto
+del padre).
 
 Lo que bloquea la versión máquina no es el runtime sino la **distribución**: una skill de
 Kumo debe funcionar copiada sola a `~/.claude/skills/`, y un workflow guardado vive fuera
