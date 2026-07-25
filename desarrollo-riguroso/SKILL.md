@@ -219,6 +219,17 @@ te hace creer que estás bloqueado cuando no lo estás. *(ej. real: un plan de r
 skills se escribió 0→1→2→3→4→5; de las cinco flechas, cuatro eran falsas, y el paso puesto
 al final era el único que podía arrancar de inmediato.)*
 
+**Si mides ANTES y DESPUÉS, el instrumento no se toca.** Un número «antes» y un número «después»
+solo se pueden comparar si los produjo la MISMA medición: el mismo patrón de `grep`, el mismo
+prompt, la misma rúbrica, el mismo modelo. Cambiar el instrumento entre las dos tomas produce una
+comparación que parece evidencia y no lo es — y el sentido del cambio es arbitrario, así que puede
+mostrar una mejora inexistente o una regresión inexistente sobre un artefacto que objetivamente
+mejoró. Si tocaste el instrumento, **la única salida honesta es volver a medir el antes con el
+instrumento nuevo**; no se compara ni se reporta la diferencia hasta entonces. *(ej. real, dos
+veces en una sola sesión: un conteo de duplicados «bajó de 7 a 3» porque el segundo `grep` usaba
+otro patrón; y una calificación de diagramas «empeoró» de 3 a 2 porque el segundo prompt del juez
+pedía severidad y explicaba más contexto que el primero.)*
+
 **Todo refactor de consolidación necesita su propia ancla,** y el gate de higiene no lo es:
 que el linter pase y los disparadores sigan vivos no responde la afirmación que el refactor
 está haciendo («ahora se hereda en vez de duplicar»). Dos anclas baratas: una **mecánica y
