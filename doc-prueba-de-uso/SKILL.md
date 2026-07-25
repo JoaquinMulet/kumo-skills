@@ -143,8 +143,10 @@ export const meta = {
   description: 'Prueba de uso por seccion: lectores frios ejecutan la tarea de cada seccion',
   phases: [{ title: 'Prueba de uso' }],
 }
-// SECCIONES INCRUSTADAS por el orquestador — no `args` (args-como-string ⇒ undefined
-// y la prueba correría sobre NADA; ver el modo de fallo de doc-completitud):
+// SECCIONES INCRUSTADAS con guard por el orquestador (contrato del caller del esqueleto
+// compartido: una lista vacía hace que la prueba corra sobre NADA y devuelva un veredicto
+// schema-válido. El porqué y los demás modos de fallo del andamiaje, en
+// desarrollo-riguroso/reference/esqueleto-de-verificacion.md — léelo antes de tocar esto):
 const SECCIONES = [ /* { id, file, rol, tarea, pruebaLectura }, ... — literales */ ]
 if (!SECCIONES.length) throw new Error('Incrusta las secciones en el script antes de correrlo')
 const SCHEMA = {
