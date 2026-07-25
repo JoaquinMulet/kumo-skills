@@ -117,15 +117,43 @@ Para verla, un caso real de una de ellas: un informe con cifras que se va a envi
 
 ```mermaid
 flowchart TD
-  P1["PASO 1 - Antes de revisar nada, se escribe la lista<br/>de las afirmaciones que el informe hace.<br/>Esa lista es la vara con la que se juzgara todo lo demas."]
-  P2["PASO 2 - Varios agentes atacan cada afirmacion,<br/>uno por angulo: existe la fuente? / la cifra mide<br/>lo que dice medir? / la conclusion se sigue de verdad?"]
-  P3["PASO 3 - Un solo agente junta todos los veredictos<br/>y resuelve los que se contradicen entre si."]
-  P4["PASO 4 - Se compara el resultado contra la lista del paso 1:<br/>quedo alguna afirmacion sin revisar?"]
-  P5["PASO 5 - DECIDES TU (o Claude conduciendo la skill):<br/>que se imprime, que se corrige, que se borra."]
+  P1["PASO 1 - Antes de revisar nada, se escribe la lista de<br/>las afirmaciones que el informe hace. Esa lista es la<br/>vara con la que se juzgara todo lo demas."]
 
-  P1 --> P2 --> P3 --> P4 --> P5
-  P4 -.->|"si algo quedo sin revisar, vuelve al paso 2"| P2
+  P1 --> A1
+  P1 --> A2
+  P1 --> A3
+
+  A1["PASO 2a - Agente FUENTE<br/>Existe el documento citado?<br/>Dice literalmente eso, o esta parafraseado?"]
+  A2["PASO 2b - Agente MEDICION<br/>La cifra mide el periodo, el lugar y la<br/>unidad que la frase le atribuye?"]
+  A3["PASO 2c - Agente INFERENCIA<br/>La conclusion se sigue de la evidencia,<br/>o hay un salto que nadie justifico?"]
+
+  A1 --> P3
+  A2 --> P3
+  A3 --> P3
+
+  P3["PASO 3 - Un solo agente junta los tres veredictos<br/>y resuelve los que se contradicen entre si."]
+  P3 --> P4
+  P4["PASO 4 - Se compara el resultado contra la lista<br/>del paso 1: quedo alguna afirmacion sin revisar?"]
+  P4 --> P5
+  P5["PASO 5 - Se decide: que se imprime, que se<br/>corrige, que se borra del informe."]
+
+  P4 -.->|"si algo quedo sin revisar"| A1
+  P4 -.->|"vuelve a los agentes"| A2
+  P4 -.->|"del paso 2"| A3
 ```
+
+**Ese abanico del paso 2 es el punto.** Los tres agentes corren **al mismo tiempo y sin verse
+entre sí** — ninguno sabe qué encontró el otro. Si en vez de tres ángulos distintos pusieras
+tres agentes con la misma instrucción, los tres repetirían el mismo punto ciego y la
+coincidencia se sentiría como triple confirmación.
+
+**El diagrama es esquemático: dibuja lo que le pasa a UNA afirmación.** La lista del paso 1 se
+escribe una sola vez para todo el informe; de ahí en adelante, cada afirmación de esa lista
+recorre su propio camino 2 → 3 → 4 por separado. Si el informe tiene 10 afirmaciones, el abanico
+se abre 10 veces: 30 agentes en total. Y esas 10 no esperan entre sí — cada afirmación avanza en
+cuanto sus tres ángulos terminan, hasta el tope de agentes simultáneos que la máquina permite;
+el resto hace fila. Por eso la cuenta (**ángulos × afirmaciones**) se hace *antes* de lanzar:
+tres ángulos parecen baratos hasta que se multiplican por veinte afirmaciones.
 
 Las tres decisiones de diseño que explican por qué es así, y no de otra forma:
 
