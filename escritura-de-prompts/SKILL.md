@@ -146,6 +146,8 @@ Por qué siempre, no solo "cuando corresponda":
 
 Cuando puedas, nombra al auditor: si sabes qué agente cumplirá el rol (un sub-agente del SDK, un `Task` específico de Claude Code, una *task* de Cowork), nómbralo en el bloque para que el modelo no lo elija a ciegas. Si no, la condicional genérica basta.
 
+**Ojo con el auditor de mentira.** El bloque dice "agente tercero externo e imparcial", pero si el propio agente que hizo el trabajo invoca al auditor **desde su misma conversación**, le pasa su contexto, su encuadre y sus racionalizaciones: es el mismo sesgo con otro nombre, y encima con la apariencia de haberlo resuelto. La condición real de imparcialidad no es que sea *otro agente*, es que tenga **contexto limpio y vea solo lo juzgable** — el prompt y la salida, nada del razonamiento intermedio. Donde exista la capacidad de correr un grafo (Claude Code, el Agent SDK), el auditor debe ser un **nodo aparte** que reciba únicamente esos dos textos. Como bloque de texto portátil el párrafo de arriba sigue siendo correcto y va literal; esta nota es cómo se implementa cuando de verdad hay agentes disponibles.
+
 ## Ejemplo completo: las ocho piezas aplicadas
 
 Para que el contraste sea palpable, compara dos versiones del mismo encargo.
@@ -257,6 +259,50 @@ Si estás **construyendo sobre la respuesta anterior** —pidiéndole que la exp
 - **API** → control manual del historial de mensajes que envías en cada llamada.
 
 El resultado es el mismo: resetear lo que el modelo "ve" cuando te responde.
+
+## Anexo: medir la ESTABILIDAD de un prompt con agentes
+
+Todo lo anterior se hace a mano y rinde. Pero hay una propiedad que a mano es **invisible**:
+hecho en un chat por variante, un prompt que funciona una de cada tres veces se ve idéntico a
+uno que funciona siempre. Se compara la mejor corrida de cada versión, no su consistencia.
+
+**Umbral — cuándo aplica este anexo.** Solo si el prompt (a) entra a producción o a un proceso
+recurrente, (b) alimenta una decisión con costo, o (c) ya falló de forma intermitente y no
+sabes por qué. Para un prompt de una vez, esto es puro sobrecosto: la metodología a mano
+alcanza. Y rige la puerta de la casa — **no lances el fan-out sin visto bueno explícito** de
+quien pide el prompt, con la cuenta de agentes en la mano.
+
+El diseño, con el presupuesto barato de Kumo (5 agentes):
+
+1. **Rúbrica primero y congelada.** Sale de la pieza #6: qué evidencia debe levantar la salida,
+   qué resultado es esperable, qué reglas debe cumplir. Se escribe **antes** de ver ninguna
+   salida — es el ancla, y un ancla escrita después de ver los resultados solo racionaliza el
+   que más gustó.
+2. **Fan-out N×M.** N variantes del prompt × M corridas cada una. Default **2 × 2**; cada
+   agente es una ventana nueva, así que "limpiar el contexto" —que a mano es fricción— sale
+   gratis por construcción.
+3. **Juez ciego, ajeno y de otra familia.** Etiquetas aleatorizadas, orden de las salidas
+   randomizado, y **nunca el agente que escribió las variantes**. Ciego no basta: el sesgo de
+   auto-preferencia correlaciona con familiaridad, no solo con saber la autoría, así que el
+   juez debe ser de una familia de modelo distinta a la de los escritores. El sesgo de
+   posición es un efecto aparte y se cubre con la randomización.
+4. **La salida que importa: la varianza.** No "cuál ganó" sino **cuál gana consistentemente**.
+   Un prompt con 2 de 3 no está listo para producción aunque su mejor corrida sea la más linda.
+
+**Cómo escalar, y qué compra cada peldaño.** Con 2 × 2 detectas un prompt que falla la mitad
+de las veces, pero no distingues 2/3 de 3/3: para eso hacen falta **3 variantes × 3 corridas**
+(9 agentes) y, si el veredicto es caro, un **ensemble de 3 jueces** por mayoría (12). Ese salto
+se pide explícitamente con la aritmética, no se toma por default.
+
+**Segundo grafo, para el modo auditar.** Las 8 piezas de la anatomía y las 4 trampas son
+**lentes independientes** sobre el mismo prompt: ninguna necesita la salida de otra, y hoy se
+recorren como lista secuencial. Con presupuesto barato, agrúpalas en **4 lentes** (piezas 1-4,
+piezas 5-8, las cuatro trampas, coherencia global) y sintetiza en un nodo; doce agentes, una
+lente cada uno, es la versión escalada.
+
+El andamiaje reusable —cómo se declara el ancla, los topes, los schemas con prueba de trabajo—
+vive en [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md);
+**léelo antes de escribir el workflow**, no re-derives la forma.
 
 ## Mejora compuesta: codificar el aprendizaje
 
