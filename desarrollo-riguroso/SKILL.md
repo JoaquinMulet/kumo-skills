@@ -230,6 +230,15 @@ veces en una sola sesión: un conteo de duplicados «bajó de 7 a 3» porque el 
 otro patrón; y una calificación de diagramas «empeoró» de 3 a 2 porque el segundo prompt del juez
 pedía severidad y explicaba más contexto que el primero.)*
 
+Y el corolario, al re-medir bien: **una nota que no se mueve puede ser insensibilidad del
+instrumento, no ausencia de mejora.** Si la rúbrica de un juez incluye un criterio
+**inalcanzable** («¿el dibujo sin texto cuenta toda la historia?», «¿el documento no necesita
+ningún contexto?»), ese criterio domina la nota, la aplasta contra el piso y la vuelve ciega a
+cualquier cambio real. La señal está entonces en los MOTIVOS, no en el escalar: si antes decía
+«no hay ninguna pista de que esto sea una decisión» y ahora dice «la forma indica que hay una
+decisión», el arreglo funcionó aunque el número sea idéntico. Regla: **lee los motivos del juez
+antes que su nota**, y sospecha de toda rúbrica cuyo puntaje máximo nadie puede alcanzar.
+
 **Todo refactor de consolidación necesita su propia ancla,** y el gate de higiene no lo es:
 que el linter pase y los disparadores sigan vivos no responde la afirmación que el refactor
 está haciendo («ahora se hereda en vez de duplicar»). Dos anclas baratas: una **mecánica y
