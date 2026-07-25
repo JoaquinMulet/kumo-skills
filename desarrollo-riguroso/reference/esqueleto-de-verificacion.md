@@ -25,6 +25,12 @@ persona a cargo.** Que el usuario haya pedido el trabajo autoriza el trabajo, no
 tamaño de la corrida. Presentar en una línea qué se hará, con cuántos agentes y en
 cuántas fases, y esperar respuesta.
 
+**Default de la casa: ≤6 agentes por corrida.** Toda skill que instancie este esqueleto se
+escribe con constantes baratas (pocas lentes, pocas corridas, un juez) y una nota de cómo
+escalar. Subir de ahí es una decisión del dueño del entregable, caso a caso, y se pide con
+la aritmética en la mano: `agentes = lentes × objetos × jueces`. Escalar por default es
+cómo un grafo útil se vuelve un gasto que nadie autorizó.
+
 ## La forma canónica
 
 ```
@@ -117,6 +123,21 @@ contaminado) ya filtró, hereda su omisión y valida felizmente lo que sí subi�
 señal primaria —los turnos originales, el documento original, el diff completo— y hazle
 **dos preguntas, no una**: ¿lo producido corresponde a esta señal? y **¿hay señal que no
 produjo nada?** La segunda es la que atrapa la omisión, y es la que nadie hace por default.
+
+La señal primaria se **extrae mecánicamente**, no se entrega curada ni completa: los turnos
+del usuario, no la sesión entera con mi razonamiento adentro; el documento original, no mi
+resumen de él. Entregar la sesión completa vuelve a contaminar al verificador con las
+racionalizaciones que existe para no compartir; entregar la lista curada lo ciega. La
+extracción mecánica es el único punto medio que no depende de mi buena fe.
+
+### Verificar la fidelidad comparando dos lecturas frías
+
+Cuando el grafo **transforma** un artefacto en vez de juzgarlo (reescribir, editar, resumir,
+traducir), el invariante en riesgo no es la completitud sino la **voz**: mensaje, tono e
+intención del autor. Se verifica con dos lectores fríos independientes —uno lee SOLO el
+original, otro SOLO la versión nueva, ninguno ve al otro— y se comparan sus dos
+descripciones. Si divergen, hubo drift y se revierte. Es evidencia, no impresión, y aplica
+a cualquier transformación de texto, no solo a las skills de documentos.
 
 ## Andamiaje mínimo
 
