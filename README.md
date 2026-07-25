@@ -43,11 +43,14 @@ flowchart TD
   TRA["TU, TRABAJANDO<br/>codigo, documentos, informes"]
   RET["EL CIERRE DE LA SESION<br/>que me corrigieron hoy, y por que<br/>(la skill retrospectiva-de-sesion)"]
 
+  DEC{"4. cada leccion va a UN solo lado:<br/>sirve solo en este proyecto,<br/>o en cualquier proyecto?"}
+
   EST -->|"1. al empezar un proyecto, le escribe su manual"| MAN
   MAN -->|"2. te dice como se trabaja aca"| TRA
   TRA -->|"3. al terminar"| RET
-  RET -->|"4a. si la leccion sirve SOLO en este proyecto"| MAN
-  RET -->|"4b. si sirve en CUALQUIER proyecto"| EST
+  RET --> DEC
+  DEC -->|"solo en este proyecto"| MAN
+  DEC -->|"en cualquier proyecto"| EST
 ```
 
 En una frase: **el estándar escribe el manual del proyecto, el manual guía el trabajo, y el
@@ -90,10 +93,24 @@ el texto tiene que aprobar antes de pasar a la siguiente:
 ```mermaid
 flowchart TD
   T(["Un texto recien escrito"]) --> C1
-  C1["1. Le falta algo a alguien que llega sin contexto?<br/>(doc-completitud)"] -->|"ya no falta nada"| C2
-  C2["2. Se puede leer sin sufrir, o es un ladrillo?<br/>(doc-narrativa)"] -->|"ya se lee bien"| C3
-  C3["3. Quien tiene que HACER algo con esto, puede?<br/>(doc-prueba-de-uso)"] -->|"pudo hacerlo"| OK(["Listo para entregar"])
-  C3 -->|"tuvo que adivinar algo: eso es lo que falta"| C1
+
+  C1{"1. Le falta algo a alguien<br/>que llega sin contexto?<br/>(doc-completitud)"}
+  C2{"2. Se puede leer sin sufrir,<br/>o es un muro de tablas?<br/>(doc-narrativa)"}
+  C3{"3. Quien tiene que HACER algo<br/>con esto, puede?<br/>(doc-prueba-de-uso)"}
+
+  F1["Se rellenan los huecos"]
+  F2["Se reescribe como relato"]
+
+  C1 -->|"no falta nada"| C2
+  C1 -->|"si falta"| F1
+  F1 --> C1
+
+  C2 -->|"ya se lee bien"| C3
+  C2 -->|"es un muro"| F2
+  F2 --> C2
+
+  C3 -->|"pudo hacerlo"| OK(["Listo para entregar"])
+  C3 -->|"tuvo que adivinar"| C1
 ```
 
 El orden importa y no es negociable: no sirve pulir la redacción de un texto al que todavía le
@@ -119,9 +136,12 @@ Para verla, un caso real de una de ellas: un informe con cifras que se va a envi
 flowchart TD
   P1["PASO 1 - Antes de revisar nada, se escribe la lista de<br/>las afirmaciones que el informe hace. Esa lista es la<br/>vara con la que se juzgara todo lo demas."]
 
-  P1 --> A1
-  P1 --> A2
-  P1 --> A3
+  ABA["Se toma UNA afirmacion de la lista<br/>(esto se repite por cada afirmacion)"]
+  P1 --> ABA
+
+  ABA --> A1
+  ABA --> A2
+  ABA --> A3
 
   A1["PASO 2a - Agente FUENTE<br/>Existe el documento citado?<br/>Dice literalmente eso, o esta parafraseado?"]
   A2["PASO 2b - Agente MEDICION<br/>La cifra mide el periodo, el lugar y la<br/>unidad que la frase le atribuye?"]
@@ -133,13 +153,10 @@ flowchart TD
 
   P3["PASO 3 - Un solo agente junta los tres veredictos<br/>y resuelve los que se contradicen entre si."]
   P3 --> P4
-  P4["PASO 4 - Se compara el resultado contra la lista<br/>del paso 1: quedo alguna afirmacion sin revisar?"]
-  P4 --> P5
+  P4{"PASO 4 - Contra la lista del paso 1:<br/>quedo alguna afirmacion sin revisar?"}
+  P4 -->|"no, todas revisadas"| P5
+  P4 -.->|"si: esa afirmacion vuelve al abanico"| ABA
   P5["PASO 5 - Se decide: que se imprime, que se<br/>corrige, que se borra del informe."]
-
-  P4 -.->|"si algo quedo sin revisar"| A1
-  P4 -.->|"vuelve a los agentes"| A2
-  P4 -.->|"del paso 2"| A3
 ```
 
 **Ese abanico del paso 2 es el punto.** Los tres agentes corren **al mismo tiempo y sin verse
