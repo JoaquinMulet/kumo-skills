@@ -198,6 +198,35 @@ El error más peligroso no es el bug — es **creer que lo validaste**. Correr t
 - **Un ritual sin enforcement es teatro.** VERIFY-REAL y la retrospectiva derivan si dependen de que alguien se acuerde. Conviértelos en GATES automáticos (un hook, un deploy que se niega fuera del trunk, un check del harness). Lo hace cumplir el harness, no la buena voluntad.
 - **Cierra toda sesión con la pregunta adversarial-contra-la-realidad:** *"¿qué problema real y grave es invisible para mi aparato AHORA?"* — sobre el repo/prod real, no un fixture. **Encontrar un error por suerte (porque un humano lo señaló) NO cuenta como que el sistema funciona.**
 
+## Cuando la verificación es un grafo de agentes
+
+Si vas a montar un fan-out de verificación —o a convertir un flujo lineal en grafo—, **lee
+[`reference/esqueleto-de-verificacion.md`](reference/esqueleto-de-verificacion.md) antes de
+escribir el script**: trae la forma canónica (ancla → lentes independientes → síntesis →
+verificación contra el ancla → decisión del orquestador) y los modos de fallo que cada
+skill de Kumo pagó por separado (el ancla que se puede argumentar, el nodo que audita el
+vacío, el proponedor sin tope, el juez con sangre contaminada). No lo re-derives ni lo
+recuentes en tu skill: instánciala y apunta ahí. La regla de fondo es el Pilar 5 aplicado
+al conocimiento — cada skill que recontaba el mismo gotcha era una copia esperando a
+divergir, y la quinta se escribió sin heredar ninguna de las cuatro advertencias previas.
+
+**El test de dependencia se le aplica también al PLAN**, no solo al trabajo que el plan
+ordena. Sobre cada flecha que dibujes, pregunta *¿el paso B lee la salida de A?* — si no,
+es una **arista falsa** y los dos pasos son ramas paralelas. Distingue además la
+dependencia de la **compuerta**: «esto va primero porque hay riesgo de pérdida» es una
+compuerta, y si se traba no bloquea nada aguas abajo. Dibujar una cadena donde hay ramas
+te hace creer que estás bloqueado cuando no lo estás. *(ej. real: un plan de refactor de
+skills se escribió 0→1→2→3→4→5; de las cinco flechas, cuatro eran falsas, y el paso puesto
+al final era el único que podía arrancar de inmediato.)*
+
+**Todo refactor de consolidación necesita su propia ancla,** y el gate de higiene no lo es:
+que el linter pase y los disparadores sigan vivos no responde la afirmación que el refactor
+está haciendo («ahora se hereda en vez de duplicar»). Dos anclas baratas: una **mecánica y
+contable** (`grep` de lo duplicado, que debe quedar en uno) y la **prueba de uso** del
+artefacto reusable — un lector frío, con ese archivo como única fuente, ejecutando la tarea
+que el archivo existe para habilitar. Validar un artefacto reusable releyéndolo es la forma
+más débil de verificación que existe.
+
 ## Cómo crece este estándar — la paranoia del compounding
 
 Este estándar no es estático. Tras cada sesión de código sustantiva, correr `retrospectiva-de-sesion`: destila las correcciones del usuario y los descubrimientos, y decide qué es **específico del proyecto** (va a su `CLAUDE.md`) y qué es **universal** (vuelve acá, endureciendo el estándar de toda la empresa).
