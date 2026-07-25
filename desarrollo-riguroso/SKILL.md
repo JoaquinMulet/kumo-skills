@@ -53,13 +53,65 @@ Los errores del compilador son mejor feedback que una guía de estilo (o que un 
 
 Un dato vive en un solo lugar; los consumidores se derivan de él y se actualizan **atómicamente**. Nunca copiar un helper, constante o tabla entre módulos (ni entre el lado que escribe y el que lee un formato) — compartir o derivar. Un cambio de firma/enum/campo obliga a auditar cada switch, constructor y serializador que lo toca (los call sites viejos compilan y fallan en silencio).
 
+**Si el dato VARÍA EN EL TIEMPO** (una tarifa, un precio, una tasa, un parámetro de cálculo), esa única fuente debe ser **effective-dated**: un cambio se agrega como una versión NUEVA con su vigencia, y **jamás se pisa el valor anterior**. Editar el valor viejo **reescribe el pasado**: todo lo ya calculado con él —costos, márgenes, cierres validados contra un tercero— cambia solo y en silencio. Es la misma falla que mutar un período ya cerrado, pero por la vía de la CONFIGURACIÓN, y por eso se escapa de los guards que solo miran el libro. *(ej. un proveedor subió su tarifa 10%: pisar la constante habría re-costeado meses ya cuadrados al peso con el contador.)* Regla práctica: si un valor alimenta un cálculo histórico, pregúntate "¿qué pasa con lo ya calculado si lo edito?" — si la respuesta es "cambia", necesita vigencia, no edición.
+
 ## Pilar 6 — Honestidad brutal
 
 Nunca sobre-vender lo hecho. Si algo no se verificó, decirlo. Si un paso se saltó, decirlo. Si un deploy falló, exponerlo. "Verificado a mano", "tests existentes" sin nombrar, y "debería funcionar" no cuentan. El contrato de confianza depende del reporte preciso — vale más un "no sé si esto está bien" que un verde falso.
 
+**Y el informe se escribe para quien DECIDE, no para lucir el análisis.** Un reporte que el lector no entiende **no está entregado**, por riguroso que sea por dentro. Señal inequívoca de fallo: que te digan *"no entiendo nada"* o *"me hablas críptico"* — ahí el error es tuyo, no del lector. Antes de entregar: ¿la conclusión está en la PRIMERA línea y en palabras del negocio (no del stack)? ¿sacaste la jerga, los IDs, los ARNs y las tablas que el lector no necesita para decidir? ¿queda claro **qué pasa, por qué importa y qué hacer**, sin descifrar nada? **Densidad no es rigor:** el rigor va en el trabajo, la claridad va en la entrega. El detalle técnico se ofrece aparte, para quien lo pida.
+
 ## Jamás botar trabajo hecho
 
 Cuando un proceso se detiene, se relanza o se corrige a mitad de camino (política de modelo equivocada, config mala, entorno incorrecto, run interrumpido), **lo ya generado se cosecha y se reutiliza — solo lo nuevo se rehace bajo la política corregida**. Antes de relanzar desde cero, preguntarse siempre: ¿qué produjo el run anterior que siga siendo válido? Los artefactos parciales (journals, logs, outputs intermedios, borradores) son trabajo pagado: se extraen, se marcan con su procedencia/nivel de verificación, y entran como insumo de la síntesis. Botar output válido para "empezar limpio" es el mismo pecado que el rewrite innecesario de código que funciona. *(ej. un run de investigación se detuvo por correr en el modelo no autorizado; el journal ya tenía 102 afirmaciones extraídas de 21 fuentes y 12 veredictos — se cosecharon del `journal.jsonl` y se fusionaron con el run corregido en vez de descartarse.)*
+
+## Antes de BORRAR en infraestructura compartida
+
+Una operación destructiva sobre infraestructura no se juzga por el nombre del recurso sino por
+**quién depende de él**. En una cuenta/cluster/VPC compartida —lo normal en una consultora o un
+proyecto multi-cliente— el nombre y las etiquetas son una **PISTA, no una prueba**: un recurso
+puede llamarse como tu proyecto y estar sirviendo a otro, o no tener etiqueta alguna.
+
+**Regla:** antes de borrar, detener o modificar, (a) identifica POSITIVAMENTE al dueño y (b)
+verifica que **nada lo referencia** — quién apunta a él, qué lo usa, a qué está adjunto. La
+prueba es la referencia real, no la convención de nombres. Ante la mínima duda: **no se toca, se
+pregunta.** El costo de preguntar es un minuto; el de borrar el recurso de otro cliente es su
+producción caída y tu credibilidad.
+
+**Y verifica DESPUÉS**, no solo antes: busca las referencias colgando (rutas en `blackhole`,
+montajes muertos, dependencias rotas). Una limpieza sin chequeo posterior no está terminada.
+*(ej. real: se limpió una cuenta AWS asumida como dedicada filtrando por prefijo de nombre;
+resultó ser multi-cliente con producción de terceros. La limpieza estuvo bien acotada, pero el
+método —confiar en el nombre— habría fallado con un solo recurso mal etiquetado.)*
+
+## Una operación que persiste MEDIA VERDAD no es atómica
+
+Cuando una operación recibe un hecho y lo escribe en un modelo que **no puede expresarlo
+entero**, la parte que no cabe **se pierde por construcción** — y como el resto sí se
+grabó, nada falla y nadie se entera. Es el bug silencioso más caro: no hay excepción, no
+hay test rojo, solo un dato que no está.
+
+El olfato: **¿algún campo del input NO aparece en lo que se persiste?** Si la operación
+deriva su salida re-leyendo lo que acaba de escribir (reconstruir B desde A), todo lo que
+A no sepa expresar desaparece. *(ej. real: una factura en EUR se convertía a CLP para el
+asiento contable; la cuenta por pagar se re-derivaba DESDE el asiento, y una partida doble
+solo sabe de pesos → el monto original en euros se evaporaba, y había que parchearlo a
+mano después.)*
+
+Las cuatro preguntas, prestadas de ACID, que endurecen cualquier operación de escritura:
+
+- **Atomicidad** — ¿se graba el hecho COMPLETO o no se graba nada? Dos escrituras separadas
+  donde la segunda puede quedar corta son media verdad esperando a ocurrir.
+- **Consistencia** — ¿el estado inválido es siquiera REPRESENTABLE? Si el esquema permite
+  "monto en divisa sin su divisa", va a existir. Prohibirlo (constraint/tipo/guard) es más
+  barato que detectarlo (ver Pilar 4).
+- **Aislamiento** — ¿un reintento COMPLETA o no hace nada en silencio? Un `onConflictDoNothing`
+  sobre una fila incompleta la deja incompleta para siempre.
+- **Durabilidad** — ¿el hecho y su respaldo (documento, evidencia) nacen juntos, o el segundo
+  queda "para después"? Lo que queda para después queda.
+
+Y para lo que ya se coló: un **detector que lo reporte** (nunca silenciarlo), y la reparación
+leyendo la **fuente original** (el documento real), no estimando.
 
 ## Manejo de errores
 
@@ -104,6 +156,7 @@ El **trunk es la rama que se despliega** — nómbralo explícitamente y **deplo
 
 - **Cambios quirúrgicos.** Tocar solo lo que la tarea pide. Dead code o smells no relacionados se **flaggean, no se borran** en el mismo cambio.
 - **El código y los datos son ground truth; el .md solo lleva lo que NO es derivable.** Test de derivabilidad: si una línea se puede VERIFICAR leyendo el código, corriendo una query o mirando `git`, **no va escrita a mano** — se deriva, se enlaza, o se omite. Rota especialmente rápido (NUNCA a mano): **status/progreso** ("hecho", "✓", "validado"), **"implementado en X"**, **conteos**, **valores actuales** — la trampa de "los docs describen el ESTADO ACTUAL" es justo esa (el estado derivable se pudre). Sí van a mano, porque el código no los expresa: decisiones + su PORQUÉ, convenciones, invariantes, cuál es el oráculo, gotchas, lessons, comandos exactos. *(ej. un `CLAUDE.md` afirmaba "RCV en TS, validado vs enero" mientras el RCV vivo era shell-out a Python; el doc quedó atrás del código Y de su propia regla "no narres el código".)*
+- **No le preguntes al usuario lo que el sistema ya sabe** (corolario operacional del test de derivabilidad). Antes de pedir un dato de negocio —*"¿a qué tarifa se facturó?"*, *"¿cuándo cambió esto?"*— pregúntate si está en la base, en los documentos ya cargados o en el código. Si está, **se deriva**: preguntar traslada al usuario un trabajo que es tuyo, y encima con peor precisión (él recuerda, la base SABE). Pregunta solo lo que no existe en ningún artefacto: una decisión futura, una intención, un hecho externo nunca registrado. Señal inequívoca de fallo: que te respondan *"¿no puedes revisarlo tú mismo?"*.
 - **Comentarios solo con contenido durable no obvio:** invariantes, contratos de ownership/lifetime, deviaciones deliberadas. No narrar lo que el código hace; eso va en el mensaje del commit.
 - **Grep el helper antes de escribir uno nuevo.** Ser el único archivo que toca un primitivo crudo es una señal de alerta.
 - **La forma más simple y honesta;** deduplicar dentro del propio diff (la segunda vez que aparece un bloque, extraer un helper y usarlo en cada sitio paralelo).
