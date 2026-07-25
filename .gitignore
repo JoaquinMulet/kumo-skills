@@ -1,0 +1,30 @@
+# Este repo es PUBLICO y vive dentro de una carpeta sincronizada a la nube. No habia
+# barrera contra commitear por accidente un archivo con credenciales: un `git add .`
+# descuidado alcanza, y en git el historial es permanente aunque despues se borre.
+# (Lo levanto la fase A de auditoria-de-realidad corrida sobre este mismo repo.)
+
+# Secretos — nunca en un repo publico
+.env
+.env.*
+*.pem
+*.key
+*.p12
+credentials*
+secret*
+
+# Artefactos de Python (el gate y los scripts de las skills)
+__pycache__/
+*.pyc
+.venv/
+.uv/
+
+# Editores y sistema operativo
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Temporales de los hooks
+.git/sync-*.tmp
