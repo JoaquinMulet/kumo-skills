@@ -21,3 +21,46 @@ if [ "$status" -ne 0 ]; then
   echo "Commit BLOQUEADO por el gate de skills. Arregla lo de arriba y reintenta." >&2
   exit 1
 fi
+
+# ---------------------------------------------------------------------------
+# Guardia de sincronia INSTALADA -> REPO (la direccion que el post-commit NO cubre).
+#
+# El post-commit distribuye repo -> instalada. La direccion inversa no tenia disparador:
+# solo la regla escrita en el CLAUDE.md ("diff ANTES de editar"), y por eso el drift lo
+# encontro un humano mirando, tres veces. La ultima: cinco lecciones sustantivas vivian
+# solo en la copia instalada de desarrollo-riguroso y un commit ciego las habria pisado.
+#
+# La comparacion es contra HEAD, no contra el working tree: si la instalada coincide con
+# el ultimo commit, no tiene ediciones locales y el cambio que estas commiteando es
+# legitimo. Si difiere de HEAD, alguien edito la copia instalada y ese contenido se
+# perderia -> se bloquea. El punto de partida correcto es la UNION de ambos lados.
+#
+# Escape hatch (un guard sin salida explicita no protege, bloquea):
+#   KUMO_SKIP_SYNC_CHECK=1 git commit ...
+# ---------------------------------------------------------------------------
+if [ -z "$KUMO_SKIP_SYNC_CHECK" ] && [ -d "$HOME/.claude/skills" ]; then
+  sucias=""
+  raiz_tmp="$(git rev-parse --git-dir)/sync-check.tmp"
+  for skill_md in */SKILL.md; do
+    [ -f "$skill_md" ] || continue
+    skill=$(dirname "$skill_md")
+    for f in "$skill/SKILL.md" "$skill"/reference/* "$skill"/scripts/*; do
+      [ -f "$f" ] || continue
+      inst="$HOME/.claude/skills/$f"
+      [ -f "$inst" ] || continue          # no instalada aun: no es drift
+      git show "HEAD:$f" > "$raiz_tmp" 2>/dev/null || continue   # archivo nuevo: nada que comparar
+      diff -q "$raiz_tmp" "$inst" >/dev/null 2>&1 || sucias="$sucias  $f\n"
+    done
+  done
+  rm -f "$raiz_tmp"
+  if [ -n "$sucias" ]; then
+    echo "" >&2
+    echo "Commit BLOQUEADO — la copia INSTALADA tiene contenido que no esta en el repo:" >&2
+    printf "%b" "$sucias" >&2
+    echo "Portalo al repo ANTES de commitear (el punto de partida es la UNION, no una copia" >&2
+    echo "ciega en ninguna direccion). Para ver que hay de mas en la instalada:" >&2
+    echo "  diff -u <archivo> \"\$HOME/.claude/skills/<archivo>\"" >&2
+    echo "Si ya evaluaste el diff y quieres seguir igual: KUMO_SKIP_SYNC_CHECK=1 git commit ..." >&2
+    exit 1
+  fi
+fi
