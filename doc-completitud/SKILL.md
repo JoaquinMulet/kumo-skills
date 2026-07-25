@@ -98,18 +98,17 @@ propias ediciones:
 > y "clean surplus" como vacíos cuando esos términos no estaban en el documento.)
 
 > **⚠ Modo de fallo conocido — la auditoría que audita el VACÍO (el peor de todos, porque parece
-> éxito).** Si la lista de archivos llega al script por `args` y el harness la entrega como string
-> (o el placeholder no se interpola), `docPaths` queda `undefined`, el prompt dice "estos archivos:"
-> seguido de NADA, y los lectores — obligados por el schema — devuelven `SIN_VACIOS` con cero
-> vacíos: una auditoría perfecta de ningún documento. El output estructurado **enmascara** el fallo:
-> el lector rellena el schema obedientemente en vez de gritar. Tres defensas, en orden: (1)
-> **incrusta las rutas literalmente en el script** (una constante `DOC`), no las pases por `args`;
-> (2) agrega al schema un campo obligatorio **`resumen_leido`** ("una frase con el título y el tema
-> del documento — la prueba de que lo leíste") y descarta la ronda como inválida si falta o es
-> genérico; (3) **cero hallazgos en la primera ronda es señal de instrumento roto hasta demostrar
-> lo contrario** — verifica las pruebas de lectura antes de celebrar. (Caso real: dos rondas
-> "limpias" de 2 lectores cada una fueron inválidas por esto; la ronda con las tres defensas
-> encontró 1 bloqueante y un error matemático real del autor.)
+> éxito).** Si los lectores reciben una lista de archivos vacía, devuelven `SIN_VACIOS` con cero
+> vacíos: una auditoría perfecta de ningún documento. El output estructurado **enmascara** el
+> fallo — el lector rellena el schema obedientemente en vez de gritar. Las tres defensas están
+> instanciadas en el script de abajo: rutas **incrustadas como literales** con su guard, campo
+> obligatorio **`resumen_leido`** (descarta la ronda si falta o es genérico), y **cero hallazgos
+> en la primera ronda tratado como instrumento roto** hasta demostrar lo contrario. **Antes de
+> modificar el script, lee [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md)**
+> — ahí vive el porqué de cada defensa y el resto de los modos de fallo del andamiaje, que son
+> comunes a las cinco skills-grafo de Kumo. (Caso real: dos rondas "limpias" de 2 lectores cada
+> una fueron inválidas por esto; la ronda con las tres defensas encontró 1 bloqueante y un error
+> matemático real del autor.)
 
 > **⚠ Punto ciego estructural — la completitud de NODOS no compone a completitud del SISTEMA.**
 > (La metáfora es de grafos: cada documento es un **nodo**; cada referencia o dependencia de un
@@ -186,9 +185,9 @@ export const meta = {
   phases: [{ title: 'Auditar', detail: 'N lectores ciegos independientes marcan vacíos' }],
 }
 
-// RUTAS INCRUSTADAS, no `args`: si el harness entrega los args como string, docPaths
-// queda undefined y los lectores auditan el VACÍO devolviendo SIN_VACIOS (modo de fallo
-// documentado arriba). Editar estas constantes antes de invocar:
+// RUTAS INCRUSTADAS con guard (contrato del caller del esqueleto compartido: una lista
+// vacía hace que los lectores auditen el VACÍO y devuelvan SIN_VACIOS schema-válido).
+// Editar estas constantes antes de invocar:
 const docs = ['<RUTA-ABSOLUTA-DEL-DOCUMENTO>']  // bundle: agregar más rutas literales
 const readerModel = 'haiku'
 const readers = 2
