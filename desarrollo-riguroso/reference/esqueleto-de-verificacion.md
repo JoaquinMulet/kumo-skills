@@ -108,6 +108,32 @@ construcción; el guard y la prueba de trabajo son la segunda y tercera línea.
 *(Caso real: dos rondas de lectores ciegos devolvieron "SIN_VACIOS" sobre una lista de
 archivos vacía.)*
 
+### Un nodo vacío es "no testeado", jamás un aprobado
+
+Un agente puede terminar **sin llamar** a la herramienta de salida estructurada y devolver
+`null`. El grafo sigue, el conteo final cuadra, y el caso queda sin veredicto disfrazado de
+caso resuelto. Pasa sobre todo con **modelo débil + esfuerzo bajo**, que es justo la
+combinación barata que uno elige para las corridas grandes. Tres defensas:
+
+1. **Un reintento explícito** por ítem antes de darlo por perdido, con la instrucción
+   *"responde ÚNICAMENTE llamando a la herramienta de salida estructurada"*.
+2. **Etiqueta el vacío como `NO_TESTEADO`** en el resultado, nunca lo filtres con
+   `.filter(Boolean)` antes de contar: filtrar convierte un agujero en un aprobado.
+3. **Reporta la cuenta de vacíos junto a la de aciertos.** «11 de 14 respondieron, 11
+   correctos» y «11 de 14 correctos» son afirmaciones distintas y solo una es honesta.
+
+*(Caso real: en un test de descubrimiento de 14 casos, 2 agentes no llamaron al schema. El
+resumen decía 11 aciertos y 0 fallos — cierto y engañoso: dos disparadores, uno de ellos
+central, no se habían medido.)*
+
+### Los scripts generados van con LF, no CRLF
+
+Si generas el script con un programa (lo correcto cuando inyectas literales derivados en vez
+de transcribirlos a mano), escríbelo con **fin de línea LF explícito**. En Windows el
+`\r` cuenta como carácter de control y el script es **rechazado antes de ejecutarse**, con un
+error que habla de la validación y no de tu archivo. En Python: `open(ruta, 'w',
+newline='\n')`.
+
 ### El que propone el fan-out necesita tope
 
 Un nodo fresco que propone qué mirar (superficies, variantes, dimensiones) **no cuesta un
