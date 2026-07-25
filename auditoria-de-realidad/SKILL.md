@@ -17,11 +17,15 @@ El error más peligroso es el que tu propio aparato de validación no está mira
 
 ## El método
 
-1. **Enumera las superficies reales de alto riesgo — y NO olvides las aburridas.** Las peores suelen ser las mundanas, no las elegantes:
+1. **Un nodo FRESCO propone las superficies; tú conservas el veto, no la propuesta.** Esta es la corrección más importante del método: quien orquesta es exactamente quien tiene el punto ciego que la skill existe para romper, así que pedirle que enumere qué mirar es pedirle al ciego que apunte la linterna. El primer agente del grafo no audita nada — recorre el proyecto en frío y propone **qué superficies merecen un escéptico**, con la lista de abajo como piso, no como techo. Después tú tachas lo que no aplica y agregas lo que falte.
+
+   **Su schema lleva tope explícito** (`máximo 5 superficies, ordenadas por peligro real`). Un proponedor sin tope no cuesta un agente: cuesta lo que decida abanicar — es un multiplicador del ancho del fan-out, y va a proponer de más justamente porque se puso ahí para mirar lo que tú no mirabas. Sin tope, el presupuesto de la corrida lo fija el agente menos informado del grafo.
+
+   El piso obligatorio — las superficies **aburridas**, que son las peores y las que todo aparato sofisticado ignora:
    - **Proceso / infra:** ¿el trunk está en un remoto o vive solo en un disco? ¿qué está DESPLEGADO de verdad? ¿el deploy es trazable a un ref de git o empaqueta el working tree? ¿dónde viven los secretos — los filtra el filesystem (OneDrive/Dropbox)? ¿hay backup?
    - **Código:** los invariantes que se pueden violar en **silencio** (mezcla de unidades/monedas, saldos negativos, redondeo, concurrencia). El bug que pasa los tests porque la forma de los datos de HOY no lo gatilla.
    - **Docs / skills:** ¿lo que declaran coincide con lo que el sistema hace? ¿hay algún "validado" que en realidad es no-validado? ¿alguna regla obligatoria que ningún gate hace cumplir?
-2. **Un agente fresco por superficie**, con la orden: *"Eres un senior escéptico que heredó esto en frío. NO valides, CAZA. Lee los archivos reales (Read/Grep/Bash; git es read-only). Cada hallazgo con EVIDENCIA concreta (file:line, salida de git). Di por qué el equipo estuvo ciego a esto. Y lo único que te quitaría el sueño."* (script abajo).
+2. **Un agente fresco por superficie** (las que sobrevivieron tu veto), con la orden: *"Eres un senior escéptico que heredó esto en frío. NO valides, CAZA. Lee los archivos reales (Read/Grep/Bash; git es read-only). Cada hallazgo con EVIDENCIA concreta (file:line, salida de git). Di por qué el equipo estuvo ciego a esto. Y lo único que te quitaría el sueño."* (script abajo).
 3. **Ghost discipline (SIEMPRE del orquestador).** Los escépticos también inventan. VERIFICA cada hallazgo grave contra el artefacto real antes de creerlo o actuar — sobre todo los de dinero y seguridad. Un hallazgo sin verificar no se toca (igual que en `doc-prueba-de-uso`).
 4. **Rankea por peligro REAL, no por sofisticación.** El aparato sofisticado mira la corrección fina mientras la casa se incendia. **Criterio de orden:** pérdida de datos irreversible (trunk sin backup) > fuga de secretos > corrupción silenciosa de dinero/estado > todo lo demás. Un bug elegante rankea SIEMPRE por debajo de un trunk sin remoto.
 5. **Encontrarlo y NO cerrarlo tampoco cuenta.** Un riesgo #1 ya identificado y accionable no es un ítem de backlog: se **cierra antes** de seguir optimizando lo demás, o se declara EXPLÍCITAMENTE por qué se posterga y hasta cuándo. El modo de falla es sutil y se *siente* productivo: sigues entregando trabajo impecable —tests, fixes, deploys— mientras el hallazgo dominante envejece en una lista. *(ej. real: los secretos de prod y la access key estática de AWS vivían en una carpeta sincronizada a la nube; se detectó al INICIO de la sesión, se anotó como "acción del usuario", y siguió abierto durante 13 commits de trabajo fino sobre bugs de MUCHO menor impacto. El aparato no falló en detectar: falló en priorizar la ejecución.)* Regla: si el #1 no lo puedes cerrar tú, **bloquea y pide**; no lo dejes flotando entre tareas menores.
@@ -31,7 +35,56 @@ El error más peligroso es el que tu propio aparato de validación no está mira
 
 `VERIFY-REAL` confronta el código contra los datos REALES de **HOY** — y por eso **no puede** cazar un bug LATENTE que los datos de hoy no gatillan (un FIFO que mezcla EUR y USD no explota mientras todos los cobros sean USD; el `VERIFY-REAL` del cierre "pasó" justo por eso). Esta auditoría lee el código buscando la **violación de invariante**, no la falla observable. Son complementarias: VERIFY-REAL caza lo que ya está mal; la auditoría fresca caza lo que está latente y lo que es de otra dimensión (infra, secretos, proceso).
 
-## Script para el tool Workflow (un escéptico fresco por superficie)
+## Script para el tool Workflow (dos fases: proponer, y un escéptico por superficie)
+
+Son **dos invocaciones**, no una: la primera devuelve las superficies propuestas, tú las
+vetas y recortas a mano, y recién entonces incrustas las sobrevivientes en la segunda. El
+corte humano en el medio es el punto — si el proponedor alimentara el fan-out directo,
+nadie habría ejercido el veto.
+
+**Fase A — el proponedor fresco (1 agente).** El tope vive en su schema y en su prompt.
+
+```js
+export const meta = {
+  name: 'auditoria-superficies',
+  description: 'Un agente fresco propone que superficies merecen un esceptico, con tope',
+  phases: [{ title: 'Proponer superficies' }],
+}
+const RAIZ = '<RUTA-ABSOLUTA-DEL-PROYECTO>'
+if (RAIZ.includes('<RUTA')) throw new Error('Incrusta la ruta real antes de correrlo')
+const MAX_SUPERFICIES = 5   // tope duro: el proponedor multiplica el ancho del fan-out
+
+const PROP_SCHEMA = {
+  type: 'object', additionalProperties: false,
+  properties: {
+    resumen_leido: { type: 'string', description: 'que es este proyecto, en una frase — prueba de que lo recorriste' },
+    superficies: {
+      type: 'array', maxItems: MAX_SUPERFICIES,
+      items: { type: 'object', additionalProperties: false, properties: {
+        id: { type: 'string' }, ruta: { type: 'string' }, superficie: { type: 'string' },
+        porque_peligrosa: { type: 'string' },
+        peligro: { type: 'string', enum: ['critico','alto','medio'] } },
+        required: ['id','ruta','superficie','porque_peligrosa','peligro'] },
+    },
+    lo_que_no_alcanzo_a_mirar: { type: 'string', description: 'que quedo fuera por el tope — para que el orquestador decida si sube el tope' },
+  }, required: ['resumen_leido','superficies','lo_que_no_alcanzo_a_mirar'],
+}
+
+const res = await agent(
+  `Eres un ingeniero senior que acaba de heredar este proyecto EN FRIO, en: ${RAIZ}\n` +
+  `NO audites todavia: RECONOCE EL TERRENO. Recorre el repo (Read/Grep/Bash; git read-only) y ` +
+  `propon COMO MAXIMO ${MAX_SUPERFICIES} superficies que merecen un escéptico dedicado, ordenadas ` +
+  `por peligro REAL (perdida de datos irreversible > fuga de secretos > corrupcion silenciosa de ` +
+  `dinero/estado > el resto). Piso obligatorio, no techo: incluye las superficies ABURRIDAS ` +
+  `(backup del trunk, donde viven los secretos y si el filesystem los filtra, que se despliega de ` +
+  `verdad) — son las peores y las que todo aparato sofisticado ignora. Si el tope te dejo cosas ` +
+  `fuera, dilas en 'lo_que_no_alcanzo_a_mirar'.`,
+  { label: 'proponer-superficies', phase: 'Proponer superficies', schema: PROP_SCHEMA }
+)
+return res
+```
+
+**Fase B — un escéptico por superficie sobreviviente.**
 
 ```js
 export const meta = {
@@ -39,8 +92,9 @@ export const meta = {
   description: 'Agentes frescos escepticos hurgan el estado REAL con pregunta abierta',
   phases: [{ title: 'Auditar la realidad' }],
 }
-// SUPERFICIES INCRUSTADAS por el orquestador — no `args` (args-como-string => undefined
-// y la auditoria correria sobre NADA):
+// SUPERFICIES INCRUSTADAS con guard: las que salieron de la fase A y SOBREVIVIERON tu veto.
+// (Contrato del caller del esqueleto compartido — lee
+// desarrollo-riguroso/reference/esqueleto-de-verificacion.md antes de tocar esto.)
 const SUPERFICIES = [ /* { id, ruta, superficie }, ... — literales */ ]
 if (!SUPERFICIES.length) throw new Error('Incrusta las superficies en el script antes de correrlo')
 const SCHEMA = {
@@ -71,7 +125,7 @@ return res.filter(Boolean)
 
 ## Variante sin Workflow
 
-Si no hay tool `Workflow` disponible, divide el trabajo en las **tres superficies del paso 1** (proceso/infra, código, docs/skills) y corre un `Agent` fresco por cada una en secuencia con la misma orden — o, para una revisión puntual, un solo `Agent` sobre la superficie más crítica. **Modelo fuerte, no haiku** — cazar bugs necesita capacidad. La verificación de fantasmas y el ranking siguen siendo tuyos, corras en paralelo o en serie.
+Si no hay tool `Workflow` disponible, el orden no cambia: primero **un `Agent` fresco que solo propone** las superficies con el mismo tope, tú lo vetas, y después un `Agent` escéptico por superficie sobreviviente, en secuencia. Si vas a saltarte el proponedor por costo, usa el **piso de las tres superficies aburridas** (proceso/infra, código, docs/skills) y ten presente qué estás perdiendo: el piso lo escribiste tú, así que hereda tus puntos ciegos — que es exactamente lo que el proponedor existe para romper. Para una revisión puntual, un solo `Agent` sobre la superficie más crítica — o, para una revisión puntual, un solo `Agent` sobre la superficie más crítica. **Modelo fuerte, no haiku** — cazar bugs necesita capacidad. La verificación de fantasmas y el ranking siguen siendo tuyos, corras en paralelo o en serie.
 
 ## Por qué existe
 
