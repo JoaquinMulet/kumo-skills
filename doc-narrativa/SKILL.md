@@ -39,22 +39,46 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 2. **Parámetros opcionales:**
    - `editorModel` — modelo de los editores/verificador (lectores baratos).
      Default `haiku`.
-3. **Invoca el tool `Workflow`** con el `script` de abajo, **incrustando la ruta del
-   documento como constante en el script** — no la pases por `args`: si el harness
-   entrega los args como string, `args.docPath` llega `undefined`, los editores
-   reciben «Lee SOLO undefined» y la fase de inventario devuelve un checklist-error
-   perfectamente schema-válido (caso real). Al recibir el resultado, **verifica el
-   inventario antes de seguir**: si no nombra contenido real del documento, la
-   corrida entera es inválida.
-4. **Al terminar**, muestra al usuario: (a) el **plan de redacción** sintetizado
-   (para que lo apruebe o ajuste), (b) el **veredicto de completitud** (COMPLETO /
-   qué se repuso). Si el usuario quiere afinar el plan antes de aceptar, puedes
-   reusar el plan y reescribir de nuevo.
+3. **Deriva el inventario DURO tú mismo, antes de invocar nada.** Todo lo contable se
+   extrae mecánicamente y se incrusta en el script como constante — no se le pregunta a
+   un agente lo que un `grep` sabe:
 
-> El loop hace cinco cosas: **inventaría** el contenido original (para no perder
-> nada), pide recomendaciones a **editores con lentes distintas** (narrativa,
-> densidad, estructura), **sintetiza** un plan de redacción, **reescribe** según
-> el plan, y **verifica** contra el inventario — reponiendo lo que falte.
+   ```bash
+   grep -nE '^#{1,6} '            doc.md   # encabezados
+   grep -nE '^\|'                 doc.md   # filas de tabla
+   grep -noE '[0-9][0-9.,]*%?'    doc.md   # cifras
+   grep -nE '^```'                doc.md   # bloques de código
+   ```
+
+   (En PowerShell: `Select-String -Path doc.md -Pattern '^#{1,6} '`, etc.)
+
+4. **Invoca el tool `Workflow`** con el `script` de abajo, **incrustando la ruta del
+   documento y el inventario duro como constantes** (contrato del caller del esqueleto
+   compartido: una ruta vacía hace que los editores lean «SOLO undefined» y la fase de
+   inventario devuelva un checklist-error schema-válido — lee
+   [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md)
+   antes de tocar el script). Al recibir el resultado, **verifica el inventario blando
+   antes de seguir**: si no nombra contenido real del documento, la corrida es inválida.
+
+   **Los dos inventarios NO se mezclan en una sola lista.** El duro es un oráculo duro y
+   por eso puede disparar reposición automática; el blando lo produjo un agente y sus
+   faltantes van **a ti**, nunca al parchador. Unirlos sube el recall y también los
+   fantasmas, y cada ítem alucinado que entre al ancla es contenido inexistente que un
+   reparador automático va a escribir en el documento sin que nadie lo decida. Es
+   «nombrar residuales» del oráculo blando, aplicado al grafo.
+5. **Al terminar**, muestra al usuario: (a) el **plan de redacción** sintetizado
+   (para que lo apruebe o ajuste), (b) el **veredicto de completitud** del inventario
+   duro (COMPLETO / qué se repuso), y (c) los **faltantes del inventario blando**, que
+   resuelves tú a mano: cada uno se busca con `Grep` en el documento antes de reponerlo
+   — si el agente lo inventó, se descarta. Si el usuario quiere afinar el plan antes de
+   aceptar, puedes reusar el plan y reescribir de nuevo.
+
+> El loop hace cinco cosas: **inventaría** lo semántico del original (el ancla dura,
+> lo contable, ya la derivaste tú con `grep`), pide recomendaciones a **editores con
+> lentes distintas** (narrativa, densidad, estructura), **sintetiza** un plan de
+> redacción, **reescribe** según el plan, y **verifica contra los dos inventarios**
+> — repone automático lo que falte del duro, y te devuelve los faltantes del blando
+> para que los confirmes con `Grep` antes de tocar el documento.
 
 > **⚠ Documentos con contenido gestionado por generador (citas numeradas, notas al
 > pie, numeración continua entre archivos): la variante "Solo el plan" es OBLIGATORIA.**
@@ -82,21 +106,33 @@ export const meta = {
   ],
 }
 
-// Ruta INCRUSTADA, no `args` (ver paso 3 arriba: args-como-string ⇒ undefined):
+// Ruta INCRUSTADA con guard (contrato del caller del esqueleto compartido):
 const doc = '<RUTA-ABSOLUTA-DEL-DOCUMENTO>'
 const weak = 'haiku'
 if (doc.includes('<RUTA')) throw new Error('Incrusta la ruta real en el script antes de correrlo')
 
-// 1 · INVENTARIO — checklist exhaustivo del contenido original (para verificar al final)
+// ANCLA DURA — derivada MECANICAMENTE por el orquestador antes de invocar (paso 3 arriba:
+// grep de encabezados, filas de tabla, cifras, bloques de codigo). Es un oraculo DURO: sus
+// faltantes SI pueden disparar reposicion automatica, porque no puede alucinar items.
+const DURO = [ /* '## Metodologia', '| Region | Monto |', '61%', ... — literales del grep */ ]
+if (!DURO.length) throw new Error('Incrusta el inventario duro (grep) antes de correrlo')
+const checklistDuro = DURO.map((s, i) => `${i + 1}. ${s}`).join('\n')
+
+// 1 · INVENTARIO BLANDO — lo SEMANTICO, que el grep no ve (reglas, ejemplos, definiciones,
+// relaciones). Lo produce un agente, asi que es un oraculo BLANDO: sus faltantes van al
+// ORQUESTADOR, jamas al parchador automatico — un item alucinado se convertiria en
+// contenido inexistente escrito en el documento.
 phase('Inventario')
-const INV = { type: 'object', properties: { items: { type: 'array', items: { type: 'string' } } }, required: ['items'] }
+const INV = { type: 'object', properties: {
+  resumen_leido: { type: 'string', description: 'titulo y tema del documento en una frase — prueba de lectura' },
+  items: { type: 'array', items: { type: 'string' } } }, required: ['resumen_leido', 'items'] }
 const inv = await agent(
-  `Lee SOLO ${doc}. Extrae un checklist EXHAUSTIVO de TODO el contenido sustantivo: cada dato, cifra, ` +
-  `entidad, tabla, regla, ejemplo, definición, diagrama. Un ítem por línea, concreto. Esta lista se usará ` +
-  `para verificar que una reescritura no pierda nada.`,
-  { label: 'inventario', model: weak, schema: INV }
+  `Lee SOLO ${doc}. Extrae un checklist del contenido SEMANTICO sustantivo: reglas, ejemplos, ` +
+  `definiciones, entidades, relaciones y afirmaciones. NO listes encabezados, filas de tabla ni ` +
+  `cifras sueltas — esos ya se extrajeron mecanicamente. Un item por linea, concreto.`,
+  { label: 'inventario-blando', model: weak, schema: INV }
 )
-const checklist = (inv?.items || []).map((s, i) => `${i + 1}. ${s}`).join('\n')
+const checklistBlando = (inv?.items || []).map((s, i) => `${i + 1}. ${s}`).join('\n')
 
 // 2 · EDITORIAL — recomendadores con lentes distintas, en paralelo
 phase('Editorial')
@@ -136,28 +172,39 @@ await agent(
   { label: 'reescritura' }
 )
 
-// 5 · VERIFICACIÓN — la reescritura no debe perder contenido
+// 5 · VERIFICACIÓN — dos anclas, dos destinos. La dura puede reponerse automatico; la
+// blanda vuelve al orquestador SIN tocar el documento.
 phase('Verificación')
 const VER = { type: 'object', properties: { faltantes: { type: 'array', items: { type: 'string' } }, veredicto: { type: 'string', enum: ['COMPLETO', 'INCOMPLETO'] } }, required: ['faltantes', 'veredicto'] }
-let verif = await agent(
+const contra = (checklist, label) => agent(
   `Lee SOLO ${doc} (ya reescrito). Confirma que CADA ítem de este checklist sigue presente en alguna ` +
   `parte (cuerpo o apéndices); búscalo en todo el archivo antes de marcarlo como faltante:\n${checklist}\n\n` +
   `Devuelve los ítems faltantes (o lista vacía) y el veredicto.`,
-  { label: 'verificacion', model: weak, schema: VER }
+  { label, model: weak, schema: VER }
 )
-if (verif?.veredicto === 'INCOMPLETO' && verif.faltantes?.length) {
+
+let duro = await contra(checklistDuro, 'verificacion-duro')
+if (duro?.veredicto === 'INCOMPLETO' && duro.faltantes?.length) {
+  // Reposicion AUTOMATICA solo sobre el ancla dura: cada item existe en el original por
+  // construccion (salio de un grep), asi que no hay fantasma que insertar.
   await agent(
-    `La reescritura de ${doc} perdió estos contenidos:\n- ${verif.faltantes.join('\n- ')}\n\nRepónlos en el ` +
+    `La reescritura de ${doc} perdió estos contenidos:\n- ${duro.faltantes.join('\n- ')}\n\nRepónlos en el ` +
     `lugar adecuado (cuerpo o apéndice) sin romper el relato ni la estructura. Edita el archivo en su lugar.`,
     { label: 'reponer-faltantes' }
   )
-  verif = await agent(
-    `Verifica de nuevo SOLO ${doc} contra el checklist; devuelve faltantes y veredicto:\n${checklist}`,
-    { label: 'verificacion-2', model: weak, schema: VER }
-  )
+  duro = await contra(checklistDuro, 'verificacion-duro-2')
 }
 
-return { plan, faltantes: verif?.faltantes || [], veredicto: verif?.veredicto || 'DESCONOCIDO' }
+// El ancla BLANDA no dispara escritura: se devuelve para que el orquestador verifique con
+// Grep cada faltante contra el documento y descarte los alucinados antes de reponer.
+const blando = await contra(checklistBlando, 'verificacion-blando')
+
+return {
+  plan,
+  duro: { faltantes: duro?.faltantes || [], veredicto: duro?.veredicto || 'DESCONOCIDO' },
+  blandoParaRevisionManual: blando?.faltantes || [],
+  pruebaLectura: inv?.resumen_leido || '(sin prueba de lectura — corrida sospechosa)',
+}
 ```
 
 ## Variantes
