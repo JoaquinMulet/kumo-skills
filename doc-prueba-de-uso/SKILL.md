@@ -77,7 +77,21 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    scratchpad. El lector recibe SOLO ese archivo — si lee el documento entero,
    la prueba no mide la autosuficiencia de la sección.
 
-4. **Lector débil con tarea + prueba de lectura + vacíos.** El prompt del
+   **Las dos calibraciones del lector, y por qué hacen falta las dos.** El modelo
+   **débil** (haiku) mide si la información *alcanza*: lo que no está, no lo puede
+   suplir, así que sus vacíos son huecos reales de contenido. El modelo **fuerte**
+   mide algo distinto y más peligroso: si el documento es **interpretable de una sola
+   manera**. Un lector capaz rellena los huecos sin darse cuenta —por eso no sirve
+   para medir completitud— pero cuando *malinterpreta*, no está fallando: está
+   mostrando que el texto admite dos lecturas y la equivocada era razonable. Esos son
+   los bugs que sobreviven toda revisión, porque nadie los ve como vacíos.
+   Regla: **débil para completitud, fuerte para ambigüedad**, y las
+   malinterpretaciones del fuerte se tratan como defecto del documento, nunca del
+   lector. *(Caso real: un lector produjo un guard que reventaba justo cuando el
+   script estaba bien configurado — generalizando mal un ejemplo del documento que a
+   su autor le parecía obvio. El arreglo fue el ejemplo, no el lector.)*
+
+4. **Lector con tarea + prueba de lectura + vacíos.** El prompt del
    lector (modelo barato, p. ej. haiku) tiene cuatro partes obligatorias:
    - *Rol y tarea*: "Eres el [rol] recién llegado. Tu ÚNICA fuente es este
      archivo. [Haz la tarea]."
