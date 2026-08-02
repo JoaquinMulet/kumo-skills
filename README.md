@@ -14,17 +14,18 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`retrospectiva-de-sesion`](retrospectiva-de-sesion/) | Ritual de cierre de una sesión de código: destila las correcciones en aprendizajes y los compone en el `CLAUDE.md` del proyecto (lo específico) y en `desarrollo-riguroso` (lo universal). |
 | [`escritura-de-prompts`](escritura-de-prompts/) | Metodología para escribir, mejorar, auditar o diagnosticar prompts dirigidos a Claude. |
 | [`doc-completitud`](doc-completitud/) | **Pipeline de calidad documental, paso 1** — endurece un texto hasta que un lector frío pueda explicar cada sección sin vacíos (que no falte nada). |
-| [`doc-narrativa`](doc-narrativa/) | **Pipeline documental, paso 2** — reestructura un texto denso en un relato claro, sin perder contenido (que se lea bien). |
-| [`doc-prueba-de-uso`](doc-prueba-de-uso/) | **Pipeline documental, paso 3** — valida que un lector frío débil pueda EJECUTAR la tarea que el texto habilita (que sirva para hacer, no solo para entender). |
+| [`doc-cadena-causal`](doc-cadena-causal/) | **Pipeline documental, paso 2** — audita que cada concepto se sostenga solo: por qué existe, quién lo hace, de dónde sale su número, qué pasaría sin él (que cada cosa tenga fundamento). |
+| [`doc-narrativa`](doc-narrativa/) | **Pipeline documental, paso 3** — reestructura un texto denso en un relato claro, sin perder contenido (que se lea bien). |
+| [`doc-prueba-de-uso`](doc-prueba-de-uso/) | **Pipeline documental, paso 4** — valida que un lector frío débil pueda EJECUTAR la tarea que el texto habilita (que sirva para hacer, no solo para entender). |
 | [`auditoria-de-realidad`](auditoria-de-realidad/) | Un agente fresco y escéptico hurga el estado REAL (repo, git, deploy, secretos, código) con pregunta abierta — caza lo que el propio aparato no está viendo. El complemento abierto de VERIFY-REAL. |
 | [`verificacion-adversarial`](verificacion-adversarial/) | Aduana de hechos para un texto que se publica: buscadores reúnen evidencia y refutadores independientes intentan destruirla. El producto es un veredicto por afirmación, no un informe nuevo. |
 
 ### El mapa — por qué existe cada skill
 
-Las ocho responden cuatro preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
+Las nueve responden cuatro preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
 
 - **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo — siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda — convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
-- **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-narrativa` → `doc-prueba-de-uso`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar.
+- **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts` — el modelo está fijo; el prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos; solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
 
@@ -65,14 +66,15 @@ del stack, reglas del dominio, y una sección de lecciones que arranca casi vac�
 le pides cerrar la sesión y Claude carga `retrospectiva-de-sesion`, que es la que reparte. Tú
 apruebas y corriges; el trabajo mecánico no es tuyo.
 
-### Las otras cinco — herramientas para momentos concretos del paso 3
+### Las otras siete — herramientas para momentos concretos del paso 3
 
 No son parte del ciclo: son las que se invocan **mientras trabajas**, cuando aparece una de
-estas cinco situaciones.
+estas siete situaciones.
 
 | Cuando te pasa esto… | …se usa esta skill |
 |---|---|
 | Escribiste un documento y no sabes si a otro le va a faltar contexto | [`doc-completitud`](doc-completitud/) |
+| Un lector razona bien sobre tu texto y llega a un "¿y esto de dónde salió?" sin respuesta | [`doc-cadena-causal`](doc-cadena-causal/) |
 | El documento no le falta nada, pero es un muro de tablas y listas que cuesta leer | [`doc-narrativa`](doc-narrativa/) |
 | El documento se lee bien, pero quien tiene que **hacer algo** con él no puede | [`doc-prueba-de-uso`](doc-prueba-de-uso/) |
 | Un informe con cifras se va a enviar a un cliente y no quieres publicar un dato falso | [`verificacion-adversarial`](verificacion-adversarial/) |
@@ -81,13 +83,13 @@ estas cinco situaciones.
 
 ### Pipeline de calidad documental — los textos también se testean
 
-No solo el código se testea; un `CLAUDE.md`, una skill o un spec pueden "leerse bien" y ser inútiles — *un artefacto que pasa un control de coherencia todavía puede fallar en su propósito*. Kumo endurece cualquier texto de valor con tres skills **en orden**:
+No solo el código se testea; un `CLAUDE.md`, una skill o un spec pueden "leerse bien" y ser inútiles — *un artefacto que pasa un control de coherencia todavía puede fallar en su propósito*. Kumo endurece cualquier texto de valor con cuatro skills **en orden**:
 
-**`doc-completitud`** (que no falte nada) → **`doc-narrativa`** (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío pueda ejecutar la tarea que el texto habilita).
+**`doc-completitud`** (que no falte nada) → **`doc-cadena-causal`** (que cada concepto se sostenga solo) → **`doc-narrativa`** (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío pueda ejecutar la tarea que el texto habilita).
 
 La prueba de uso es a la prosa lo que un test de integración es al código: **explicar ≠ poder hacer**. Se aplican a cualquier documento para cualquier fin — desde un anexo técnico hasta las skills de este mismo repo.
 
-Las tres hacen la misma pregunta con una vara cada vez más alta. Cada caja es una pregunta que
+Las cuatro hacen la misma pregunta con una vara cada vez más alta. Cada caja es una pregunta que
 el texto tiene que aprobar antes de pasar a la siguiente:
 
 ```mermaid
@@ -95,15 +97,21 @@ flowchart TD
   T(["Un texto recien escrito"]) --> C1
 
   C1{"1. Le falta algo a alguien<br/>que llega sin contexto?<br/>(doc-completitud)"}
-  C2{"2. Se puede leer sin sufrir,<br/>o es un muro de tablas?<br/>(doc-narrativa)"}
-  C3{"3. Quien tiene que HACER algo<br/>con esto, puede?<br/>(doc-prueba-de-uso)"}
+  CC{"2. Cada concepto se sostiene solo?<br/>Se sabe por que existe y de<br/>donde sale su numero?<br/>(doc-cadena-causal)"}
+  C2{"3. Se puede leer sin sufrir,<br/>o es un muro de tablas?<br/>(doc-narrativa)"}
+  C3{"4. Quien tiene que HACER algo<br/>con esto, puede?<br/>(doc-prueba-de-uso)"}
 
   F1["Se rellenan los huecos"]
+  FC["Se funda el concepto"]
   F2["Se reescribe como relato"]
 
-  C1 -->|"no falta nada"| C2
+  C1 -->|"no falta nada"| CC
   C1 -->|"si falta"| F1
   F1 --> C1
+
+  CC -->|"todo fundado"| C2
+  CC -->|"hay conceptos sin fundamento"| FC
+  FC --> CC
 
   C2 -->|"ya se lee bien"| C3
   C2 -->|"es un muro"| F2
@@ -114,21 +122,21 @@ flowchart TD
 ```
 
 El orden importa y no es negociable: no sirve pulir la redacción de un texto al que todavía le
-faltan datos. Y la tercera pregunta es la que sorprende — un documento puede estar completo y
+faltan datos. Y la última pregunta es la que sorprende — un documento puede estar completo y
 bien escrito, y aun así quien debe construir algo con él no puede. **Explicar no es lo mismo
 que habilitar.**
 
 Dos aclaraciones sobre el dibujo: **se pueden usar por separado** (si tu texto ya está completo
-y solo es denso, corres la 2 sola), pero cuando se usan juntas van en ese orden. Y la flecha de
-vuelta **solo se recorre si la pregunta 3 falla**: lo que el lector tuvo que adivinar es
+y solo es denso, corres la de narrativa sola), pero cuando se usan juntas van en ese orden. Y la
+flecha de vuelta **solo se recorre si la pregunta 4 falla**: lo que el lector tuvo que adivinar es
 exactamente lo que faltaba, así que se rellena y se vuelve a bajar. Si nadie tuvo que adivinar,
 el texto sale por la derecha y no hay loop.
 
-## Cómo funcionan por dentro — las cinco hacen lo mismo
+## Cómo funcionan por dentro — las seis hacen lo mismo
 
-Cinco de las ocho skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
+Seis de las nueve skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
 en paralelo**, cada uno mirando el mismo material desde un ángulo distinto, y después alguien
-junta los resultados. Las cinco siguen exactamente la misma secuencia de cinco pasos.
+junta los resultados. Las seis siguen exactamente la misma secuencia de cinco pasos.
 
 Para verla, un caso real de una de ellas: un informe con cifras que se va a enviar a un cliente.
 
@@ -197,6 +205,7 @@ lo que cada una pone en cada paso:
 |---|---|---|---|
 | `verificacion-adversarial` | las afirmaciones del texto y sus fuentes | uno por ángulo: fuente, medición, inferencia | qué se imprime y qué no |
 | `doc-completitud` | el documento mismo | lectores sin contexto que marcan qué no entienden | qué vacío se rellena y cómo |
+| `doc-cadena-causal` | la rejilla de cinco preguntas (por qué existe, quién lo hace, de dónde sale su número, qué pasa sin él, si le aplica al lector) | auditores que aplican la rejilla concepto por concepto | qué concepto se funda y con qué parche |
 | `doc-narrativa` | un inventario de todo lo que el texto ya dice | editores de narrativa, densidad y estructura | el plan de reescritura |
 | `doc-prueba-de-uso` | una pauta de corrección escrita antes de ver nada | lectores que intentan HACER la tarea del documento | qué hay que concretar en el texto |
 | `auditoria-de-realidad` | los archivos reales del proyecto (repo, git, deploy) | un escéptico por cada zona de riesgo | qué hallazgo es real y qué se arregla primero |

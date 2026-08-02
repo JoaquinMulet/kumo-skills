@@ -32,6 +32,16 @@ Es la hermana de `doc-completitud`: aquélla asegura que **nada falte**;
 ésta asegura que **se lea bien**. Si quieres ambas, corre primero completitud y
 luego storytelling (este loop termina verificando que no se haya perdido nada).
 
+> **⚠ Antes de correr esta skill, pasa por `doc-cadena-causal`.** Esta juzga el
+> texto *como texto* —si fluye, si es denso, si está ordenado— y por diseño **no
+> detecta el concepto nombrado pero no fundado**: el que está presente, definido,
+> bien ubicado y hasta con analogía, y del que el lector igual no puede decir
+> *por qué existe*. Peor: el plan de redacción que produce reordena y comprime,
+> así que sobre un concepto sin fundamento **comprime el síntoma**. Caso real:
+> este flujo dejó un capítulo mejor escrito —arco, analogías, fórmulas al
+> apéndice— y no tocó el hueco, que el lector encontró después. El orden con
+> dependencia real es: completitud → **cadena causal** → narrativa → prueba de uso.
+
 ## Cómo ejecutar
 
 1. **Identifica el archivo objetivo.** Pide la ruta absoluta si no está clara.

@@ -49,9 +49,16 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
   "con esto no se puede trabajar", aunque haya pasado revisiones previas.
 - Antes de entregar un documento a quien debe ACTUAR con él (un desarrollador,
   un CFO, un abogado, un socio que decide).
-- Como tercera etapa del pipeline de calidad documental:
-  `doc-completitud` (que no falte nada) → `doc-narrativa`
-  (que se lea bien) → **`doc-prueba-de-uso` (que sirva para hacer)**.
+- Como última etapa del pipeline de calidad documental:
+  `doc-completitud` (que no falte nada) → `doc-cadena-causal` (que cada cosa se
+  sostenga sola) → `doc-narrativa` (que se lea bien) →
+  **`doc-prueba-de-uso` (que sirva para hacer)**.
+
+> Ojo con un punto ciego propio: esta skill mide si el lector puede **ejecutar la
+> tarea**, y un concepto puede estar sin fundamento sin bloquear ninguna tarea —
+> el lector calcula, registra y responde bien, y aun así no sabe por qué existe
+> la pieza que está usando. Por eso `doc-cadena-causal` va antes y no la
+> reemplaza esta.
 
 ## El método, paso a paso
 

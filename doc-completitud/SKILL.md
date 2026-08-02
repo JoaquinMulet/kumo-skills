@@ -49,6 +49,12 @@ NO la uses para mejorar el estilo o la narrativa de un documento — para eso es
 la skill hermana `doc-narrativa`. Esta solo sube el **piso** (que
 nada falte), no el techo (que se lea lindo).
 
+Tampoco la uses para saber si cada concepto **se sostiene solo**: esta skill
+verifica que el ítem *esté presente*, y un concepto puede estar presente,
+definido y explicado sin que el lector pueda decir nunca **por qué existe** ni
+**si le aplica**. Ese eje lo cubre `doc-cadena-causal`, y va inmediatamente
+después de esta: completitud → **cadena causal** → narrativa → prueba de uso.
+
 ## Cómo ejecutar
 
 El bucle lo conduces **tú**, alternando entre el Workflow (que solo audita) y tus
