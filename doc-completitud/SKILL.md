@@ -256,6 +256,27 @@ return {
 Tras recibir los vacíos, **tú** los parchas con `Edit` (paso 3b) y vuelves a invocar
 el Workflow (paso 3c) hasta que `verdict` sea `SIN_VACIOS` o `SOLO_MENORES`.
 
+## Su punto ciego: «presente» no es «a tiempo»
+
+Esta skill cuenta **presencia**. Un concepto usado seis capítulos antes de
+explicarse está presente, así que **pasa** — y es el defecto que más se denuncia
+como «no se entiende nada». Presencia y orden son ejes distintos: el inventario
+completo puede estar entero y el documento seguir siendo ilegible.
+
+El orden se mide aparte, con un contrato de vocabulario:
+[`doc-cadena-causal`](../doc-cadena-causal/SKILL.md), sección «La deuda de orden».
+
+## Tus hallazgos deben sobrevivir a la próxima reescritura
+
+Los parches que produce esta skill viven en una redacción concreta y **no
+sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
+desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
+
+Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
+corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+doctrina completa, con el caso real que la originó, está en
+[`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
+
 ## Variantes
 - **Solo auditar (sin parchar):** corre el Workflow una vez y reporta los vacíos.
   Útil para un "¿qué le falta a este doc?".

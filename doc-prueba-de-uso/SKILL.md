@@ -201,6 +201,17 @@ return res.filter(Boolean)
 // son del ORQUESTADOR, en el turno siguiente — nunca de un agente.
 ```
 
+## Tus hallazgos deben sobrevivir a la próxima reescritura
+
+Los parches que produce esta skill viven en una redacción concreta y **no
+sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
+desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
+
+Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
+corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+doctrina completa, con el caso real que la originó, está en
+[`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
+
 ## Variantes
 
 - **Sección única** (el caso origen): sin Workflow — un solo `Agent` con model

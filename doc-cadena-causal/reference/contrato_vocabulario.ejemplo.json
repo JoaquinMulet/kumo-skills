@@ -1,0 +1,27 @@
+{
+  "_comentario": "Contrato de vocabulario del curso v4 (estructura espiral). termino -> capitulo donde se INTRODUCE. El verificador falla si la primera aparicion es anterior. La seccion 'indice' esta exenta: es navegacion, no exposicion.",
+  "bono": {
+    "patron": "\\bbono\\b",
+    "capitulo": "c1"
+  },
+  "estados financieros": {
+    "patron": "estados financieros",
+    "capitulo": "c1"
+  },
+  "asiento contable": {
+    "patron": "asiento",
+    "capitulo": "c1"
+  },
+  "Debe y Haber": {
+    "patron": "\\bHaber\\b",
+    "capitulo": "c1"
+  },
+  "partida doble": {
+    "patron": "partida doble",
+    "capitulo": "c1"
+  },
+  "descalce de monedas": {
+    "patron": "descalce",
+    "capitulo": "c1"
+  }
+}

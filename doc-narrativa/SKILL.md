@@ -42,6 +42,66 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 > apéndice— y no tocó el hueco, que el lector encontró después. El orden con
 > dependencia real es: completitud → **cadena causal** → narrativa → prueba de uso.
 
+## Si reordenas, vuelve a medir el orden
+
+Esta skill mueve material de sitio. Mover un bloque hacia adelante puede dejar
+**usado antes de explicado** un concepto que estaba bien, y ese defecto no se ve
+releyendo: cada párrafo sigue leyéndose bien por separado.
+
+Corre el **contrato de vocabulario** después de reescribir, no antes
+([`doc-cadena-causal`](../doc-cadena-causal/SKILL.md), «La deuda de orden»). Si
+el documento usa estructura en espiral, corre además el guardia de la primera
+pasada, que falla si se coló una cifra derivada donde todavía no puede haberla.
+
+## Antes de reescribir: los arreglos ganados se convierten en centinelas
+
+**Esta es la regla que más caro sale saltarse, y aplica a las cuatro skills de
+documentación.**
+
+Cada pasada de auditoría (completitud, cadena causal, prueba de uso) termina en
+parches al texto. Un parche vive en una redacción concreta. **Cuando el documento
+se reescribe —y esta skill reescribe—, la redacción cambia y el parche desaparece
+sin que nadie lo note**, porque el resultado sigue leyéndose bien: el hueco no
+deja hueco visible, deja un texto fluido al que le falta una respuesta.
+
+El inventario duro (encabezados, tablas, cifras) sobrevive porque se verifica
+mecánicamente. Los **arreglos semánticos** no sobreviven a nada.
+
+Por eso, antes de invocar la reescritura:
+
+1. **Lista los arreglos que las pasadas anteriores dejaron en el documento** —
+   cada «esto no se entendía y lo explicamos» de esta sesión y de las previas.
+2. **Convierte cada uno en un centinela**: una frase textual, corta y distintiva,
+   en un test de regresión que falla si desaparece. Una línea por arreglo.
+3. **Corre el test antes y después de reescribir.** Antes, para comprobar que el
+   centinela da verde sobre el texto viejo — un centinela que nunca estuvo en
+   verde no prueba nada. Después, para ver qué se cayó.
+
+```python
+REQUERIDO = {
+    'por que el banco toma el otro lado': 'El banco no se queda con el riesgo: lo pasa',
+    'punto base definido':                'la centésima parte de un punto porcentual',
+}
+```
+
+**El caso real.** Una reescritura estructural completa perdió la explicación de
+por qué la contraparte quiere el otro lado del contrato. Las cuatro skills habían
+corrido sobre el documento viejo y dieron ese hueco por cerrado; sobre el nuevo
+nadie las volvió a correr. **Lo cazó el test de regresión**, y solo porque en una
+sesión anterior ese arreglo se había escrito como centinela. De los otros arreglos
+de la lista, diez aparecieron como «perdidos» y en realidad estaban reformulados:
+hubo que revisarlos uno por uno para separar «reformulado» de «perdido». Ese
+ejercicio de separar es justamente el trabajo que el centinela existe para hacer,
+y por eso el centinela debe apuntar a la **idea mínima** (`sin haberlo pedido`,
+`lo decide la norma`) y no a la frase larga: una frase larga falla con cualquier
+reescritura y se vuelve ruido.
+
+Corolario: **una reescritura estructural invalida las auditorías previas.** No
+son arreglos sobre un texto que sigue ahí; son arreglos sobre un texto que ya no
+existe. Si la estructura cambió, el ciclo se corre otra vez sobre el texto nuevo
+— y el test de regresión es lo que hace que la segunda corrida sea barata en vez
+de empezar de cero.
+
 ## Cómo ejecutar
 
 1. **Identifica el archivo objetivo.** Pide la ruta absoluta si no está clara.

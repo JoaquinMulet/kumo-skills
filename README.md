@@ -127,10 +127,12 @@ bien escrito, y aun así quien debe construir algo con él no puede. **Explicar 
 que habilitar.**
 
 Dos aclaraciones sobre el dibujo: **se pueden usar por separado** (si tu texto ya está completo
-y solo es denso, corres la de narrativa sola), pero cuando se usan juntas van en ese orden. Y la
-flecha de vuelta **solo se recorre si la pregunta 4 falla**: lo que el lector tuvo que adivinar es
-exactamente lo que faltaba, así que se rellena y se vuelve a bajar. Si nadie tuvo que adivinar,
-el texto sale por la derecha y no hay loop.
+y solo es denso, corres la de narrativa sola), pero cuando se usan juntas van en ese orden. Y hay
+dos tipos de flecha de vuelta que conviene no confundir: las **cortas** —cada pregunta arregla lo
+suyo y se vuelve a preguntar a sí misma— y la **larga**, que devuelve hasta el principio y **solo
+se recorre si la pregunta 4 falla**. Esa última es la importante: lo que el lector tuvo que
+adivinar es exactamente lo que faltaba, así que se rellena y se baja de nuevo por todo el
+pipeline. Si nadie tuvo que adivinar, el texto sale por la derecha y no hay loop largo.
 
 ## Cómo funcionan por dentro — las seis hacen lo mismo
 
@@ -205,7 +207,7 @@ lo que cada una pone en cada paso:
 |---|---|---|---|
 | `verificacion-adversarial` | las afirmaciones del texto y sus fuentes | uno por ángulo: fuente, medición, inferencia | qué se imprime y qué no |
 | `doc-completitud` | el documento mismo | lectores sin contexto que marcan qué no entienden | qué vacío se rellena y cómo |
-| `doc-cadena-causal` | la rejilla de cinco preguntas (por qué existe, quién lo hace, de dónde sale su número, qué pasa sin él, si le aplica al lector) | auditores que aplican la rejilla concepto por concepto | qué concepto se funda y con qué parche |
+| `doc-cadena-causal` | la lista de conceptos del texto, enumerada a mano antes de invocar a nadie | auditores que aplican a cada concepto la rejilla de cinco preguntas (por qué existe, quién lo hace, de dónde sale su número, qué pasa sin él, si le aplica al lector) | qué concepto se funda y con qué parche |
 | `doc-narrativa` | un inventario de todo lo que el texto ya dice | editores de narrativa, densidad y estructura | el plan de reescritura |
 | `doc-prueba-de-uso` | una pauta de corrección escrita antes de ver nada | lectores que intentan HACER la tarea del documento | qué hay que concretar en el texto |
 | `auditoria-de-realidad` | los archivos reales del proyecto (repo, git, deploy) | un escéptico por cada zona de riesgo | qué hallazgo es real y qué se arregla primero |

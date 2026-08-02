@@ -1,19 +1,19 @@
 ---
 name: doc-cadena-causal
 description: >-
-  Audita si CADA concepto de un documento se sostiene solo: por qué existe, quién
-  lo hace, de dónde sale su número, qué pasaría sin él y si le aplica al lector.
-  Detecta el hueco que las revisiones de estilo NO ven — el concepto presente,
-  definido, bien ubicado y hasta con analogía, del que el lector igual no puede
-  decir para qué existe. Úsala antes de reescribir un documento didáctico o
-  técnico, cuando alguien pregunta "¿y de dónde salió esto?", "¿por qué hay que
-  hacer esto?" o "no entiendo de dónde viene", cuando un lector razona
-  correctamente sobre tu texto y llega a una pregunta sin respuesta, o cuando un
-  material pasó revisión de redacción y sigue sin entenderse. Dispara con
-  "audita si se entiende por qué", "revisa la cadena causal", "busca conceptos
-  sin fundamento", "por qué existe cada cosa". Orquesta con el tool Workflow
-  auditores que aplican una rejilla de cinco preguntas; el orquestador verifica
-  los hallazgos y redacta los parches.
+  Audita si CADA concepto de un documento se sostiene solo y llega A TIEMPO: por
+  qué existe, quién lo hace, de dónde sale su número, qué pasaría sin él, si le
+  aplica al lector, y si se explica ANTES de usarse. Detecta los dos huecos que
+  las revisiones de estilo NO ven: el concepto presente y hasta con analogía del
+  que el lector no puede decir para qué existe, y el que se menciona en párrafos
+  anteriores a donde se explica, calcula o deduce — un defecto de ORDEN que se
+  denuncia como "no se entiende nada" o "es muy árido" y se mide con un contrato
+  de vocabulario. Úsala antes de reescribir un documento didáctico o técnico, o
+  cuando un material pasó revisión de redacción y sigue sin entenderse. Dispara
+  con "revisa la cadena causal", "busca conceptos sin fundamento", "está
+  desordenado", "de dónde salió esto", "por qué existe cada cosa". Orquesta con
+  el tool Workflow auditores que aplican una rejilla de cinco preguntas; el
+  orquestador verifica los hallazgos y redacta los parches.
 ---
 
 # Doc Causal Chain — "¿por qué existe esta cosa?"
@@ -32,6 +32,7 @@ Las otras tres skills de documentos preguntan cosas que un concepto sin causa
 | `doc-completitud` | ¿está el ítem presente? | …está presente. **Pasa.** |
 | `doc-narrativa` | ¿se lee bien? | …se lee bien, con analogía y todo. **Pasa.** |
 | `doc-prueba-de-uso` | ¿puedes ejecutar la tarea? | …no bloquea la tarea. **Pasa.** |
+| **(ninguna de las tres)** | **nadie pregunta por el ORDEN** | …y un concepto usado seis capítulos antes de explicarse **pasa las tres**. |
 
 Las tres pasan y el hueco sobrevive. Caso real: un curso explicaba que «la tasa de
 descuento depende de la garantía del contrato» y explicaba *qué* era la garantía
@@ -52,10 +53,90 @@ comprime; si comprimes un concepto sin fundamento, comprimes el síntoma. En el
 caso real, el flujo de tres lentes dejó el capítulo mejor escrito —arco,
 analogías, fórmulas al apéndice— y no tocó el hueco.
 
+## La deuda de orden: usado antes de explicado
+
+**Este es el defecto estructural más grave y el más invisible de los tres que
+esta skill persigue.** Un concepto puede estar perfectamente explicado, con su
+causa, su fórmula y su ejemplo — y aun así romper el documento, si aparece
+mencionado **en párrafos anteriores** a donde se explica, se calcula o se deduce.
+
+No es un problema de redacción. Es un problema de **orden**, y por eso ninguna
+lente de estilo lo ve: cada párrafo, leído aisladamente, está bien escrito. El
+daño se produce en el lector, que se topa con una cifra o un término que no
+puede evaluar, y a partir de ahí lee todo lo demás con una deuda encima. Cuando
+llega la explicación, tres capítulos después, ya decidió que el material no se
+entiende.
+
+**El síntoma con el que llega el usuario** no es «está mal ordenado» — es «no se
+entiende nada», «esto es muy árido», «me perdí al principio». Si escuchas eso
+sobre un documento que a ti te parece completo y bien escrito, **mide el orden
+antes de tocar una sola frase**.
+
+### La medición: el contrato de vocabulario
+
+Se mecaniza entero, y por eso es barato correrlo tantas veces como haga falta.
+
+1. **Enumera los términos y las cifras derivadas** del documento, y asigna a cada
+   uno **la sección donde se introduce** (se define, se calcula o se deduce). Eso
+   es el contrato: un JSON de `término → sección`.
+2. **Un script busca la PRIMERA aparición** de cada término y falla si es
+   anterior a su sección asignada. El veredicto es una cifra: *deuda total en
+   secciones-concepto*.
+3. **Exime la navegación.** El índice, el encabezado y los «lo veremos en el
+   capítulo N» nombran conceptos sin usarlos; contarlos produce ruido que hace
+   que se ignore el informe entero.
+
+```json
+{ "inefectividad":  {"patron": "inefectividad",     "capitulo": "c5"},
+  "punto base":     {"patron": "puntos? base|\\bpb\\b", "capitulo": "c8"} }
+```
+
+Los instrumentos están escritos y probados en
+[`reference/`](reference/) — cópialos y cambia el contrato:
+
+| Archivo | Qué hace |
+|---|---|
+| `contrato_vocabulario.ejemplo.json` | el formato del contrato `término → sección` |
+| `verificar_orden.py` | falla si un término aparece antes de su sección; exime la navegación |
+| `guardia_primera_pasada.py` | falla si hay una cifra derivada en la primera pasada (lista blanca explícita) |
+| `objetivo.py` | resuelve el archivo objetivo en un solo sitio — ver [`desarrollo-riguroso`](../desarrollo-riguroso/SKILL.md), «un verde debe poder ponerse rojo» |
+
+En el caso real, la primera medición dio **8 conceptos con deuda, 22
+secciones-concepto**. Ese número fue lo que justificó una reescritura estructural
+completa en vez de una pasada de edición — y es la clase de argumento que un
+«creo que está desordenado» nunca gana.
+
+### El remedio no es mover párrafos: es la estructura en espiral
+
+Reordenar suele ser imposible, porque las dependencias son circulares: para
+explicar A hace falta B, y para explicar B hace falta A. La salida es **recorrer
+el material más de una vez, cada vez con más precisión**:
+
+1. **Primera pasada — formas, sin ninguna cifra derivada.** Qué existe, quién
+   hace qué, en qué dirección se mueve cada cosa. El lector construye el modelo
+   mental completo sin necesitar un solo número calculado.
+2. **Segunda pasada — magnitudes.** Ahora sí las cifras, sobre un esqueleto que
+   el lector ya tiene.
+3. **Tercera pasada — el caso real.**
+
+Y la primera pasada se protege con **su propio guardia mecánico**: un script que
+falla si aparece cualquier cifra derivada en esos capítulos, con una lista blanca
+explícita de los datos *crudos* que sí pueden estar (los observados, el nocional,
+las fechas). Sin ese guardia, una cifra se cuela en la primera pasada en la
+primera edición que hagas — **el riesgo no es alto, es certeza**.
+
+### Por qué hace falta el guardia y no basta la disciplina
+
+El autor es estructuralmente ciego a este defecto: **él ya sabe lo que viene
+después**, así que cada mención adelantada le parece natural. Es el mismo motivo
+por el que no se puede autoevaluar la claridad de lo que uno escribió. La deuda
+de orden solo la ve un lector que llega en frío… o un `grep` con un contrato.
+
 ## La rejilla — cinco preguntas por concepto
 
 Se evalúan **en el orden en que el documento presenta el concepto**: explicarlo
-bien pero *después* del primer uso ya es fallar.
+bien pero *después* del primer uso ya es fallar — ver la sección anterior, que es
+la versión mecanizada de esta misma exigencia.
 
 1. **¿POR QUÉ EXISTE?** ¿Se dice qué problema resuelve, antes de usarlo? Si el
    lector no puede completar «esto existe porque si no, pasaría X», falla.
@@ -95,6 +176,49 @@ grep -c "La designación formal es" doc.html        # apariciones en prosa
 ```
 
 En el caso real: **seis en lista, cero en prosa**. Ese ratio era el hueco.
+
+## La sexta pregunta: el contrato del rótulo
+
+La rejilla de arriba audita **conceptos**. Le falta auditar **promesas**, que es
+un defecto distinto y que la rejilla no puede ver: un capítulo puede tener todos
+sus conceptos bien fundados y aun así no entregar lo que su propio rótulo anunció.
+
+Todo rótulo es un contrato con el lector. En un documento didáctico hay cuatro
+tipos, y todos son verificables:
+
+| Rótulo | Promesa | Se comprueba |
+|---|---|---|
+| Título de sección | que la sección trate de eso | ¿el cuerpo responde el título? |
+| «Qué sabrás hacer al terminar» | cada objetivo declarado | ¿el cuerpo enseña a hacerlo? |
+| «Pregunta que queda abierta» | que se responda | ¿existe la sección que la cierra, y la cierra? |
+| «lo veremos en el capítulo N» | que N lo trate | ¿N existe y lo trata? |
+
+**El caso que originó esto.** Un capítulo titulado «Alguien te vende el otro
+lado» explicaba qué es el instrumento y nunca decía por qué la contraparte quiere
+ese lado. Las cuatro skills de redacción lo dieron por bueno. Y el diagnóstico
+fino es peor que el síntoma: **sus tres objetivos declarados tampoco mencionaban
+la promesa del título**. Había dos rótulos en el mismo capítulo contradiciéndose
+entre sí, y ninguna lente compara rótulo contra rótulo.
+
+**Por eso el primer cotejo es título ↔ objetivos, antes de mirar el cuerpo.** Es
+el más barato de los tres y el que delata el hueco de origen: si la promesa del
+título no aparece entre los objetivos, nadie que revise «objetivos vs. cuerpo»
+la va a echar de menos.
+
+### Qué NO funciona: el solape léxico
+
+Es tentador automatizarlo comparando las palabras del título con las de los
+objetivos. **Se probó y no sirve:** marcó 12 de 24 capítulos, casi todos falsos
+positivos, porque los buenos títulos son evocativos a propósito («El swap
+compensa casi todo. Casi.») y no repiten el vocabulario del objetivo. Un
+detector con 50 % de falsos positivos se ignora a la tercera corrida.
+
+Lo que sí acota el trabajo es **filtrar por forma del rótulo**: los títulos
+**interrogativos o promisorios** —los que preguntan algo, prometen una revelación
+o nombran un agente sin identificarlo («alguien», «el que decide», «lo que
+nadie te cuenta»)— son un subconjunto pequeño y son donde vive el defecto. Esos
+se revisan semánticamente, uno por uno; los descriptivos («El bono, cierre a
+cierre») casi nunca fallan.
 
 ## Cómo ejecutar
 
@@ -193,6 +317,17 @@ mano si un modelo puede calcularla, y las condiciones que deben cumplirse
 impresas como `True`/`False` cada vez que el modelo corre. Es disciplina de
 autoría, no etapa de revisión — un agente leyendo el documento no puede
 recalcular el modelo. Ver `desarrollo-riguroso`.
+
+## Tus hallazgos deben sobrevivir a la próxima reescritura
+
+Los parches que produce esta skill viven en una redacción concreta y **no
+sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
+desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
+
+Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
+corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+doctrina completa, con el caso real que la originó, está en
+[`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
 
 ## Skills hermanas
 
