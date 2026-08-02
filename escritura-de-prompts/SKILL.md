@@ -1,6 +1,6 @@
 ---
 name: escritura-de-prompts
-description: Metodología para escribir, mejorar, auditar o diagnosticar prompts dirigidos a Claude. Usa esta skill cuando el usuario pida ayuda para redactar un prompt, mejorar uno que ya tiene, diagnosticar por qué un prompt produjo una salida mediocre, auditar un prompt antes de usarlo en producción, o convertir una idea vaga en una instrucción precisa. También aplica cuando dice cosas como "ayúdame con este prompt", "este prompt no funciona", "Claude me respondió X pero yo quería Y", "cómo le pido a Claude que…", "revísame este prompt", "mejóralo", "por qué me dio esta respuesta", "help me write a prompt", "review this prompt", "this prompt isn't working", o equivalentes en cualquier idioma — incluso cuando solo pega un prompt y otra salida sin instrucción explícita, esperando una versión mejor.
+description: Metodología para escribir, mejorar, auditar o diagnosticar prompts dirigidos a Claude. Usa esta skill cuando el usuario pida ayuda para redactar un prompt, mejorar uno que ya tiene, diagnosticar por qué un prompt produjo una salida mediocre, auditar un prompt antes de usarlo en producción, o convertir una idea vaga en una instrucción precisa. También aplica cuando dice cosas como "ayúdame con este prompt", "este prompt no funciona", "Claude me respondió X pero yo quería Y", "cómo le pido a Claude que…", "revísame este prompt", "mejóralo", "por qué me dio esta respuesta", "help me write a prompt", "review this prompt", "this prompt isn't working", o equivalentes en cualquier idioma — incluso cuando solo pega un prompt y otra salida sin instrucción explícita, esperando una versión mejor. Cubre también prompts de orquestación multi-agente — políticas de búsqueda persistente, portafolios de enfoques, contratos de resultado para enjambres de agentes.
 ---
 
 # Escritura de prompts
@@ -303,6 +303,12 @@ lente cada uno, es la versión escalada.
 El andamiaje reusable —cómo se declara el ancla, los topes, los schemas con prueba de trabajo—
 vive en [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md);
 **léelo antes de escribir el workflow**, no re-derives la forma.
+
+## Prompts de orquestación multi-agente
+
+Hay una especie distinta de prompt que las ocho piezas no cubren sola: el que recibe un **agente raíz que dirige un enjambre de sub-agentes** en una búsqueda persistente (demostrar algo difícil, cazar una causa raíz esquiva, agotar un espacio de diseño). Ese prompt no describe una tarea — describe una **política de búsqueda**, y le apila nueve piezas propias encima de las ocho base: contrato de resultado con definición negativa, cierre de salidas-escape, premisa operativa fijada, política de portafolio por heurísticas, independencia epistémica con polinización diferida, economía de rutas bloqueadas, moneda concreta con adversarial continuo, permisos de herramientas con carve-out, y presupuesto con criterio de parada honesto.
+
+Las nueve piezas, sus trampas y un ejemplo completo viven en [reference/orquestacion-de-agentes.md](reference/orquestacion-de-agentes.md). Léelo antes de escribir o auditar un prompt de orquestación; para fan-outs simples y paralelos basta con las ocho piezas y el anexo de estabilidad.
 
 ## Mejora compuesta: codificar el aprendizaje
 
