@@ -49,7 +49,9 @@ if [ -z "$KUMO_SKIP_SYNC_CHECK" ] && [ -d "$HOME/.claude/skills" ]; then
       inst="$HOME/.claude/skills/$f"
       [ -f "$inst" ] || continue          # no instalada aun: no es drift
       git show "HEAD:$f" > "$raiz_tmp" 2>/dev/null || continue   # archivo nuevo: nada que comparar
-      diff -q "$raiz_tmp" "$inst" >/dev/null 2>&1 || sucias="$sucias  $f\n"
+      # --strip-trailing-cr: HEAD guarda LF pero con core.autocrlf=true la copia
+      # instalada queda CRLF; sin esto, cada archivo identico acusa drift falso.
+      diff -q --strip-trailing-cr "$raiz_tmp" "$inst" >/dev/null 2>&1 || sucias="$sucias  $f\n"
     done
   done
   rm -f "$raiz_tmp"

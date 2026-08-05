@@ -19,15 +19,17 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`doc-prueba-de-uso`](doc-prueba-de-uso/) | **Pipeline documental, paso 4** — valida que un lector frío débil pueda EJECUTAR la tarea que el texto habilita (que sirva para hacer, no solo para entender). |
 | [`auditoria-de-realidad`](auditoria-de-realidad/) | Un agente fresco y escéptico hurga el estado REAL (repo, git, deploy, secretos, código) con pregunta abierta — caza lo que el propio aparato no está viendo. El complemento abierto de VERIFY-REAL. |
 | [`verificacion-adversarial`](verificacion-adversarial/) | Aduana de hechos para un texto que se publica: buscadores reúnen evidencia y refutadores independientes intentan destruirla. El producto es un veredicto por afirmación, no un informe nuevo. |
+| [`agents-sdk`](agents-sdk/) | Conocimiento técnico versionado del Cloudflare Agents SDK: tabla de retrieval a las docs oficiales (verificada URL por URL), harness Think, MCP, workflows, estado. Sesga a Claude a leer las docs actuales en vez de su pre-entrenamiento. |
 
 ### El mapa — por qué existe cada skill
 
-Las nueve responden cuatro preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
+Las diez responden cinco preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
 
 - **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo — siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda — convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
 - **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts` — el modelo está fijo; el prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos; solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
+- **Con qué construimos agentes.** `agents-sdk` — conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse.
 
 ### El ciclo — lo único que hay que entender el primer día
 
@@ -136,7 +138,7 @@ pipeline. Si nadie tuvo que adivinar, el texto sale por la derecha y no hay loop
 
 ## Cómo funcionan por dentro — las seis hacen lo mismo
 
-Seis de las nueve skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
+Seis de las diez skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
 en paralelo**, cada uno mirando el mismo material desde un ángulo distinto, y después alguien
 junta los resultados. Las seis siguen exactamente la misma secuencia de cinco pasos.
 
@@ -212,8 +214,9 @@ lo que cada una pone en cada paso:
 | `doc-prueba-de-uso` | una pauta de corrección escrita antes de ver nada | lectores que intentan HACER la tarea del documento | qué hay que concretar en el texto |
 | `auditoria-de-realidad` | los archivos reales del proyecto (repo, git, deploy) | un escéptico por cada zona de riesgo | qué hallazgo es real y qué se arregla primero |
 
-Las otras tres (`desarrollo-riguroso`, `retrospectiva-de-sesion`, `escritura-de-prompts`) no
-lanzan agentes: son método que Claude aplica leyéndolas. Y eso es literal — no hay que invocarlas
+Las otras cuatro (`desarrollo-riguroso`, `retrospectiva-de-sesion`, `escritura-de-prompts`,
+`agents-sdk`) no lanzan agentes: las tres primeras son método que Claude aplica leyéndolas, y
+`agents-sdk` es conocimiento técnico que lo manda a leer las docs vivas de Cloudflare. Y eso es literal — no hay que invocarlas
 a mano: al iniciar la sesión Claude lee el nombre y la descripción de cada skill instalada, y
 cuando le pides algo que calza con una, la carga completa y la sigue (ver
 [Cómo se invocan](#cómo-se-invocan) más abajo). El detalle técnico de la maquinaria
