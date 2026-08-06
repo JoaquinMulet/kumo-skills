@@ -39,11 +39,33 @@ MARCAS_HARNESS = (
     "Caveat: The messages below",
     "hook success:",
     "hook feedback:",
+    # inyecciones que tambien viajan como queue-operation/enqueue:
+    "<task-notification>",          # aviso de subagente terminado
+    "[SYSTEM NOTIFICATION",         # envoltorio de notificaciones del harness
+    "Base directory for this skill:",  # cuerpo de una skill invocada
 )
 
 
 def texto_del_turno(registro):
     """Devuelve el texto que escribio la persona, o None si el registro no es un turno suyo."""
+    # Mensajes enviados A MITAD DE TURNO: el harness los adjunta al siguiente
+    # tool_result (donde el filtro de abajo los bota, con razon), pero quedan
+    # LIMPIOS en el registro queue-operation/enqueue. Sin esta rama, toda
+    # correccion dicha mientras el agente trabajaba es invisible para el juez
+    # frio de la retro (descubierto el 2026-08-06: dos correcciones reales del
+    # usuario no aparecian entre los turnos extraidos y el juez las declaro
+    # de origen no rastreable). Como un mensaje encolado puede ademas llegar
+    # como turno 'user' normal, main() deduplica textos exactos.
+    if registro.get("type") == "queue-operation":
+        if registro.get("operation") != "enqueue":
+            return None
+        texto = registro.get("content")
+        if not isinstance(texto, str):
+            return None
+        texto = texto.strip()
+        if not texto or any(m in texto[:VENTANA_MARCA] for m in MARCAS_HARNESS):
+            return None
+        return texto
     if registro.get("type") != "user":
         return None
     contenido = registro.get("message", {}).get("content")
@@ -120,7 +142,10 @@ def main():
                 lineas_ilegibles += 1
                 continue
             texto = texto_del_turno(registro)
-            if texto:
+            # dedup exacto: un mensaje encolado (queue-operation) puede llegar
+            # tambien como turno 'user' normal; la misma frase dos veces
+            # inflaria la senal del juez
+            if texto and texto not in turnos:
                 turnos.append(texto)
 
     if lineas_ilegibles:
