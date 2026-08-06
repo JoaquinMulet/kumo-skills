@@ -1,5 +1,11 @@
 # Kumo Skills
 
+**Si tu Read se trunca, sigue paginando hasta el final antes de actuar** — y
+antes de CREAR o RENOMBRAR una skill, lee completas la sección «Convenciones
+de Kumo» de este archivo y el mapa del README: el 2026-08-06 una regla ya
+escrita (README: «cada nombre dice su propósito, no su mecanismo») se violó
+porque el autor leyó solo las primeras 40 líneas de este documento.
+
 Repositorio canónico de las **Agent Skills** de Kumo. Fuente única de verdad: cualquier skill que la empresa use con Claude (en claude.ai, la API o Claude Code) vive primero acá, versionada en git, y desde acá se distribuye a las superficies correspondientes.
 
 Documentación oficial de Anthropic (autoridad para todo lo no cubierto acá):
