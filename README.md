@@ -20,7 +20,7 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`auditoria-de-realidad`](auditoria-de-realidad/) | Un agente fresco y escéptico hurga el estado REAL (repo, git, deploy, secretos, código) con pregunta abierta — caza lo que el propio aparato no está viendo. El complemento abierto de VERIFY-REAL. |
 | [`verificacion-adversarial`](verificacion-adversarial/) | Aduana de hechos para un texto que se publica: buscadores reúnen evidencia y refutadores independientes intentan destruirla. El producto es un veredicto por afirmación, no un informe nuevo. |
 | [`agents-sdk`](agents-sdk/) | Conocimiento técnico versionado del Cloudflare Agents SDK: tabla de retrieval a las docs oficiales (verificada URL por URL), harness Think, MCP, workflows, estado. Sesga a Claude a leer las docs actuales en vez de su pre-entrenamiento. |
-| [`markdown-para-agentes`](markdown-para-agentes/) | Negociación de contenido Markdown de ORIGEN para cualquier sitio (responder `text/markdown` a los agentes de IA) sin pagar el plan Pro de zona de Cloudflare: generador determinista + middleware por plataforma + verificación con curl. |
+| [`aeo-sitios-web`](aeo-sitios-web/) | El playbook para dejar un sitio web listo para la era agéntica y la búsqueda por IA (SEO/AEO): acceso de crawlers, descubrimiento, Markdown de origen sin plan Pro, y puerta MCP con confirmación humana. Con verificación mecánica por nivel. |
 
 ### El mapa — por qué existe cada skill
 
@@ -30,7 +30,7 @@ Las once responden cinco preguntas distintas. Cada nombre dice su propósito, no
 - **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts` — el modelo está fijo; el prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos; solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
-- **Con qué construimos agentes.** `agents-sdk` — conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `markdown-para-agentes` — el patrón de la casa para que cualquier sitio nuestro o de un cliente atienda agentes de IA con Markdown desde el origen, sin pagar plan Pro de zona; nació de la implementación verificada en kumocloud.cl (2026-08-06).
+- **Con qué construimos agentes.** `agents-sdk` — conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `aeo-sitios-web` — el playbook para que cualquier sitio nuestro o de un cliente quede listo para la era agéntica (SEO/AEO): nació de la implementación verificada en kumocloud.cl (21→36 puntos el 2026-08-06).
 
 ### El ciclo — lo único que hay que entender el primer día
 

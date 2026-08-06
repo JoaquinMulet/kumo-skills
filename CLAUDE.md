@@ -68,6 +68,15 @@ Validaciones del frontmatter (las exige el runtime, no son opcionales):
 - **Skills de dominio interno** (procesos contables, financieros, operacionales de la empresa): español, sustantivo descriptivo o gerundio — `analisis-de-cartolas`, `calce-bancario`, `escritura-de-prompts`.
 - **Skills genéricamente técnicas** (procesamiento de archivos, formatos estándar): inglés si la convención lo pide — `pdf-extraction`, `xlsx-formatting`.
 - Prohibido: nombres vagos (`helper`, `utils`, `tools`, `documents`).
+- **El nombre y la description nombran la SITUACIÓN de trabajo, no el
+  mecanismo.** El lector del nombre es un agente que ve solo la lista de
+  skills y decide cuál cargar: debe reconocer CUÁNDO aplica («estoy haciendo
+  un sitio web / optimizando SEO»), no la técnica interna. Test: tapa el
+  cuerpo de la skill y pregúntate si un agente en la situación objetivo la
+  cargaría solo por nombre + description. Caso origen (2026-08-06): se nombró
+  `markdown-para-agentes` (el mecanismo) a la skill de preparar sitios para
+  la era agéntica; ningún agente haciendo «un sitio web con SEO/AEO» la
+  habría cargado. Se renombró `aeo-sitios-web`.
 
 ### Idioma
 
