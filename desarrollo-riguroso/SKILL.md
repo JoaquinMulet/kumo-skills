@@ -125,6 +125,8 @@ Caso especial legítimo: la falla tragada **a propósito** (un write best-effort
 
 Leer la implementación de cada helper, macro o constante de la que dependes — no confiar en su nombre. Al **reusar** código "confiable", fijar en un test EL SUPUESTO que importas: sobre todo (a) en qué unidad/moneda/tipo compara, y (b) si usa el valor del período o el acumulado. Código confiable trae bugs latentes que se activan con una forma de dato nueva. *(ej. una función reusada comparaba un monto en EUR contra un pool en CLP y escondió el bug.)* Para código portado, la implementación de referencia ES la spec: diferenciar el flujo contra ella antes de "corregir" un bug aparente.
 
+**Los datos de texto no son el texto que crees.** Todo parser de texto plano propio tolera CRLF (`split(/\r?\n/)`), BOM y espacios de cola desde que nace: son invisibles en el editor y rompen el match en silencio. Al diagnosticar «el archivo está bien y no funciona», mira los BYTES del archivo ANTES que la lógica — un dump cuesta un segundo; teorizar sobre el parser cuesta la sesión. Y la otra cara, al ESCRIBIR: una herramienta puede agregar lo invisible (`Out-File -Encoding utf8` de PowerShell 5.1 antepone BOM) — un archivo que otro programa va a leer se escribe con encoding explícito sin BOM. *(ej. real, dos mordidas en una sesión: un `.env` con CRLF dejó al dev server sin NINGUNA clave —`(.*)$` no matcheaba ninguna línea—, y un settings.json escrito con BOM quedó para su lector como config inválida.)*
+
 ## El anti-cargo-cult: adopta el principio, re-deriva el mecanismo
 
 La regla más importante al importar prácticas de una referencia de la industria que admires: para CADA práctica preguntar **"¿qué invariante protege, y este proyecto lo tiene?"**
