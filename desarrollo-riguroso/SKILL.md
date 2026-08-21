@@ -202,6 +202,7 @@ El error más peligroso no es el bug — es **creer que lo validaste**. Correr t
 - **Un entorno opaco es un oráculo no consultado — instruméntalo ANTES de teorizar.** Cuando lo que falla es un runtime remoto u opaco que no puedes inspeccionar directamente, el primer movimiento NO es hipotetizar la causa ni aplicar un fix especulativo: es hacerlo observable — un diagnóstico seguro corrido DENTRO de ese runtime que devuelva el artefacto primario (estado real de credenciales/config, resolución de binarios, nombres de env vars — presencia, nunca el VALOR de un secreto a la transcripción). Teorizar contra un entorno invisible es adivinar; y heredar el auto-diagnóstico causal del subsistema que falló (tomar su mensaje de error como la causa) propaga su error. Peor: la cirugía invasiva a ciegas sobre un recurso compartido (reemplazar un binario, pisar un symlink) puede empeorar el fallo en vez de arreglarlo. *(ej. real: varias rondas teorizando por qué un routine remoto daba `InvalidClientTokenId` —¿key rotada? ¿token expirado? ¿IP?— hasta que UN diagnóstico in-situ mostró la causa de una: el runtime inyectaba una env var placeholder que tapaba el archivo de credenciales; y encima, un wrapper "clever" aplicado a ciegas sobre el binario `aws` lo dejó colgado.)*
 - **Un verificador debe demostrar que ejerció el objeto (prueba de trabajo).** Un auditor que puede devolver "sin hallazgos" sin haber leído nada es un lazo cerrado más: cumple el contrato de salida (el schema, el formato) midiendo el vacío — y el output estructurado *enmascara* el fallo aguas arriba, porque el agente rellena el schema obedientemente en vez de gritar. Exige en el output una prueba de lectura/ejecución (el título real del objeto, una línea textual, el conteo de lo procesado) y trata el **cero hallazgos de la primera pasada como sospecha de instrumento roto**, no como éxito. *(ej. real: dos rondas de lectores ciegos devolvieron "SIN_VACIOS" schema-perfecto sobre un capítulo… porque un bug de argumentos les pasó una lista de archivos VACÍA; la ronda con ruta incrustada y campo obligatorio "resumen_leido" encontró un bloqueante y un error matemático real que el autor no había visto.)*
 - **Un verde debe poder ponerse rojo, y el verificador debe decir sobre QUÉ opinó.** La prueba de trabajo del punto anterior contesta *"¿leyó algo?"*; falta contestar *"¿leyó lo correcto?"* y *"¿este verde es capaz de ser rojo?"*. Un verificador que apunta al archivo equivocado no da error: da **verde**, que es el peor resultado posible porque se parece al éxito. Dos reglas baratas: (1) el objetivo **nunca** se escribe a mano en cada instrumento — se resuelve en un solo lugar compartido y el reporte **imprime la ruta que leyó**; (2) antes de creerle a un verde, aliméntalo con una entrada que DEBE fallar y comprueba que falla. Hermano del *«una medición que acusa necesita un control»*: **una que absuelve, también**. *(ejs. reales, misma sesión: un verificador de vocabulario informó "DEUDA CERO — 58 términos" mientras leía la versión ANTERIOR del documento, porque su ruta estaba hardcodeada y había divergido de la de sus dos hermanos; y un guardia de idempotencia que preguntaba `if 'sobrevivir' in texto` para no duplicar una sección se dio por satisfecho con una frase no relacionada y se saltó el archivo.)*
+- **El veredicto viaja por un canal, y el canal también miente.** Los dos puntos anteriores endurecen al verificador; falta el cable por el que llega su respuesta. El caso barato y universal: en un shell, `$?` después de una tubería es el código del ÚLTIMO comando de la tubería, no el del verificador — `cmd | tail` convierte todo fallo en éxito aparente, y `cmd > archivo` o `cmd | tee` hacen lo mismo. La regla: **el instrumento se corre solo y su código de salida se lee sin intermediarios**; si necesitas su salida filtrada, captúrala primero y filtra después, o usa `set -o pipefail`. Vale más allá del shell: un `try/except` que envuelve al verificador, un runner que reporta "completado" en vez del veredicto, un schema que solo tiene campo de resultado y no de error — todos son el mismo cable que colorea de verde lo que llegó rojo. Prueba de un segundo: `sh -c "exit 1" | tail; echo $?` debe darte 1 y te da 0. *(ej. real: el test que verifica un parche de privacidad sobre un bot público se corrió con `| tail` y el comando reportó `EXIT=0` mientras el test imprimía "el parche NO está aplicado"; el mensaje era explícito y por eso no hubo daño, pero un fallo más callado se habría leído como canal protegido.)*
 - **Un ritual sin enforcement es teatro.** VERIFY-REAL y la retrospectiva derivan si dependen de que alguien se acuerde. Conviértelos en GATES automáticos (un hook, un deploy que se niega fuera del trunk, un check del harness). Lo hace cumplir el harness, no la buena voluntad.
 - **Cierra toda sesión con la pregunta adversarial-contra-la-realidad:** *"¿qué problema real y grave es invisible para mi aparato AHORA?"* — sobre el repo/prod real, no un fixture. **Encontrar un error por suerte (porque un humano lo señaló) NO cuenta como que el sistema funciona.**
 
@@ -253,6 +254,201 @@ contable** (`grep` de lo duplicado, que debe quedar en uno) y la **prueba de uso
 artefacto reusable — un lector frío, con ese archivo como única fuente, ejecutando la tarea
 que el archivo existe para habilitar. Validar un artefacto reusable releyéndolo es la forma
 más débil de verificación que existe.
+
+## Higiene continua del repo — instrumentos, trinquete e informe
+
+Las pruebas responden «¿funciona?». No responden «¿está creciendo mal?». La complejidad,
+la duplicación y el código muerto no rompen nada el día que aparecen: se acumulan hasta
+que un cambio simple cuesta una tarde. **Lo que no se mide, crece.**
+
+**El encuadre que ordena todo esto, y que es fácil de perder: quien lee, entiende y
+modifica el código eres tú (el agente). Las herramientas no refactorizan nada — solo
+apuntan dónde mirar.** De ahí se deduce el criterio para elegirlas: sirve la que te
+entrega una lista corta, ordenada por lo que ganas, con la ruta y la línea para ir a
+leer. No sirve la que te entrega un puntaje, un porcentaje o un tablero. Un número no
+dice qué hacer.
+
+### Las tres piezas, y por qué son tres y no una
+
+Confundirlas es el error habitual, porque las tres «miden calidad» y hacen cosas
+opuestas.
+
+1. **Instrumentos.** Miden y no opinan. Se configuran una vez y se corren cuando alguien
+   pregunta.
+2. **Trinquete.** Es un portón. Falla si una métrica **empeoró**. No pide mejorar el
+   número histórico, solo no empujarlo hacia arriba. Así una base con deuda vieja se
+   puede seguir trabajando sin una limpieza previa imposible.
+3. **Informe de oportunidades.** No es portón. Es la lista de trabajo para ti, ordenada
+   por líneas ahorrables. Nunca falla, nunca bloquea.
+
+### El trinquete se COMPUTA, jamás se guarda en un archivo
+
+La forma habitual del trinquete es un umbral versionado. **Eso no sirve cuando el
+mantenedor es un agente de IA**, porque al ver rojo puede subir el número en el mismo
+commit que lo rompe, y nadie se entera. Un número que el mantenedor puede editar no es
+un trinquete, es un comentario.
+
+La línea base se calcula. Se mide el árbol de trabajo, se mide el árbol del
+`git merge-base` contra el remoto, y se comparan. Para aflojarlo habría que reescribir la
+historia del remoto. Y como el portón corre antes de empujar, un número peor nunca llega
+al remoto, así que la base solo puede quedarse igual o mejorar. **El trinquete se
+sostiene solo.**
+
+Dos trampas medidas en carne propia.
+
+- **Las dos mediciones usan la MISMA vara.** La configuración de las herramientas sale
+  siempre del árbol de trabajo, nunca del árbol viejo. Sin eso, estrenar una regla nueva
+  se lee como «el código empeoró de 0 a 40», y quitar una regla se lee como una mejora.
+  Las dos lecturas son falsas.
+- **Toda métrica va en el mismo sentido: menos es mejor.** Si una va al revés, la
+  comparación deja de ser una sola y hay que recordar el sentido de cada una, que es
+  justo el momento en que alguien se equivoca.
+
+### Leer la salida de una herramienta es una fuente de defectos, no un detalle
+
+Tres lecturas equivocadas seguidas del mismo dato, el mismo día, **y las tres
+subestimaban**: una expresión regular sobre el texto con colores dio 1 de 40; leyendo
+stdout, el texto de stderr venía pegado al JSON y lo reventaba, dando 0 de 40; y el
+puntaje no se llamaba como yo creía, dando 0 otra vez.
+
+Reglas que quedan.
+
+- **Pide el informe en JSON y a un ARCHIVO**, nunca por stdout, que viene mezclado con
+  stderr.
+- **Una medición que falla dice DESCONOCIDA, jamás cero.** Un cero silencioso se lee como
+  «está limpio», que es la conclusión contraria. En el trinquete, un fallo de lectura
+  mata el portón en vez de devolver un número inventado.
+- **Compara contra la herramienta cruda antes de creerle a tu lector.** Si tu informe
+  dice 1 y la herramienta dice 40, el defecto es tuyo.
+
+### Antes de medir, acota. Una medición que incluye lo que no puedes arreglar no sirve
+
+La duplicación de un repo daba 31,92 por ciento y tapaba por completo la real, que era
+4,43, porque contaba HTML capturado de un sitio externo que se guarda como evidencia de
+pruebas. Y el detector de código muerto marcaba medio repositorio, porque no encontraba
+el punto de entrada.
+
+**Cuando un medidor dé una cifra escandalosa, la primera hipótesis es que está midiendo
+mal, no que el código esté podrido.** Y cuando la cifra cae de 15 hallazgos a 4 al
+arreglar la configuración, esos 11 eran ruido que habría hecho perder una tarde.
+
+Causa concreta que vale la pena tener a mano: **un BOM al inicio de un archivo de
+configuración**. El programa principal lo tolera y el resto de las herramientas fallan al
+leerlo. Un BOM no rompe nada visible, rompe al siguiente programa que lea el archivo.
+
+### La unidad accionable no siempre es la que reporta la herramienta
+
+Los detectores de clones reportan **parejas**. La unidad sobre la que uno actúa es la
+**familia**, o sea todos los sitios que comparten el mismo fragmento. Cuatro copias
+producen seis parejas y se leen como seis problemas distintos.
+
+El informe agrupa las parejas en familias (union-find sobre los sitios), ordena por
+`(sitios - 1) x líneas`, que es lo que de verdad se ahorra, e **imprime el fragmento
+compartido**, para que no haya que abrir cuatro archivos para entender de qué se trata.
+
+Regla general que vale más allá de los clones: **antes de mostrar la salida de una
+herramienta, pregúntate cuál es la unidad sobre la que se decide, y agrupa hasta llegar a
+ella.**
+
+### Otros lenguajes: se adopta la FUNCIÓN, no el nombre de la herramienta
+
+Nada de esto es de JavaScript. Cada pieza es una **función** y en cada lenguaje hay algo
+que la cumple. **Al entrar a un repo, lo primero es inventariar qué lenguajes tiene de
+verdad, y buscar el equivalente de cada función para cada uno.** Un repo políglota con
+instrumentos en un solo lenguaje deja el resto sin vigilancia y da una tranquilidad falsa,
+que es peor que no medir.
+
+| Función | JavaScript y TypeScript | Python | Rust | Go | Java y Kotlin | C y C++ | Multi-lenguaje |
+|---|---|---|---|---|---|---|---|
+| Formato y reglas de estilo | Biome | Ruff format | rustfmt | gofmt | ktlint, spotless | clang-format | pre-commit |
+| Complejidad excesiva | Biome | Ruff, radon | clippy | gocyclo | detekt, PMD | clang-tidy | lizard |
+| Código duplicado | jscpd | jscpd | jscpd | dupl | PMD CPD | PMD CPD | jscpd, PMD CPD |
+| Exportaciones y archivos muertos | knip | vulture, deptry | cargo-udeps | deadcode | (IDE) | cppcheck | — |
+| Grafo de dependencias | dependency-cruiser | pydeps | cargo-modules | go mod graph | jdeps | include-what-you-use | — |
+| Vulnerabilidades en terceros | npm audit | pip-audit | cargo audit | govulncheck | OWASP DC | — | Dependabot, Snyk |
+| Camino del dato (inyecciones) | CodeQL | CodeQL, bandit | cargo geiger | CodeQL | CodeQL | CodeQL | Semgrep |
+
+Antes de dar una fila por buena, **verifica que la herramienta exista y corra hoy en ese
+proyecto**, porque esta tabla envejece. La forma de verificarlo es correrla, no leer su
+página.
+
+El trinquete es agnóstico por construcción: cada métrica es una función que recibe una
+carpeta y devuelve un número donde menos es mejor. Agregar un lenguaje es agregar una
+entrada a esa lista, no reescribir nada.
+
+### Seguridad: es la única capa que las pruebas no pueden cubrir
+
+Una prueba comprueba el resultado de una función. **CodeQL sigue el camino de un dato
+entre funciones**, desde donde entra hasta donde se usa, y por eso encuentra inyecciones
+y fugas que ninguna prueba unitaria ve. Es gratis en repositorios públicos de GitHub, y
+`Semgrep` cubre el caso de los privados.
+
+Tres decisiones que evitan que el análisis se vuelva ruido ignorado.
+
+- **Auditar solo las dependencias de producción.** Una vulnerabilidad en una herramienta
+  de desarrollo no llega al despliegue. Mezclarlas alarga la lista, y una lista larga que
+  nadie mira no protege nada.
+- **Un cron semanal.** Una vulnerabilidad publicada el miércoles no espera al próximo
+  commit.
+- **Dependabot semanal, no diario.** Una cola de propuestas que nadie alcanza a revisar
+  se vuelve ruido, y el ruido se ignora entero.
+
+### Dónde corre cada cosa
+
+- **Al editar**, en el editor. Formato y reglas de estilo.
+- **Antes de cada commit**, unos 15 segundos. Compilar y la suite completa. Nada más: un
+  portón lento se termina saltando.
+- **Antes de cada push**, unos minutos. Exactamente lo que corre el CI, más el trinquete.
+  Si tu portón local corre **menos** que el CI, tu verde es de otro color. Abre el archivo
+  del CI y compara comando por comando.
+- **En el CI**, lo lento y lo programado. Análisis de seguridad y las verificaciones
+  contra servicios reales.
+- **Cuando toca refactorizar**, a mano. El informe de oportunidades.
+
+Los hooks van **versionados en el repo** con `core.hooksPath`, no en `.git/hooks`, o solo
+existen en la máquina de quien los escribió.
+
+### Reglas de commit que se siguen de todo esto
+
+- **Cada arreglo en su propio commit.** Mezclar una limpieza con un cambio de conducta
+  hace que ninguna de las dos se pueda revisar ni revertir.
+- **El repo se entrega más limpio de lo que estaba.** Antes de escribir el mensaje: qué
+  código dejó de usarse con este cambio, qué número o texto quedó repetido en dos
+  lugares, qué comentario describe cómo era antes.
+- **El commit de formato masivo va solo**, y su SHA se anota en `.git-blame-ignore-revs`
+  con `git config blame.ignoreRevsFile`. Sin eso, un solo commit se come el historial de
+  autoría de todo el repo.
+- **Quien empuja mira el CI.** Y si no va a mirarlo, el portón tiene que correr antes del
+  empujón. *(Caso real: 4 commits seguidos en rojo mientras yo declaraba verde, porque yo
+  corría menos de lo que corría el CI. El usuario se enteró antes que yo.)*
+
+### Un portón que nadie probó cerrar no es un portón
+
+Introduce a propósito el defecto que el portón existe para atrapar, confirma que se pone
+rojo y que sale con código distinto de cero, y **después** revierte. Vale para el
+trinquete, para cada comprobación de clase y para cada regla nueva. Una prueba que no
+puede fallar da confianza falsa, y es peor que no tenerla.
+
+Dos detalles que muerden al revertir. `git checkout -- archivo` restaura desde el
+**índice**, así que si ya hiciste `git add` te devuelve la versión mala: va
+`git checkout HEAD -- archivo`. Y los scripts con escapes van a un **archivo**, nunca a un
+heredoc, que se come las barras invertidas y rompe las expresiones regulares en silencio.
+
+### Lo que NO hace falta, y por qué
+
+La lista canónica de «herramientas para coordinar un ejército de desarrolladores»
+(SonarQube, Sourcegraph, Structure101, Backstage, Snyk) resuelve un problema que casi
+ningún proyecto tiene todavía: **fragmentación del conocimiento entre muchas personas y
+muchos repos**. Sus funciones de calidad ya están cubiertas por instrumentos locales,
+gratis y de segundos, y su regla estrella («que ningún cambio empeore el código») es
+exactamente el trinquete, en una versión más débil, porque su umbral se guarda.
+
+El criterio para adoptar una de ellas es una pregunta concreta, no el prestigio de la
+herramienta: **¿hay hoy alguien que no encuentra el código que necesita?** Si la respuesta
+es no, un buscador universal y un portal de servicios son infraestructura que hay que
+mantener sin nadie que la use. El día que sean varios repos y varias personas, se adoptan,
+y el orden correcto es primero el buscador (`Sourcegraph`) y mucho después el portal
+(`Backstage`).
 
 ## Cómo crece este estándar — la paranoia del compounding
 
