@@ -21,15 +21,18 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`verificacion-adversarial`](verificacion-adversarial/) | Aduana de hechos para un texto que se publica: buscadores reúnen evidencia y refutadores independientes intentan destruirla. El producto es un veredicto por afirmación, no un informe nuevo. |
 | [`agents-sdk`](agents-sdk/) | Conocimiento técnico versionado del Cloudflare Agents SDK: tabla de retrieval a las docs oficiales (verificada URL por URL), harness Think, MCP, workflows, estado. Sesga a Claude a leer las docs actuales en vez de su pre-entrenamiento. |
 | [`aeo-sitios-web`](aeo-sitios-web/) | El playbook para dejar un sitio web listo para la era agéntica y la búsqueda por IA (SEO/AEO): acceso de crawlers, descubrimiento, Markdown de origen sin plan Pro, y puerta MCP con confirmación humana. Con verificación mecánica por nivel. |
+| [`gobernanza-primero`](gobernanza-primero/) | La puerta que corre ANTES de cualquier analisis de una empresa: si los incentivos estan mal, la historia de asignacion de capital ya predice el futuro y no hay para que seguir. |
+| [`checklist-lehman`](checklist-lehman/) | Las 70 preguntas que hay que hacerle a unos estados financieros, derivadas del 10-K de Lehman 2007 anotado por Buffett. Pasada obligatoria de todo informe de analisis de empresa. |
 
 ### El mapa — por qué existe cada skill
 
-Las once responden cinco preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
+Las trece responden seis preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
 
 - **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo — siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda — convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
 - **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts` — el modelo está fijo; el prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos; solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
+- **Cómo analizamos una empresa.** `gobernanza-primero` corre primero y es una PUERTA, no un capítulo: si los incentivos están mal, la historia de asignación de capital es la mejor predicción del futuro y el resto del análisis sobra. Recién después entra `checklist-lehman`, las 70 preguntas que se le hacen a los estados financieros. Existen en ese orden porque leer bien unos números malos no sirve de nada.
 - **Con qué construimos agentes.** `agents-sdk` — conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `aeo-sitios-web` — el playbook para que cualquier sitio nuestro o de un cliente quede listo para la era agéntica (SEO/AEO): nació de la implementación verificada en kumocloud.cl (21→36 puntos el 2026-08-06).
 
 ### El ciclo — lo único que hay que entender el primer día
@@ -69,10 +72,10 @@ del stack, reglas del dominio, y una sección de lecciones que arranca casi vac�
 le pides cerrar la sesión y Claude carga `retrospectiva-de-sesion`, que es la que reparte. Tú
 apruebas y corriges; el trabajo mecánico no es tuyo.
 
-### Las otras siete — herramientas para momentos concretos del paso 3
+### Las otras nueve — herramientas para momentos concretos del paso 3
 
 No son parte del ciclo: son las que se invocan **mientras trabajas**, cuando aparece una de
-estas siete situaciones.
+estas nueve situaciones.
 
 | Cuando te pasa esto… | …se usa esta skill |
 |---|---|
@@ -83,6 +86,8 @@ estas siete situaciones.
 | Un informe con cifras se va a enviar a un cliente y no quieres publicar un dato falso | [`verificacion-adversarial`](verificacion-adversarial/) |
 | Heredaste un proyecto, o sospechas que hay algo grave que nadie está viendo | [`auditoria-de-realidad`](auditoria-de-realidad/) |
 | Le pediste algo a Claude y te respondió cualquier cosa | [`escritura-de-prompts`](escritura-de-prompts/) |
+| Vas a empezar a analizar una empresa y quieres saber si vale la pena | [`gobernanza-primero`](gobernanza-primero/) |
+| Tienes al frente unos estados financieros y no sabes qué preguntarles | [`checklist-lehman`](checklist-lehman/) |
 
 ### Pipeline de calidad documental — los textos también se testean
 
