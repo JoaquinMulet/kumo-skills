@@ -255,200 +255,181 @@ artefacto reusable — un lector frío, con ese archivo como única fuente, ejec
 que el archivo existe para habilitar. Validar un artefacto reusable releyéndolo es la forma
 más débil de verificación que existe.
 
-## Higiene continua del repo — instrumentos, trinquete e informe
+## Higiene continua del repo — capas con agujeros en distintos lugares
 
-Las pruebas responden «¿funciona?». No responden «¿está creciendo mal?». La complejidad,
-la duplicación y el código muerto no rompen nada el día que aparecen: se acumulan hasta
-que un cambio simple cuesta una tarde. **Lo que no se mide, crece.**
+Las pruebas responden «¿funciona?». No responden «¿está creciendo mal?» ni «¿lo que
+entrego dice la verdad?». Esta sección es el aparato para esas dos preguntas.
 
-**El encuadre que ordena todo esto, y que es fácil de perder: quien lee, entiende y
-modifica el código eres tú (el agente). Las herramientas no refactorizan nada — solo
-apuntan dónde mirar.** De ahí se deduce el criterio para elegirlas: sirve la que te
-entrega una lista corta, ordenada por lo que ganas, con la ruta y la línea para ir a
-leer. No sirve la que te entrega un puntaje, un porcentaje o un tablero. Un número no
-dice qué hacer.
+**El encuadre que ordena todo, y que es fácil de perder: quien lee, entiende y modifica
+el código eres tú (el agente). Ninguna herramienta refactoriza nada — solo apuntan dónde
+mirar.** De ahí sale el criterio para elegirlas. Sirve la que entrega una lista corta,
+ordenada por lo que se gana, con ruta y línea para ir a leer. No sirve la que entrega un
+puntaje, un porcentaje o un tablero. **Un número no dice qué hacer.**
+
+### El modelo: láminas de queso, y el peligro de olvidar los agujeros
+
+Cada control tiene agujeros. El defecto pasa cuando los agujeros de todas las capas se
+alinean. La conclusión ingenua es «pon más capas», y es falsa: **más capas solo ayudan si
+sus agujeros están en lugares distintos.**
+
+Un caso real que lo mide. Un servidor tenía 72 comprobaciones sobre una pieza y cuatro
+revisores adversariales, con una lente distinta cada uno, encontraron tres defectos
+graves en veinte minutos. Las 72 eran la misma lámina fotocopiada 72 veces. Los tres
+hallazgos salieron de tres revisores distintos.
+
+De ahí las dos preguntas al agregar un control. **¿Qué clase de defecto atrapa esta capa
+que ninguna otra atrapa?** y **si el sistema fallara ahora mismo, ¿esta capa diría algo?**
+Si la respuesta a la segunda es no, la capa es decorativa por más verde que se vea.
+
+### La lección que ordena la elección de herramientas
+
+Las herramientas de catálogo miden **forma**: complejidad, duplicación, código muerto,
+estilo. Son baratas, valen la pena, y en un día completo de uso no encontraron ni un solo
+defecto de comportamiento.
+
+El defecto grave lo encontró una **comprobación de clase escrita a mano a partir de un
+fallo real anterior**. Recorre el código fuente entero buscando un patrón que ya causó
+daño una vez. Ninguna herramienta genérica podía encontrarlo, porque el patrón no es feo
+ni complejo ni duplicado: es correcto en forma y mentiroso en contenido.
+
+**Las de catálogo miden la forma; solo las que nacen de un fallo tuyo miden la verdad de
+tu dominio.** Por eso el orden correcto al entrar a un repo es instalar los instrumentos
+genéricos primero, porque son baratos, y entender que **el trabajo real empieza cuando
+escribes la primera comprobación derivada de un fallo que ya pasó**.
+
+Corolario que cuesta aceptar. La mayor parte del tiempo de una jornada de higiene no se
+va arreglando código, se va **arreglando la medición**. Vale la pena igual, porque una
+medición equivocada no es neutra: hace creer que el sistema está sano.
 
 ### Las tres piezas, y por qué son tres y no una
 
-Confundirlas es el error habitual, porque las tres «miden calidad» y hacen cosas
-opuestas.
+Confundirlas es el error habitual, porque las tres «miden calidad» y hacen cosas opuestas.
 
 1. **Instrumentos.** Miden y no opinan. Se configuran una vez y se corren cuando alguien
    pregunta.
-2. **Trinquete.** Es un portón. Falla si una métrica **empeoró**. No pide mejorar el
-   número histórico, solo no empujarlo hacia arriba. Así una base con deuda vieja se
-   puede seguir trabajando sin una limpieza previa imposible.
-3. **Informe de oportunidades.** No es portón. Es la lista de trabajo para ti, ordenada
-   por líneas ahorrables. Nunca falla, nunca bloquea.
+2. **Trinquete.** Es un portón. Falla solo si una métrica **empeoró**. No pide mejorar el
+   número histórico, así que una base con deuda vieja se puede seguir trabajando sin una
+   limpieza previa imposible.
+3. **Informe de oportunidades.** No es portón. Es la lista de trabajo, ordenada por lo
+   que se gana. Nunca falla y nunca bloquea, porque un informe que bloquea se termina
+   apagando.
 
 ### El trinquete se COMPUTA, jamás se guarda en un archivo
 
 La forma habitual del trinquete es un umbral versionado. **Eso no sirve cuando el
 mantenedor es un agente de IA**, porque al ver rojo puede subir el número en el mismo
-commit que lo rompe, y nadie se entera. Un número que el mantenedor puede editar no es
-un trinquete, es un comentario.
+commit que lo rompe, y nadie se entera. Un número que el mantenedor puede editar no es un
+trinquete, es un comentario.
 
 La línea base se calcula. Se mide el árbol de trabajo, se mide el árbol del
 `git merge-base` contra el remoto, y se comparan. Para aflojarlo habría que reescribir la
 historia del remoto. Y como el portón corre antes de empujar, un número peor nunca llega
-al remoto, así que la base solo puede quedarse igual o mejorar. **El trinquete se
-sostiene solo.**
+al remoto, así que la base solo puede quedarse igual o mejorar. **El trinquete se sostiene
+solo.**
 
 Dos trampas medidas en carne propia.
 
-- **Las dos mediciones usan la MISMA vara.** La configuración de las herramientas sale
-  siempre del árbol de trabajo, nunca del árbol viejo. Sin eso, estrenar una regla nueva
-  se lee como «el código empeoró de 0 a 40», y quitar una regla se lee como una mejora.
-  Las dos lecturas son falsas.
-- **Toda métrica va en el mismo sentido: menos es mejor.** Si una va al revés, la
-  comparación deja de ser una sola y hay que recordar el sentido de cada una, que es
-  justo el momento en que alguien se equivoca.
+- **Las dos mediciones usan la MISMA vara.** La configuración sale siempre del árbol de
+  trabajo, nunca del árbol viejo. Sin eso, estrenar una regla se lee como «el código
+  empeoró de 0 a 40» y quitar una regla se lee como una mejora. Las dos lecturas son
+  falsas.
+- **Toda métrica va en el mismo sentido: menos es mejor.** Si una va al revés hay que
+  recordar el sentido de cada una, y ese es justo el momento en que alguien se equivoca.
 
-### Leer la salida de una herramienta es una fuente de defectos, no un detalle
+### Verde no significa limpio, y es el error más caro de esta sección
 
-Tres lecturas equivocadas seguidas del mismo dato, el mismo día, **y las tres
-subestimaban**: una expresión regular sobre el texto con colores dio 1 de 40; leyendo
-stdout, el texto de stderr venía pegado al JSON y lo reventaba, dando 0 de 40; y el
-puntaje no se llamaba como yo creía, dando 0 otra vez.
+Tres formas distintas del mismo engaño, las tres medidas en un solo día.
 
-Reglas que quedan.
+- **El código de salida de un trabajo dice si la herramienta CORRIÓ, no si encontró algo.**
+  Un análisis de seguridad terminó en verde con 30 alertas abiertas, seis de severidad
+  alta. Reportarlo como «pasó» fue falso en sustancia aunque cierto en estado. Lo que se
+  lee es el **conteo de hallazgos**, no el estado del trabajo.
+- **Un control puede no estar mirando el cambio.** Dos de las cinco comprobaciones verdes
+  de cada propuesta apuntaban a la instancia **ya desplegada**, no al código propuesto, así
+  que pasaban con cualquier contenido. Antes de contar una capa, verifica **contra qué
+  artefacto corre**.
+- **Una función puede estar a medio encender.** El archivo de actualizaciones automáticas
+  funcionaba y generaba propuestas, mientras las **alertas** de esa misma función estaban
+  apagadas en la configuración del repositorio. Escribir el archivo no es habilitar la
+  función. Se comprueba pidiendo su salida, no mirando el archivo.
 
-- **Pide el informe en JSON y a un ARCHIVO**, nunca por stdout, que viene mezclado con
-  stderr.
-- **Una medición que falla dice DESCONOCIDA, jamás cero.** Un cero silencioso se lee como
-  «está limpio», que es la conclusión contraria. En el trinquete, un fallo de lectura
-  mata el portón en vez de devolver un número inventado.
-- **Compara contra la herramienta cruda antes de creerle a tu lector.** Si tu informe
-  dice 1 y la herramienta dice 40, el defecto es tuyo.
+La regla que engloba las tres: **prueba el efecto, no la presencia.**
 
-### Antes de medir, acota. Una medición que incluye lo que no puedes arreglar no sirve
+### Qué corre en cada etapa, y por qué la duración NO decide
 
-La duplicación de un repo daba 31,92 por ciento y tapaba por completo la real, que era
-4,43, porque contaba HTML capturado de un sitio externo que se guarda como evidencia de
-pruebas. Y el detector de código muerto marcaba medio repositorio, porque no encontraba
-el punto de entrada.
+**Jamás limites lo que se ejecuta por lo que tarda.** Los costos no son comparables: un
+portón lento cuesta minutos, y un defecto que se escapa cuesta un entregable equivocado,
+una ronda perdida con quien confía en el resultado, y la confianza en todo el aparato.
+Comparar «4 minutos» con «publiqué un dato falso» es comparar unidades distintas.
 
-**Cuando un medidor dé una cifra escandalosa, la primera hipótesis es que está midiendo
-mal, no que el código esté podrido.** Y cuando la cifra cae de 15 hallazgos a 4 al
-arreglar la configuración, esos 11 eran ruido que habría hecho perder una tarde.
+El criterio correcto para repartir el trabajo entre etapas no es la velocidad, es **qué
+información existe recién en esa etapa**. No puedes verificar un despliegue antes de
+desplegar. Todo lo demás corre lo antes posible y corre COMPLETO.
 
-Causa concreta que vale la pena tener a mano: **un BOM al inicio de un archivo de
-configuración**. El programa principal lo tolera y el resto de las herramientas fallan al
-leerlo. Un BOM no rompe nada visible, rompe al siguiente programa que lea el archivo.
-
-### La unidad accionable no siempre es la que reporta la herramienta
-
-Los detectores de clones reportan **parejas**. La unidad sobre la que uno actúa es la
-**familia**, o sea todos los sitios que comparten el mismo fragmento. Cuatro copias
-producen seis parejas y se leen como seis problemas distintos.
-
-El informe agrupa las parejas en familias (union-find sobre los sitios), ordena por
-`(sitios - 1) x líneas`, que es lo que de verdad se ahorra, e **imprime el fragmento
-compartido**, para que no haya que abrir cuatro archivos para entender de qué se trata.
-
-Regla general que vale más allá de los clones: **antes de mostrar la salida de una
-herramienta, pregúntate cuál es la unidad sobre la que se decide, y agrupa hasta llegar a
-ella.**
-
-### Otros lenguajes: se adopta la FUNCIÓN, no el nombre de la herramienta
-
-Nada de esto es de JavaScript. Cada pieza es una **función** y en cada lenguaje hay algo
-que la cumple. **Al entrar a un repo, lo primero es inventariar qué lenguajes tiene de
-verdad, y buscar el equivalente de cada función para cada uno.** Un repo políglota con
-instrumentos en un solo lenguaje deja el resto sin vigilancia y da una tranquilidad falsa,
-que es peor que no medir.
-
-| Función | JavaScript y TypeScript | Python | Rust | Go | Java y Kotlin | C y C++ | Multi-lenguaje |
-|---|---|---|---|---|---|---|---|
-| Formato y reglas de estilo | Biome | Ruff format | rustfmt | gofmt | ktlint, spotless | clang-format | pre-commit |
-| Complejidad excesiva | Biome | Ruff, radon | clippy | gocyclo | detekt, PMD | clang-tidy | lizard |
-| Código duplicado | jscpd | jscpd | jscpd | dupl | PMD CPD | PMD CPD | jscpd, PMD CPD |
-| Exportaciones y archivos muertos | knip | vulture, deptry | cargo-udeps | deadcode | (IDE) | cppcheck | — |
-| Grafo de dependencias | dependency-cruiser | pydeps | cargo-modules | go mod graph | jdeps | include-what-you-use | — |
-| Vulnerabilidades en terceros | npm audit | pip-audit | cargo audit | govulncheck | OWASP DC | — | Dependabot, Snyk |
-| Camino del dato (inyecciones) | CodeQL | CodeQL, bandit | cargo geiger | CodeQL | CodeQL | CodeQL | Semgrep |
-
-Antes de dar una fila por buena, **verifica que la herramienta exista y corra hoy en ese
-proyecto**, porque esta tabla envejece. La forma de verificarlo es correrla, no leer su
-página.
-
-El trinquete es agnóstico por construcción: cada métrica es una función que recibe una
-carpeta y devuelve un número donde menos es mejor. Agregar un lenguaje es agregar una
-entrada a esa lista, no reescribir nada.
-
-### Seguridad: es la única capa que las pruebas no pueden cubrir
-
-Una prueba comprueba el resultado de una función. **CodeQL sigue el camino de un dato
-entre funciones**, desde donde entra hasta donde se usa, y por eso encuentra inyecciones
-y fugas que ninguna prueba unitaria ve. Es gratis en repositorios públicos de GitHub, y
-`Semgrep` cubre el caso de los privados.
-
-Tres decisiones que evitan que el análisis se vuelva ruido ignorado.
-
-- **Auditar solo las dependencias de producción.** Una vulnerabilidad en una herramienta
-  de desarrollo no llega al despliegue. Mezclarlas alarga la lista, y una lista larga que
-  nadie mira no protege nada.
-- **Un cron semanal.** Una vulnerabilidad publicada el miércoles no espera al próximo
-  commit.
-- **Dependabot semanal, no diario.** Una cola de propuestas que nadie alcanza a revisar
-  se vuelve ruido, y el ruido se ignora entero.
-
-### Dónde corre cada cosa
-
-- **Al editar**, en el editor. Formato y reglas de estilo.
-- **Antes de cada commit**, unos 15 segundos. Compilar y la suite completa. Nada más: un
-  portón lento se termina saltando.
-- **Antes de cada push**, unos minutos. Exactamente lo que corre el CI, más el trinquete.
-  Si tu portón local corre **menos** que el CI, tu verde es de otro color. Abre el archivo
-  del CI y compara comando por comando.
-- **En el CI**, lo lento y lo programado. Análisis de seguridad y las verificaciones
-  contra servicios reales.
+- **Al editar**, en el editor. Formato y estilo, que es lo único que de verdad necesita ser
+  instantáneo porque corre en cada tecla.
+- **Antes de cada commit**, todo lo que se puede saber sin red ni despliegue. Compilar, la
+  suite completa, las comprobaciones de clase y los instrumentos.
+- **Antes de cada envío**, todo lo anterior más lo que necesita red. Verificación contra
+  los servicios reales y el trinquete. Esta etapa corre **exactamente lo que corre la
+  integración continua**, sin recortes. Si tu portón local corre **menos** que ella, tu
+  verde es de otro color: abre su archivo de configuración y compara comando por comando.
+- **Después de desplegar**, lo que solo existe desplegado. Protocolo y cliente real contra
+  la instancia viva. Una pieza que ES un borde solo se prueba cruzándolo.
+- **Programado**, lo que depende del mundo y no del código. Vulnerabilidades publicadas
+  después del último commit.
 - **Cuando toca refactorizar**, a mano. El informe de oportunidades.
 
-Los hooks van **versionados en el repo** con `core.hooksPath`, no en `.git/hooks`, o solo
-existen en la máquina de quien los escribió.
+Si un portón se vuelve tan lento que estorba, la respuesta es **hacerlo más rápido**
+(caché, paralelismo, incremental), nunca ejecutar menos. Recortar la cobertura para ganar
+minutos es cambiar una molestia visible por un riesgo invisible.
+
+Los hooks van **versionados en el repo**, no en la carpeta local de git, o solo existen en
+la máquina de quien los escribió.
 
 ### Reglas de commit que se siguen de todo esto
 
-- **Cada arreglo en su propio commit.** Mezclar una limpieza con un cambio de conducta
-  hace que ninguna de las dos se pueda revisar ni revertir.
+- **Cada arreglo en su propio commit.** Mezclar una limpieza con un cambio de conducta hace
+  que ninguna de las dos se pueda revisar ni revertir. La excepción legítima es un ayudante
+  y su adopción, porque un ayudante que nadie llama es código muerto y el propio detector
+  lo marcaría. Cuando uses la excepción, dila en el mensaje.
 - **El repo se entrega más limpio de lo que estaba.** Antes de escribir el mensaje: qué
-  código dejó de usarse con este cambio, qué número o texto quedó repetido en dos
-  lugares, qué comentario describe cómo era antes.
-- **El commit de formato masivo va solo**, y su SHA se anota en `.git-blame-ignore-revs`
-  con `git config blame.ignoreRevsFile`. Sin eso, un solo commit se come el historial de
-  autoría de todo el repo.
-- **Quien empuja mira el CI.** Y si no va a mirarlo, el portón tiene que correr antes del
-  empujón. *(Caso real: 4 commits seguidos en rojo mientras yo declaraba verde, porque yo
-  corría menos de lo que corría el CI. El usuario se enteró antes que yo.)*
+  dejó de usarse con este cambio, qué número o texto quedó repetido en dos lugares, qué
+  comentario describe cómo era antes.
+- **El commit de formato masivo va solo**, y su identificador se anota en el archivo que
+  la herramienta de autoría ignora. Sin eso, un solo commit se come el historial de todo
+  el repo.
+- **Quien envía mira el resultado.** Y si no va a mirarlo, el portón tiene que correr antes
+  del envío.
 
 ### Un portón que nadie probó cerrar no es un portón
 
 Introduce a propósito el defecto que el portón existe para atrapar, confirma que se pone
 rojo y que sale con código distinto de cero, y **después** revierte. Vale para el
-trinquete, para cada comprobación de clase y para cada regla nueva. Una prueba que no
-puede fallar da confianza falsa, y es peor que no tenerla.
+trinquete, para cada comprobación de clase y para cada regla nueva. Una prueba que no puede
+fallar da confianza falsa, y es peor que no tenerla.
 
 Dos detalles que muerden al revertir. `git checkout -- archivo` restaura desde el
 **índice**, así que si ya hiciste `git add` te devuelve la versión mala: va
 `git checkout HEAD -- archivo`. Y los scripts con escapes van a un **archivo**, nunca a un
 heredoc, que se come las barras invertidas y rompe las expresiones regulares en silencio.
 
-### Lo que NO hace falta, y por qué
+### Cuando el portón te bloquea por deuda que no es tuya
 
-La lista canónica de «herramientas para coordinar un ejército de desarrolladores»
-(SonarQube, Sourcegraph, Structure101, Backstage, Snyk) resuelve un problema que casi
-ningún proyecto tiene todavía: **fragmentación del conocimiento entre muchas personas y
-muchos repos**. Sus funciones de calidad ya están cubiertas por instrumentos locales,
-gratis y de segundos, y su regla estrella («que ningún cambio empeore el código») es
-exactamente el trinquete, en una versión más débil, porque su umbral se guarda.
+Pasa, y la reacción correcta no es saltarse el portón. Es **arreglar esa deuda en su propio
+commit** y después seguir. Un portón que se salta una vez se salta siempre, y la deuda que
+bloquea a uno bloquea a todos.
 
-El criterio para adoptar una de ellas es una pregunta concreta, no el prestigio de la
-herramienta: **¿hay hoy alguien que no encuentra el código que necesita?** Si la respuesta
-es no, un buscador universal y un portal de servicios son infraestructura que hay que
-mantener sin nadie que la use. El día que sean varios repos y varias personas, se adoptan,
-y el orden correcto es primero el buscador (`Sourcegraph`) y mucho después el portal
-(`Backstage`).
+### Dónde está el resto
+
+El anexo operativo vive en
+[`reference/higiene-continua.md`](reference/higiene-continua.md) y lleva lo que se
+consulta mientras ejecutas: **la tabla de equivalencias por lenguaje**, **el
+procedimiento de 7 pasos para instalar esto en un repo que no lo tiene**, cómo leer la
+salida de una herramienta sin que te mienta, cómo acotar una medición antes de creerle,
+por qué la unidad accionable no es la que reporta la herramienta, y qué herramientas de
+catálogo NO hacen falta todavía. **Ábrelo al entrar a un repo nuevo**, que es cuando los
+7 pasos son la tarea.
 
 ## Cómo crece este estándar — la paranoia del compounding
 
