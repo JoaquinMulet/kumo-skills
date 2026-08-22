@@ -137,7 +137,9 @@ sale la mayoría de estos defectos.
 
 Los dos son scripts propios de unas 100 líneas, no herramientas que se instalen. Nadie
 publica un trinquete que sirva, porque las métricas y los comandos cambian con cada
-proyecto. Acá va el núcleo de cada uno, que es la parte que cuesta pensar; el resto es
+proyecto. Da lo mismo en qué lenguaje los escribas, porque lo único que hacen es correr
+otros programas y comparar 2 números. Usa el que el repo ya use para sus herramientas, y
+si el repo es políglota, el de la mayoría de los archivos. Acá va el núcleo de cada uno, que es la parte que cuesta pensar; el resto es
 imprimir.
 
 ### El núcleo del trinquete
@@ -154,6 +156,8 @@ El bucle completo es este, y lo único delicado son los dos comentarios.
 
     base = git merge-base <rama-por-defecto> HEAD
     dir  = crear un arbol de trabajo temporal en ese commit
+      // git worktree add --detach <dir> <base>, y al final
+      // git worktree remove --force <dir>
     copiar al dir los archivos de CONFIGURACION del arbol actual
       // son los que le dicen a cada instrumento COMO medir, y los
       // conoces porque los escribiste tu en el paso 3 del arranque: el
@@ -196,6 +200,10 @@ ordena.
     5. debajo, la lista de funciones sobre el umbral de complejidad y la de
        declaraciones sin usar, cada una con ruta y linea
 
+El umbral de complejidad cognitiva que traen casi todas las herramientas por defecto es
+15, y sirve como punto de partida. Lo que importa no es el número sino que no suba, y de
+eso se encarga el trinquete.
+
 Y cerrar con una frase que diga que es una lista y no una orden, por ejemplo esta, que es
 la que usa el informe real: «Esto es una LISTA, no una orden. Cada arreglo va en su propio
 commit, y el trinquete ya impide que estos números empeoren mientras tanto.» Un informe que
@@ -212,7 +220,8 @@ se lee como mandato se termina apagando.
    anterior; son unas 100 líneas y no hay nada que instalar). No exige limpiar nada, solo
    no empeorar.
 4b. Los hooks van **versionados en el repo**, no en la carpeta local de git, o solo
-   existen en la máquina de quien los escribió.
+   existen en la máquina de quien los escribió. Se guardan en una carpeta cualquiera del
+   repo y se activan una vez por clon con `git config core.hooksPath <esa-carpeta>`.
 5. **Escribe la primera comprobación de clase a partir del último fallo real** que tuvo el
    proyecto. Esta es la que va a encontrar algo.
 6. **Prueba cada portón rompiéndolo** y revierte.

@@ -167,6 +167,19 @@ El **trunk es la rama que se despliega**, nómbralo explícitamente y **deploya 
 - **Grep el helper antes de escribir uno nuevo.** Ser el único archivo que toca un primitivo crudo es una señal de alerta.
 - **La forma más simple y honesta;** deduplicar dentro del propio diff (la segunda vez que aparece un bloque, extraer un helper y usarlo en cada sitio paralelo).
 
+## Elegir infraestructura para un proyecto nuevo
+
+Antes de pagar una cuenta, revisa
+[free-for-dev](https://github.com/ripienaar/free-for-dev), un catálogo de servicios con capa
+gratis mantenido por más de 1.600 colaboradores, con más de 50 categorías. Nube, bases de
+datos, hosting, integración continua, monitoreo y seguridad.
+
+Su criterio de admisión es lo que lo separa de una lista de promociones. Solo entra lo que
+ofrece **capa gratis permanente**, o al menos un año, y rechaza los servicios que dejan TLS
+en los planes pagos. **Pero dice que la capa gratis existe, no que te sirva.** Antes de
+elegir, verifica los límites contra tu caso, si hay camino de salida cuando los superes, y
+dónde quedan tus datos.
+
 ## Sembrar el CLAUDE.md de un proyecto nuevo
 
 El `CLAUDE.md` es el **manual operativo** del proyecto, comandos densos y accionables, no un ensayo. **No improvises su estructura: usa el esqueleto probado en [`reference/plantilla-claude-md.md`](reference/plantilla-claude-md.md)**, que trae las secciones en orden (qué es → build & comandos → ramas y deploy → arquitectura → invariantes y oráculo → bug-fix workflow → testing → patterns → lessons → gotchas → deploy) + las reglas de densidad y un ejemplo trabajado.
@@ -391,7 +404,9 @@ desplegar. Todo lo demás corre lo antes posible y corre COMPLETO.
 - **Al editar**, en el editor. Formato y estilo, que es lo único que de verdad necesita ser
   instantáneo porque corre en cada tecla.
 - **Antes de cada commit**, todo lo que se puede saber sin red ni despliegue. Compilar, la
-  suite completa, las comprobaciones de clase y los instrumentos.
+  suite completa, las comprobaciones de clase y los instrumentos. En un lenguaje sin
+  compilador, «compilar» es lo que sea que caiga antes de ejecutar nada, o sea el
+  verificador de tipos y el análisis estático.
 - **Antes de cada envío**, todo lo anterior más lo que necesita red. Verificación contra
   los servicios reales y el trinquete. Esta etapa corre **exactamente lo que corre la
   integración continua**, sin recortes. Si tu portón local corre **menos** que ella, tu
