@@ -20,7 +20,7 @@ description: >-
 
 Encuentra los conceptos **nombrados pero no fundados**. Es el hueco que sobrevive
 a toda revisión de estilo, porque el estilo juzga el texto *como texto* y este
-defecto no es de redacción: es de que falta un eslabón del razonamiento.
+defecto no es de redacción. Es de que falta un eslabón del razonamiento.
 
 ## Por qué hace falta una etapa aparte
 

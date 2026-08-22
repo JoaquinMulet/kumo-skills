@@ -43,7 +43,7 @@ Cloudflare): puntaje 0-100 en 5 categorías. Se corre ANTES de tocar nada
 2. **Content Signals** en robots.txt, según la postura del dueño:
    `Content-Signal: search=yes, ai-input=yes, ai-train=yes` (postura Kumo:
    máxima exposición. Un cliente puede elegir otra, pero que sea SU decisión
-   declarada). Solo el 4 % de los grandes dominios lo tiene: ventaja fácil.
+   declarada). Solo el 4 % de los grandes dominios lo tiene. Ventaja fácil.
 3. **sitemap.xml** válido con `lastmod` reales.
 4. **OJO Cloudflare**: jamás activar el robots.txt administrado ni el bloqueo
    de AI crawlers del dashboard: inyectan `Disallow` + 403 que contradicen la
@@ -64,7 +64,7 @@ for UA in ClaudeBot GPTBot PerplexityBot Googlebot; do curl -s -o /dev/null -w "
    (`application/linkset+json`. Si el archivo no tiene extensión, fijar el
    content-type en `_headers`). Solo si el sitio TIENE endpoints públicos.
 3. **llms.txt** honesto: qué es el negocio, cómo leer el sitio, cifras con
-   fecha y método, enlaces a cada página. Es un derivado: se re-verifica
+   fecha y método, enlaces a cada página. Es un derivado. Se re-verifica
    contra las reglas de contenido del sitio cada vez que el sitio cambia.
 4. **Server card MCP** en `/.well-known/mcp/server-card.json` SOLO si el
    nivel 4 existe o va a existir: anunciar un endpoint que da 404 es peor
@@ -110,7 +110,7 @@ las use. Patrón verificado en kumo-agente (Cloudflare Agents SDK:
 `createMcpHandler` de `agents/mcp/server` + `McpServer` v2):
 
 - **Herramientas de lectura libres** (preguntar, consultar disponibilidad) y
-  **acciones con confirmación humana en dos pasos**: la primera llamada
+  **acciones con confirmación humana en dos pasos.** La primera llamada
   devuelve `input_required` (elicitation) con el resumen. Sin `confirmar:
   true` del humano del agente visitante NO hay acción. Un cliente sin
   capacidad de elicitation recibe error y no puede ejecutar: correcto, sin
@@ -121,7 +121,7 @@ las use. Patrón verificado en kumo-agente (Cloudflare Agents SDK:
   el Worker solo acepta con token compartido. SIN geo (el agente corre en
   cualquier datacenter aunque su humano esté en el país) y SIN Turnstile
   (está diseñado para bloquear agentes. Esta puerta existe para atenderlos).
-  Gotcha: el rate limit en KV no atrapa ráfagas sub-minuto (consistencia
+  Gotcha. El rate limit en KV no atrapa ráfagas sub-minuto (consistencia
   eventual). Acota el abuso sostenido, y el costo del abuso se acota por
   diseño (confirmación en dos pasos).
 - El handler exige `Accept: application/json, text/event-stream` (406 si no).

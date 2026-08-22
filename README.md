@@ -33,7 +33,7 @@ Las catorce responden seis preguntas distintas. Cada nombre dice su propósito, 
 - **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso` → `unslop`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar. Y el paso 5 existe porque puede además ser útil y sonar a máquina, que es lo primero que un lector nota y lo último que las otras cuatro miran.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts`, el modelo está fijo. El prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos. Solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
-- **Cómo analizamos una empresa.** `gobernanza-primero` corre primero y es una PUERTA, no un capítulo: si los incentivos están mal, la historia de asignación de capital es la mejor predicción del futuro y el resto del análisis sobra. Recién después entra `checklist-lehman`, las 70 preguntas que se le hacen a los estados financieros. Existen en ese orden porque leer bien unos números malos no sirve de nada.
+- **Cómo analizamos una empresa.** `gobernanza-primero` corre primero y es una PUERTA, no un capítulo. Si los incentivos están mal, la historia de asignación de capital es la mejor predicción del futuro y el resto del análisis sobra. Recién después entra `checklist-lehman`, las 70 preguntas que se le hacen a los estados financieros. Existen en ese orden porque leer bien unos números malos no sirve de nada.
 - **Con qué construimos agentes.** `agents-sdk`, conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `aeo-sitios-web`, el playbook para que cualquier sitio nuestro o de un cliente quede listo para la era agéntica (SEO/AEO): nació de la implementación verificada en kumocloud.cl (21→36 puntos el 2026-08-06).
 
 ### El ciclo. Lo único que hay que entender el primer día
@@ -75,7 +75,7 @@ apruebas y corriges. El trabajo mecánico no es tuyo.
 
 ### Las otras diez. Herramientas para momentos concretos del paso 3
 
-No son parte del ciclo: son las que se invocan **mientras trabajas**, cuando aparece una de
+No son parte del ciclo. Son las que se invocan **mientras trabajas**, cuando aparece una de
 estas diez situaciones.
 
 | Cuando te pasa esto… | …se usa esta skill |
@@ -133,7 +133,7 @@ flowchart TD
   C3 -->|"tuvo que adivinar"| C1
 ```
 
-El orden importa y no es negociable: no sirve pulir la redacción de un texto al que todavía le
+El orden importa y no es negociable. No sirve pulir la redacción de un texto al que todavía le
 faltan datos. Y la última pregunta es la que sorprende, un documento puede estar completo y
 bien escrito, y aun así quien debe construir algo con él no puede. **Explicar no es lo mismo
 que habilitar.**
@@ -186,7 +186,7 @@ entre sí**, ninguno sabe qué encontró el otro. Si en vez de tres ángulos dis
 tres agentes con la misma instrucción, los tres repetirían el mismo punto ciego y la
 coincidencia se sentiría como triple confirmación.
 
-**El diagrama es esquemático: dibuja lo que le pasa a UNA afirmación.** La lista del paso 1 se
+**El diagrama es esquemático. Dibuja lo que le pasa a UNA afirmación.** La lista del paso 1 se
 escribe una sola vez para todo el informe. De ahí en adelante, cada afirmación de esa lista
 recorre su propio camino 2 → 3 → 4 por separado. Si el informe tiene 10 afirmaciones, el abanico
 se abre 10 veces: 30 agentes en total. Y esas 10 no esperan entre sí, cada afirmación avanza en
@@ -197,7 +197,7 @@ tres ángulos parecen baratos hasta que se multiplican por veinte afirmaciones.
 Las tres decisiones de diseño que explican por qué es así, y no de otra forma:
 
 - **La lista del paso 1 se escribe ANTES**, nunca después. Un revisor que no sabe qué buscar
-  aprueba felizmente lo que la primera fase dejó afuera: confirma lo que hay, no detecta lo que
+  aprueba felizmente lo que la primera fase dejó afuera. Confirma lo que hay, no detecta lo que
   falta.
 - **Los agentes del paso 2 son distintos entre sí**, no copias. Tres agentes con la misma
   instrucción repiten el mismo punto ciego tres veces y eso se siente como triple confirmación.
@@ -263,9 +263,9 @@ Copy-Item -Recurse kumo-skills/escritura-de-prompts $HOME/.claude/skills/
 
 Si la carpeta `~/.claude/skills/` no existe, créala antes. Reiniciar la sesión de Claude Code para que la nueva skill aparezca.
 
-**Cuál de las dos elegir.** La personal (`~/.claude/skills/`) vive en tu equipo: la ves tú en
+**Cuál de las dos elegir.** La personal (`~/.claude/skills/`) vive en tu equipo. La ves tú en
 todos tus proyectos y nadie más. La de proyecto (`<proyecto>/.claude/skills/`) se commitea junto
-al código: la ve cualquiera que clone ese repo, y solo dentro de él. Regla práctica: las skills
+al código. La ve cualquiera que clone ese repo, y solo dentro de él. Regla práctica: las skills
 transversales de Kumo van en la personal. Una skill que solo tiene sentido en un proyecto
 concreto va en la de ese proyecto.
 

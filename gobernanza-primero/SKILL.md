@@ -55,11 +55,11 @@ respaldo declarado. La búsqueda mecánica se hace con script sobre el PDF
 
 **Examen 1, ¿El capital tiene precio por dentro?**
 Fuente: la nota de segmentos (NIIF 8 / ASC 280) de los estados auditados.
-Mirar dónde vive el costo financiero: si los negocios se presentan con
+Mirar dónde vive el costo financiero. Si los negocios se presentan con
 costo financiero cero y todo el interés del grupo está estacionado en la
 columna corporativa, desde el asiento de cada gerente el capital es gratis.
 La nota refleja cómo el tomador de decisiones mira el negocio (esa es la
-definición de la norma), así que es señal fuerte, pero es PRESENTACIÓN: no
+definición de la norma), así que es señal fuerte, pero es PRESENTACIÓN. No
 prueba sola la ausencia de un cargo interno. Se combina con el examen 2.
 
 **Examen 2, ¿Qué paga el bono?**
@@ -89,7 +89,7 @@ quinta huella.
 **Examen 4, El contraste explícito contra el estándar.**
 Poner lado a lado lo que la empresa publica contra el arreglo de las
 cartas de 1994 y 1996. El contraste hace legible el veredicto para
-cualquier lector: no es "gobernanza mediocre" en abstracto, es "el precio
+cualquier lector. No es "gobernanza mediocre" en abstracto, es "el precio
 del capital no viaja al bono, y el estándar contrario existe publicado
 desde 1994".
 
@@ -109,7 +109,7 @@ desde 1994".
   informe cita esta puerta como pasada.
 
 Si el análisis completo ya existe cuando la evidencia aparece (caso
-Cencosud), el hallazgo no se agrega como una sección más: **el hallazgo
+Cencosud), el hallazgo no se agrega como una sección más. **El hallazgo
 central manda el orden**, capítulo propio, la conclusión abre con él, y
 las demás cifras pasan a ser su respaldo.
 
@@ -118,9 +118,9 @@ unidad atados al retorno sobre el capital que emplean. Un cargo interno por
 capital publicado. Una matriz que se achica cuando el grupo vende. Cambio
 de controlador o de CEO con historial probado de asignador. Las frases de
 la memoria («asignación disciplinada», «visión de largo plazo») no son
-señales: son marketing hasta que una fórmula de bono las respalde.
+señales. Son marketing hasta que una fórmula de bono las respalde.
 
-**La excepción declarada:** un precio de saldo no cura la gobernanza para
+**La excepción declarada.** Un precio de saldo no cura la gobernanza para
 un minoritario, porque el descuento lo administra la misma gerencia que lo
 causó. La excepción existe y se declara: cambio de control plausible,
 activista adentro, o liquidación en curso. Sin catalizador, barato con mala
@@ -156,14 +156,14 @@ Mismo país, misma bolsa, y la otra cara. El análisis completo vive en
 `Experimentos con AI/ILC/gobernanza-ilc.md`. Lo que lo hace ejemplo:
 
 - Examen 1: holding de empresas REGULADAS, cada filial con su directorio,
-  su capital regulatorio y su deuda propia: el capital no es gratis por
+  su capital regulatorio y su deuda propia. El capital no es gratis por
   dentro por construcción. La matriz declara su rol («analizar cada
   requerimiento de capital y aportar si es necesario para generar valor»)
   y los aportes van individualizados con monto.
 - Examen 2: el variable de los ejecutivos SÍ nombra la rentabilidad sobre
   el patrimonio como métrica (con la nota: «entre otras», sin pesos
   publicados). Los directores llevan participación en utilidades con
-  techo. ROIC y cargo por capital: 0 menciones igual: el estándar de
+  techo. ROIC y cargo por capital: 0 menciones igual. El estándar de
   Buffett tampoco está, pero el resultado se reporta en métricas de dueño.
 - Examen 3 (verificado contra estados de la CMF): ROAE de 2 dígitos
   sostenido (12 a 23 por ciento), utilidad por acción de 0,84 a 2,84 en
@@ -178,7 +178,7 @@ Mismo país, misma bolsa, y la otra cara. El análisis completo vive en
   gremial, RedSalud). El análisis sigue, con esas 3 notas como riesgo
   nombrado.
 
-La lección del par Cencosud e ILC: la retórica es idéntica en las 2
+La lección del par Cencosud e ILC. La retórica es idéntica en las 2
 memorias («asignación de capital disciplinada» y «adecuada asignación de
 capital»). Lo que separa a una de otra es la MÉTRICA en el bono, la
 contabilidad POR ACCIÓN en la portada, y el historial verificado. La
@@ -195,7 +195,7 @@ empresa dentro de «Experimentos con AI»:
 | Cencosud | Reprueba | Capital gratis por dentro, bono por resultado del ano y permanencia, historial con las 5 huellas |
 | ILC | Aprueba con nota | ROE en la formula del bono, recompra con cancelacion, dividendos medidos contra el precio de origen; notas: pesos de la formula sin publicar, controlador gremial, RedSalud |
 | Quinenco | Aprueba | Alineamiento por propiedad (82,9 por ciento), matriz de 69 personas con caja neta, NAV por accion publicado contra el precio, devolvio el windfall en dividendos en vez de comprar en la cima; notas: 1 independiente de 8, descuento de NAV sin recompras |
-| Empresas Copec | Aprueba con nota dura | Propiedad familiar sin senales de agencia, PERO utilidad por accion plana 12 anos con ~15 mil millones de dolares de capex: la maquina reinvierte a un digito medio sin metrica que la obligue a rendir la vara |
+| Empresas Copec | Aprueba con nota dura | Propiedad familiar sin senales de agencia, PERO utilidad por accion plana 12 anos con ~15 mil millones de dolares de capex. La maquina reinvierte a un digito medio sin metrica que la obligue a rendir la vara |
 
 Las 2 lecciones del mapa:
 
@@ -205,9 +205,9 @@ Las 2 lecciones del mapa:
   hay precio (Quinenco) contra la conviccion de reinvertir siempre
   (Copec). La prueba del dolar retenido de Buffett es el instrumento que
   los distingue: cada peso retenido debe crear al menos un peso de valor.
-- **La reclasificacion contable tambien es una senal:** Copec imprime los
+- **La reclasificacion contable tambien es una senal.** Copec imprime los
   dividendos pagados en el flujo de OPERACION desde 2022 (financiacion en
-  0). Legal, y viste el flujo de financiacion: reclasificar antes de toda
+  0). Legal, y viste el flujo de financiacion. Reclasificar antes de toda
   prueba de caja, y anotar quien elige presentaciones que favorecen.
 
 ## Trampas del instrumento (aprendidas corriendo la puerta)

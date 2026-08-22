@@ -40,7 +40,7 @@ itera el anexo hasta que el resultado sea el esperado"*. Tres rondas después el
 anexo era una referencia real: esquema relacional con llaves subrayadas,
 diagramas E-R con cardinalidades y un diccionario de ~30 entidades.
 
-**Regla madre: a cada sección de un documento se le exige lo mismo que a un
+**Regla madre. A cada sección de un documento se le exige lo mismo que a un
 plano, que alguien que no estuvo en la conversación pueda construir con él.**
 
 ## Cuándo usarla
@@ -54,7 +54,7 @@ plano, que alguien que no estuvo en la conversación pueda construir con él.**
   sostenga sola) → `doc-narrativa` (que se lea bien) →
   **`doc-prueba-de-uso` (que sirva para hacer)**.
 
-> Ojo con un punto ciego propio: esta skill mide si el lector puede **ejecutar la
+> Ojo con un punto ciego propio. Esta skill mide si el lector puede **ejecutar la
 > tarea**, y un concepto puede estar sin fundamento sin bloquear ninguna tarea,
 > el lector calcula, registra y responde bien, y aun así no sabe por qué existe
 > la pieza que está usando. Por eso `doc-cadena-causal` va antes y no la
@@ -89,10 +89,10 @@ plano, que alguien que no estuvo en la conversación pueda construir con él.**
    suplir, así que sus vacíos son huecos reales de contenido. El modelo **fuerte**
    mide algo distinto y más peligroso: especificar si el documento es **interpretable de una sola
    manera**. Un lector capaz rellena los huecos sin darse cuenta, por eso no sirve
-   para medir completitud, pero cuando *malinterpreta*, no está fallando: está
+   para medir completitud, pero cuando *malinterpreta*, no está fallando. Está
    mostrando que el texto admite dos lecturas y la equivocada era razonable. Esos son
    los bugs que sobreviven toda revisión, porque nadie los ve como vacíos.
-   Regla: **débil para completitud, fuerte para ambigüedad**, y las
+   Regla. **Débil para completitud, fuerte para ambigüedad**, y las
    malinterpretaciones del fuerte se tratan como defecto del documento, nunca del
    lector. *(Caso real: un lector produjo un guard que reventaba justo cuando el
    script estaba bien configurado, generalizando mal un ejemplo del documento que a

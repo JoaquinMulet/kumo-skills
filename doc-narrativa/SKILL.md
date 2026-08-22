@@ -36,7 +36,7 @@ luego storytelling (este loop termina verificando que no se haya perdido nada).
 > texto *como texto*, si fluye, si es denso, si está ordenado, y por diseño **no
 > detecta el concepto nombrado pero no fundado**: el que está presente, definido,
 > bien ubicado y hasta con analogía, y del que el lector igual no puede decir
-> *por qué existe*. Peor: el plan de redacción que produce reordena y comprime,
+> *por qué existe*. Peor. El plan de redacción que produce reordena y comprime,
 > así que sobre un concepto sin fundamento **comprime el síntoma**. Caso real:
 > este flujo dejó un capítulo mejor escrito, arco, analogías, fórmulas al
 > apéndice, y no tocó el hueco, que el lector encontró después. El orden con
@@ -93,10 +93,10 @@ de la lista, diez aparecieron como «perdidos» y en realidad estaban reformulad
 hubo que revisarlos uno por uno para separar «reformulado» de «perdido». Ese
 ejercicio de separar es justamente el trabajo que el centinela existe para hacer,
 y por eso el centinela debe apuntar a la **idea mínima** (`sin haberlo pedido`,
-`lo decide la norma`) y no a la frase larga: una frase larga falla con cualquier
+`lo decide la norma`) y no a la frase larga. Una frase larga falla con cualquier
 reescritura y se vuelve ruido.
 
-Corolario: **una reescritura estructural invalida las auditorías previas.** No
+Corolario. Una reescritura estructural invalida las auditorías previas. No
 son arreglos sobre un texto que sigue ahí. Son arreglos sobre un texto que ya no
 existe. Si la estructura cambió, el ciclo se corre otra vez sobre el texto nuevo
 , y el test de regresión es lo que hace que la segunda corrida sea barata en vez
@@ -278,17 +278,17 @@ return {
 ```
 
 ## Variantes
-- **Solo el plan (sin reescribir):** corta el workflow tras la fase `Plan` y
+- **Solo el plan (sin reescribir).** Corta el workflow tras la fase `Plan` y
   muéstrale el plan de redacción al usuario para que lo apruebe antes de tocar el
   archivo. Recomendado para documentos grandes o sensibles. **obligatorio** para
   archivos con contenido gestionado por generador (ver advertencia arriba), ahí
   el plan no va al usuario sino al orquestador, que lo ejecuta con `Edit`.
-- **Más lentes:** agrega editores (p. ej. "tono para sponsor no técnico",
+- **Más lentes.** Agrega editores (p. ej. "tono para sponsor no técnico",
   "ruta de lectura por rol") al arreglo `LENTES`.
-- **Combo con completitud:** corre primero `doc-completitud` (que no falte
+- **Combo con completitud.** Corre primero `doc-completitud` (que no falte
   nada) y luego este (que se lea bien). Este loop ya re-verifica completitud al
   final, así no deshace el trabajo del primero.
-- **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible, corre las lentes
+- **Sin el tool Workflow.** Si el entorno no tiene `Workflow` disponible, corre las lentes
   con uno o dos `Agent` secuenciales en vez del fan-out y sintetiza el plan tú mismo. El
   método no cambia, lentes → plan → reescritura → verificación de que no se perdió nada,
   solo va en serie. Conviene igual pausar en el plan para aprobación (variante de arriba).

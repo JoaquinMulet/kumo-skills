@@ -35,7 +35,7 @@ Hay dos papeles, y NO se intercambian:
   agente editor a ciegas parcharía peor: inventa, se desvía del estilo, o malinterpreta.
   Por eso el parchado **nunca** se delega a un subagente. Lo haces tú con `Edit`.
 
-En una frase: **el ciego encuentra, el que sabe arregla.**
+En una frase. El ciego encuentra, el que sabe arregla.
 
 ## Cuándo usarla
 - El usuario quiere que un documento se entienda sin contexto previo (hand-off a
@@ -49,7 +49,7 @@ NO la uses para mejorar el estilo o la narrativa de un documento, para eso está
 la skill hermana `doc-narrativa`. Esta solo sube el **piso** (que
 nada falte), no el techo (que se lea lindo).
 
-Tampoco la uses para saber si cada concepto **se sostiene solo**: esta skill
+Tampoco la uses para saber si cada concepto **se sostiene solo.** Esta skill
 verifica que el ítem *esté presente*, y un concepto puede estar presente,
 definido y explicado sin que el lector pueda decir nunca **por qué existe** ni
 **si le aplica**. Ese eje lo cubre `doc-cadena-causal`, y va inmediatamente
@@ -120,7 +120,7 @@ propias ediciones:
 > (La metáfora es de grafos: cada documento es un **nodo**. Cada referencia o dependencia de un
 > documento hacia otro es una **arista**. Esta skill audita nodos, un documento a la vez.)
 > La regla «una referencia explícita a otro documento cuenta como definición» es correcta para medir
-> la autosuficiencia de UN documento, y exime exactamente las ARISTAS: ningún lector individual
+> la autosuficiencia de UN documento, y exime exactamente las ARISTAS. Ningún lector individual
 > audita si el puntero apunta a algo que existe y contiene lo prometido, si las obligaciones
 > cruzadas están operacionalizadas en AMBOS lados (A declara «B lo hace rutina» pero B no lo
 > incluye), ni si existe una **ruta de lectura garantizada** que haga que el documento apuntado se
@@ -134,7 +134,7 @@ propias ediciones:
 > eximió la arista y nadie la miró. Lo encontró el usuario, no el aparato.)
 
 > **Nota, la cláusula aritmética paga su costo.** Exigir al lector que pueda «reproducir cada paso
-> aritmético» no solo caza prosa floja: caza errores del AUTOR. (Caso real: en un capítulo de
+> aritmético» no solo caza prosa floja, caza errores del AUTOR. (Caso real: en un capítulo de
 > finanzas, un lector recalculó un ejemplo y descubrió que una afirmación era matemáticamente falsa
 >, el despeje trataba como constante una variable que dependía del precio evaluado. Obligó a
 > reformular la fórmula central de la sección, no la prosa.) No quites esa cláusula del prompt
@@ -155,7 +155,7 @@ propias ediciones:
 > lectores `sonnet` (vara más alta que el `haiku` estándar) el conteo de bloqueantes oscila en 1-3
 > varias rondas, cada vez en un archivo distinto y más fino: pasa de huecos conceptuales a
 > inconsistencias aritméticas cruzadas y citas faltantes, y por último a "este dato no muestra su
-> derivación". Eso es señal de **éxito**, no de estancamiento: para cuando una ronda vuelve con **0
+> derivación". Eso es señal de **éxito**, no de estancamiento. Para cuando una ronda vuelve con **0
 > bloqueantes** (verdict `SOLO_MENORES`). Los menores residuales, jerga estándar, una cifra sin su
 > aritmética completa, una conversión FX sin tasa, son la cola fina aceptable. Perseguirlos uno a uno
 > infla el documento. Dos sub-lecciones que ahorran rondas: (1) **arregla las inconsistencias numéricas
@@ -175,7 +175,7 @@ documento se infla y contradice su propósito. Reglas de convergencia:
   aceptables.
 - **Distingue vacío de borde de juicio.** Si el documento delega a propósito ciertos
   casos límite al criterio del lector (p.ej. una sección "principio de juicio"), eso
-  **no** es un vacío: el documento puede declarar explícitamente que los bordes no
+  **no** es un vacío. El documento puede declarar explícitamente que los bordes no
   cubiertos se resuelven con juicio, y eso cierra la clase entera de "¿y si pasa X
   raro?" sin una regla por cada borde.
 - **No bajes la vara para ganar.** No edites el prompt del lector para que deje de

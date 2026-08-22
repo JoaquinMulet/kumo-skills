@@ -78,7 +78,7 @@ Preguntas para asignar bien el rol:
 
 El trasfondo que el modelo necesita para hacer bien la tarea: quién va a leer la salida, qué decisiones previas ya se tomaron, qué restricciones existen, qué datos están en juego. Mucho de esto te resulta obvio porque vives en el problema. Al modelo no le es obvio. Lo que no está dentro de su ventana de contexto sencillamente no existe para él.
 
-Regla operativa: **cuéntale lo que un colega que recién llega necesitaría para hacer la tarea sin volver a preguntarte cada cinco minutos.** Si el documento ya pasó por dos revisiones, dilo. Si la audiencia es técnica o ejecutiva, dilo. Si hay tres opciones consideradas y dos descartadas, di cuáles y por qué.
+Regla operativa. **Cuéntale lo que un colega que recién llega necesitaría para hacer la tarea sin volver a preguntarte cada cinco minutos.** Si el documento ya pasó por dos revisiones, dilo. Si la audiencia es técnica o ejecutiva, dilo. Si hay tres opciones consideradas y dos descartadas, di cuáles y por qué.
 
 ### 3. Tarea concreta
 
@@ -119,10 +119,10 @@ Antes de declarar terminada una tarea, define qué evidencia hace falta y obliga
 
 Patrones reutilizables según el tipo de tarea:
 
-- **Análisis numérico**: "antes de entregar, verifica que [propiedad aritmética que debe cumplirse]. Si no cuadra, no entregues el análisis: dime qué dato parece inconsistente."
-- **Resúmenes**: "ningún número o cita que aparezca en el resumen debe estar ausente del documento original. Si tienes que aproximar o agregar, márcalo explícitamente."
-- **Extracción de cláusulas o referencias**: "marca al final cuáles tienen referencias cruzadas que no pudiste resolver."
-- **Código**: "antes de entregar, ejecuta mentalmente la función con un caso de prueba y reporta si pasa o falla."
+- **Análisis numérico.** "Antes de entregar, verifica que [propiedad aritmética que debe cumplirse]. Si no cuadra, no entregues el análisis: dime qué dato parece inconsistente."
+- **Resúmenes.** "Ningún número o cita que aparezca en el resumen debe estar ausente del documento original. Si tienes que aproximar o agregar, márcalo explícitamente."
+- **Extracción de cláusulas o referencias.** "Marca al final cuáles tienen referencias cruzadas que no pudiste resolver."
+- **Código.** "Antes de entregar, ejecuta mentalmente la función con un caso de prueba y reporta si pasa o falla."
 
 Equilibrio importante: **sobre-especificar una tarea creativa la asfixia. Sub-especificar una tarea operativa la vuelve impredecible.** Para tareas estándar o repetitivas (análisis financiero, extracción de datos, validación de formularios), lista fases críticas y validaciones una por una. Para tareas exploratorias o creativas (proponer ideas, redactar borradores, plantear hipótesis), da reglas genéricas, no inventar datos, distinguir lo que está en la fuente de lo que infieres, marcar las dudas, y deja que la inteligencia del modelo decida cómo cumplirlas.
 
@@ -189,13 +189,13 @@ Cuando audites un prompt, busca específicamente estas cuatro.
 
 Como Claude fue entrenado a partir de millones de conversaciones, su sesgo natural es confirmar lo que el usuario sugiere. Si dejas caer tu hipótesis en la pregunta, "creo que el problema está en el módulo de pagos, ¿lo puedes confirmar?", el modelo se inclina a darte la razón con argumentos plausibles.
 
-Regla de oro: **pregunta la meta, no busques validación de la intuición que ya traes.** "Revisa estos logs y dime dónde está el problema" es preguntar la meta. "¿No es cierto que el problema está en pagos?" es dirigir al testigo.
+Regla de oro. **Pregunta la meta, no busques validación de la intuición que ya traes.** "Revisa estos logs y dime dónde está el problema" es preguntar la meta. "¿No es cierto que el problema está en pagos?" es dirigir al testigo.
 
 ### Vaguedad
 
 "Mejóralo", "hazlo más profesional", "que suene mejor" son instrucciones que delegan en el modelo decisiones que en realidad son tuyas. La salida termina siendo lo que el modelo cree que tú quieres, no lo que tú efectivamente necesitas.
 
-Forma de salir: cuantificar y concretar. En vez de "más corto", "acórtalo a la mitad sin perder los datos numéricos". En vez de "más profesional", "reescríbelo en tono ejecutivo, primera persona del plural, sin condicionales débiles". En vez de "más interesante", "haz que la introducción no use la palabra innovador". **Cuanto más específica la instrucción, menos espacio queda para malentendidos.**
+Forma de salir. Cuantificar y concretar. En vez de "más corto", "acórtalo a la mitad sin perder los datos numéricos". En vez de "más profesional", "reescríbelo en tono ejecutivo, primera persona del plural, sin condicionales débiles". En vez de "más interesante", "haz que la introducción no use la palabra innovador". **Cuanto más específica la instrucción, menos espacio queda para malentendidos.**
 
 ### Exceso de contexto
 
@@ -243,7 +243,7 @@ A ese acto de empezar una conversación nueva, dejando atrás todo lo que estaba
 
 ### Default: cuando rehagas el prompt, chat nuevo
 
-> **Hábito clave.** Cada vez que reformules una pregunta porque la respuesta no te gustó, pregúntate primero: ¿debería esto vivir en un chat nuevo? La respuesta por defecto es *sí*. El contexto sucio empuja al modelo a responder parecido a lo anterior, aunque le pidas explícitamente que olvide.
+> **Hábito clave.** Cada vez que reformules una pregunta porque la respuesta no te gustó, pregúntate primero, ¿debería esto vivir en un chat nuevo? La respuesta por defecto es *sí*. El contexto sucio empuja al modelo a responder parecido a lo anterior, aunque le pidas explícitamente que olvide.
 
 Pedirle "olvida lo anterior y respóndeme con criterio independiente" funciona mal porque el contexto sigue ahí, influyendo aunque le pidas lo contrario. Limpiar el contexto es muchísimo más efectivo que pedirle al modelo que olvide.
 
@@ -262,8 +262,8 @@ El resultado es el mismo: resetear lo que el modelo "ve" cuando te responde.
 
 ## Anexo: medir la ESTABILIDAD de un prompt con agentes
 
-Todo lo anterior se hace a mano y rinde. Pero hay una propiedad que a mano es **invisible**:
-hecho en un chat por variante, un prompt que funciona una de cada tres veces se ve idéntico a
+Todo lo anterior se hace a mano y rinde. Pero hay una propiedad que a mano es **invisible**.
+Hecho en un chat por variante, un prompt que funciona una de cada tres veces se ve idéntico a
 uno que funciona siempre. Se compara la mejor corrida de cada versión, no su consistencia.
 
 **Umbral, cuándo aplica este anexo.** Solo si el prompt (a) entra a producción o a un proceso
@@ -286,16 +286,16 @@ El diseño, con el presupuesto barato de Kumo (5 agentes):
    auto-preferencia correlaciona con familiaridad, no solo con saber la autoría, así que el
    juez debe ser de una familia de modelo distinta a la de los escritores. El sesgo de
    posición es un efecto aparte y se cubre con la randomización.
-4. **La salida que importa: la varianza.** No "cuál ganó" sino **cuál gana consistentemente**.
+4. **La salida que importa. La varianza.** No "cuál ganó" sino **cuál gana consistentemente**.
    Un prompt con 2 de 3 no está listo para producción aunque su mejor corrida sea la más linda.
 
 **Cómo escalar, y qué compra cada peldaño.** Con 2 × 2 detectas un prompt que falla la mitad
-de las veces, pero no distingues 2/3 de 3/3: para eso hacen falta **3 variantes × 3 corridas**
+de las veces, pero no distingues 2/3 de 3/3. Para eso hacen falta **3 variantes × 3 corridas**
 (9 agentes) y, si el veredicto es caro, un **ensemble de 3 jueces** por mayoría (12). Ese salto
 se pide explícitamente con la aritmética, no se toma por default.
 
 **Segundo grafo, para el modo auditar.** Las 8 piezas de la anatomía y las 4 trampas son
-**lentes independientes** sobre el mismo prompt: ninguna necesita la salida de otra, y hoy se
+**lentes independientes** sobre el mismo prompt. Ninguna necesita la salida de otra, y hoy se
 recorren como lista secuencial. Con presupuesto barato, agrúpalas en **4 lentes** (piezas 1-4,
 piezas 5-8, las cuatro trampas, coherencia global) y sintetiza en un nodo. Doce agentes, una
 lente cada uno, es la versión escalada.
@@ -306,7 +306,7 @@ vive en [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarr
 
 ## Prompts de orquestación multi-agente
 
-Hay una especie distinta de prompt que las ocho piezas no cubren sola: el que recibe un **agente raíz que dirige un enjambre de sub-agentes** en una búsqueda persistente (demostrar algo difícil, cazar una causa raíz esquiva, agotar un espacio de diseño). Ese prompt no describe una tarea, describe una **política de búsqueda**, y le apila nueve piezas propias encima de las ocho base: contrato de resultado con definición negativa, cierre de salidas-escape, premisa operativa fijada, política de portafolio por heurísticas, independencia epistémica con polinización diferida, economía de rutas bloqueadas, moneda concreta con adversarial continuo, permisos de herramientas con carve-out, y presupuesto con criterio de parada honesto.
+Hay una especie distinta de prompt que las ocho piezas no cubren sola. El que recibe un **agente raíz que dirige un enjambre de sub-agentes** en una búsqueda persistente (demostrar algo difícil, cazar una causa raíz esquiva, agotar un espacio de diseño). Ese prompt no describe una tarea, describe una **política de búsqueda**, y le apila nueve piezas propias encima de las ocho base: contrato de resultado con definición negativa, cierre de salidas-escape, premisa operativa fijada, política de portafolio por heurísticas, independencia epistémica con polinización diferida, economía de rutas bloqueadas, moneda concreta con adversarial continuo, permisos de herramientas con carve-out, y presupuesto con criterio de parada honesto.
 
 Las nueve piezas, sus trampas y un ejemplo completo viven en [reference/orquestacion-de-agentes.md](reference/orquestacion-de-agentes.md). Léelo antes de escribir o auditar un prompt de orquestación. Para fan-outs simples y paralelos basta con las ocho piezas y el anexo de estabilidad.
 
@@ -339,7 +339,7 @@ El principio común: codificar el aprendizaje fuera de tu cabeza, en el lugar qu
 
 ### Efecto interés compuesto
 
-Con el tiempo esta práctica se parece al interés compuesto. Cada sesión deja el sistema un poco más afilado y la siguiente arranca desde un punto de partida mejor. Las correcciones que tenías que hacer al principio dejan de aparecer porque el sistema ya las anticipa. **Los problemas suben de nivel de abstracción**: empiezas a corregir cosas más finas porque las gruesas ya están resueltas.
+Con el tiempo esta práctica se parece al interés compuesto. Cada sesión deja el sistema un poco más afilado y la siguiente arranca desde un punto de partida mejor. Las correcciones que tenías que hacer al principio dejan de aparecer porque el sistema ya las anticipa. **Los problemas suben de nivel de abstracción.** Empiezas a corregir cosas más finas porque las gruesas ya están resueltas.
 
 Hacer la misma tarea diez veces sin reflexionar te deja diez veces en el punto cero. Hacerla diez veces con esta práctica de captura te deja con un sistema que ya resuelve la mayor parte de la fricción por ti. La diferencia no se nota en la primera sesión. Se nota en la décima.
 
@@ -359,7 +359,7 @@ Las dos precondiciones (prompt/tarea y porqué) son no negociables: si falta alg
 
 ## Qué NO hacer
 
-- No empezar a trabajar sin las dos precondiciones (prompt/tarea + porqué): te queda un prompt genérico defendible que probablemente no calce con el uso real. Si falta el porqué, pídelo amablemente, no lo adivines.
+- No empezar a trabajar sin las dos precondiciones (prompt/tarea + porqué). Te queda un prompt genérico defendible que probablemente no calce con el uso real. Si falta el porqué, pídelo amablemente, no lo adivines.
 - No producir prompts inflados con palabrería profesional que no aporta precisión.
 - No imponer las primeras siete piezas como obligación rígida cuando la tarea es genuinamente trivial ("convierte 30 grados Celsius a Fahrenheit" no necesita rol ni definition of done). La octava (auditoría externa) sí cierra siempre, la condicional la hace inerte si la capacidad no está.
 - No agregar reglas de validación a tareas creativas hasta asfixiarlas.

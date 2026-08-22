@@ -105,7 +105,7 @@ Quitar patrones deja un texto estéril, y un texto estéril delata igual.
     mitad de frase. Casi siempre tapan un conector que nadie pensó.
 15. **Negrita de más.** No pongas en negrita cada nombre propio ni cada sigla.
 16. **Listas con etiqueta que se repite.** La marca es una etiqueta en negrita
-    seguida de dos puntos que dice lo mismo que la línea. «**Rendimiento:** el
+    seguida de dos puntos que dice lo mismo que la línea. «**Rendimiento.** El
     rendimiento mejoró…». Eso va en prosa. Una entrada en negrita que termina en
     punto, nombra la cosa y sigue con información nueva no es marca.
 17. **Títulos con mayúscula en cada palabra.** Va mayúscula solo al inicio.

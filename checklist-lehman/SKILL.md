@@ -25,7 +25,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
   respuestas que acusan alimentan los riesgos y, si mandan, la tesis (el
   hallazgo central manda el orden). La sección 10 no se archiva: define el
   tablero de vigilancia trimestral.
-- La pregunta 68 es la síntesis: el PATRÓN de secciones marcadas es la
+- La pregunta 68 es la síntesis. El PATRÓN de secciones marcadas es la
   conclusión, no un solo hallazgo fatal.
 
 ## 0. Antes de abrir el documento
@@ -35,7 +35,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
 2. ¿Entiendo cómo gana dinero este negocio en una frase?
 3. ¿Cuál es el debate de riesgo del ciclo actual (subprime en 2007,
    crédito privado/NBFI en 2025)? Buscar la exposición de la empresa a ese
-   tema específicamente: la crisis siguiente casi siempre está en la clase
+   tema específicamente. La crisis siguiente casi siempre está en la clase
    de activo que más creció en los últimos 5 años del SISTEMA, no de la
    empresa.
 4. ¿La fecha de cierre vs. hoy: cuánto pudo deteriorarse todo desde
@@ -56,7 +56,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
    mercado, está ganando participación, y en negocios de crédito, ganar
    participación rápido significa casi siempre aceptar lo que la
    competencia rechazó o cobrar menos por el mismo riesgo. El deterioro de
-   estándares no se anuncia: se manifiesta como crecimiento, con 2–3 años
+   estándares no se anuncia. Se manifiesta como crecimiento, con 2–3 años
    de retraso.
 8. ¿Los activos que más crecieron son los más líquidos o los más
    ilíquidos?
@@ -88,7 +88,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
 15. ¿La posición individual más grande, y cuánto creció?
 16. **[nueva]** ¿Hay exposición a contrapartes cuyo negocio es a su vez
     apalancado (fondos, financieras no bancarias)? El apalancamiento sobre
-    apalancamiento no suma: multiplica, y se deshace todo junto.
+    apalancamiento no suma. Multiplica, y se deshace todo junto.
 
 ## 2. La pregunta de valoración, versión profunda. Rastrear la cadena completa
 
@@ -98,7 +98,7 @@ puede ser «nadie»:
 
 17. ¿Qué activos se valoran a mercado, cuáles a modelo (Nivel 2/3), y
     cuáles no se valoran en absoluto (costo amortizado)? El costo
-    amortizado no es una valoración conservadora: es la ausencia de
+    amortizado no es una valoración conservadora. Es la ausencia de
     valoración. Un préstamo vale su valor de origen hasta el día en que
     alguien decide que no.
 18. **[nueva, el test de circularidad]** Para préstamos garantizados:
@@ -134,7 +134,7 @@ riesgo sale impecable, antes de aceptarla preguntar:
 24. ¿Esta métrica está limpia porque el riesgo es bajo, o porque el
     sistema de medición no está diseñado para verlo antes de tiempo?
     Castigos de 0,00% en préstamos a costo amortizado contra colateral sin
-    precio de mercado no son un resultado: son una propiedad del método.
+    precio de mercado no son un resultado. Son una propiedad del método.
     La métrica no puede ensuciarse hasta que el deterioro es irreversible.
 25. ¿El riesgo de esta exposición es de deterioro gradual o de acantilado?
     Gradual = hay señales externas de precio (tasaciones, índices,
@@ -181,8 +181,8 @@ riesgo sale impecable, antes de aceptarla preguntar:
     del colateral.) ¿Ese parámetro está testeado por la historia, o hoy lo
     estima el mismo comité interno que valora la exposición? Si el
     parámetro decisivo es no testeado Y autoestimado, la incertidumbre no
-    es cuantificable: es estructural.
-34. Recordar que la insolvencia contable no es el modo de muerte: el
+    es cuantificable. Es estructural.
+34. Recordar que la insolvencia contable no es el modo de muerte. El
     fondeo huye antes de que la contabilidad admita el problema. ¿Cuánto
     fondeo de mercado necesita renovar la empresa por año, y qué pasa si
     el mercado la cuestiona?
@@ -262,12 +262,12 @@ riesgo sale impecable, antes de aceptarla preguntar:
 
 ## 10. Señales de alerta temprana para el seguimiento
 
-**[sección nueva]** El checklist no se aplica una vez: define qué vigilar
+**[sección nueva]** El checklist no se aplica una vez. Define qué vigilar
 cada trimestre. Para cada exposición grande identificada, anotar sus
 gatillos:
 
 61. **El día que el cero se rompa:** la primera pérdida material en una
-    línea de «pérdidas 0,00% por construcción» no es una pérdida: es la
+    línea de «pérdidas 0,00% por construcción» no es una pérdida. Es la
     invalidación del supuesto estructural sobre el que se reserva casi
     nada contra decenas de miles de millones. Cambia la categoría del
     riesgo, no su magnitud.
@@ -294,37 +294,37 @@ gatillos:
 
 ## Los diez principios (seis originales + cuatro de la v2)
 
-1. **Compara, no mires:** el cambio año contra año informa. El número
+1. **Compara, no mires.** El cambio año contra año informa. El número
    aislado no.
-2. **Voluntario vs. involuntario:** distingue lo que compraron de lo que
+2. **Voluntario vs. involuntario.** Distingue lo que compraron de lo que
    no pudieron vender.
 3. **¿Quién pone el precio?, y ahora: rastrea la cadena completa.**
    Mercado > modelo > gerencia > nadie (costo amortizado contra colateral
    marcado por el deudor). Mientras más eslabones sin mercado, menos vale
    el patrimonio contable.
-4. **Suma lo invisible:** balance + notas + contingencias, todas activadas
+4. **Suma lo invisible.** Balance + notas + contingencias, todas activadas
    a la vez.
 5. **Juzga hechos de capital, no narrativa.**
-6. **Coherencia:** prosa vs. tabla, gana la tabla. Tabla vs. entorno, gana
+6. **Coherencia.** Prosa vs. tabla, gana la tabla. Tabla vs. entorno, gana
    el entorno.
-7. **[nuevo] La limpieza puede ser estructural:** una métrica impecable
+7. **[nuevo] La limpieza puede ser estructural.** Una métrica impecable
    puede medir que el sistema de medición es ciego, no que el riesgo sea
    bajo. Pregunta siempre si la métrica puede ensuciarse antes de que sea
    tarde.
-8. **[nuevo] El crecimiento es el evento:** una exposición que compone más
+8. **[nuevo] El crecimiento es el evento.** Una exposición que compone más
    rápido que el capital no necesita que pase nada malo para volverse
-   peligrosa: la aritmética sola fija la fecha. Calcula el cruce.
-9. **[nuevo] Haz la matemática del peor caso tú mismo:** perímetro ×
+   peligrosa. La aritmética sola fija la fecha. Calcula el cruce.
+9. **[nuevo] Haz la matemática del peor caso tú mismo.** Perímetro ×
    pérdida en impago vs. pila de absorción. Identifica el único parámetro
    que separa «mal año» de «perder la empresa» y pregunta si está testeado
    por la historia o estimado por el interesado.
-10. **[nuevo] La opacidad es información:** lo que el documento no
+10. **[nuevo] La opacidad es información.** Lo que el documento no
     desglosa sobre su línea de mayor crecimiento fue una decisión. La
     lista de preguntas sin respuesta es parte del análisis.
 
 ## Aplicaciones
 
-- **Cencosud, agosto 2026 (v1 + adenda v2):**
+- **Cencosud, agosto 2026 (v1 + adenda v2).**
   `Experimentos con AI/Cencosud/respuestas/checklist-lehman.md`. Los
   hallazgos que el checklist agregó sobre un análisis ya revisado 6 veces:
   la línea que más creció (+7,2%) es la propiedad de inversión valorada

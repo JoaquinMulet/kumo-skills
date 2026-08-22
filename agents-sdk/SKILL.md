@@ -135,7 +135,7 @@ npm install agents @cloudflare/ai-chat ai @ai-sdk/react
 }
 ```
 
-**Gotchas:**
+**Gotchas.**
 - Do NOT enable `experimentalDecorators` in tsconfig (breaks `@callable`)
 - Never edit old migrations, always add new tags
 - Each agent class needs its own DO binding + migration entry
@@ -182,7 +182,7 @@ Requests route to `/agents/{agent-name}/{instance-name}`:
 
 Client: `useAgent({ agent: "Counter", name: "user-123" })`
 
-Custom routing: use `getAgentByName(env.MyAgent, "instance-id")` then `agent.fetch(request)`.
+Custom routing. Use `getAgentByName(env.MyAgent, "instance-id")` then `agent.fetch(request)`.
 
 ## Core APIs
 

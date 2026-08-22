@@ -70,16 +70,16 @@ Tres papeles, y **no se intercambian**:
 - **Buscador.** Subagente que reúne evidencia sobre un frente acotado. Devuelve
   afirmaciones estructuradas, cada una con su cita textual, su fuente y su fecha.
 - **Refutador.** Subagente distinto, sin memoria del buscador, cuya única instrucción
-  es **destruir** la afirmación. No "evaluarla": destruirla. Desconfía por defecto.
+  es **destruir** la afirmación. No "evaluarla". Destruirla. Desconfía por defecto.
 - **Editor.** El orquestador, o sea quien invoca esta skill. Recibe los veredictos,
   decide qué entra al texto y con qué salvaguardas, y escribe las correcciones.
 
-El editor nunca delega la redacción final a un agente: tiene el contexto del documento
+El editor nunca delega la redacción final a un agente. Tiene el contexto del documento
 que los subagentes no tienen.
 
 ## El pipeline
 
-Usar el tool `Workflow` con dos etapas encadenadas. **Pipeline, no barrera**: cada
+Usar el tool `Workflow` con dos etapas encadenadas. **Pipeline, no barrera.** Cada
 afirmación pasa a refutación en cuanto su buscador termina, sin esperar a los demás.
 
 Adaptar los frentes (`FRENTES`) y el contexto (`CONTEXTO`) a cada encargo. El resto
@@ -131,7 +131,7 @@ const CLAIMS_SCHEMA = {
           openedDirectly: { type: 'boolean', description: 'true SOLO si abriste el documento primario' },
           primaryAccess: {
             type: 'string',
-            description: 'como llegaste al primario, o por que no llegaste: que rutas intentaste y como fallaron. El refutador lo necesita para decidir si el primario era obtenible.',
+            description: 'como llegaste al primario, o por que no llegaste, que rutas intentaste y como fallaron. El refutador lo necesita para decidir si el primario era obtenible.',
           },
           loadBearing: { type: 'boolean', description: 'true si la conclusion cambia sin esta afirmacion' },
           bearing: { type: 'string', enum: ['apoya', 'refuta', 'matiza'] },
@@ -308,7 +308,7 @@ mide otra cosa.
 ### 5. El sesgo de dirección
 
 En una corrida real, de nueve refutaciones materiales, **siete tumbaron afirmaciones
-que apoyaban la tesis**. No es azar: los números que confirman lo que uno quiere creer
+que apoyaban la tesis**. No es azar. Los números que confirman lo que uno quiere creer
 circulan más, y circular es lo que erosiona su procedencia. Cada repetición los aleja
 de la fuente y los redondea hacia el extremo más vistoso.
 
@@ -342,7 +342,7 @@ huecos. Una ausencia sistemática dice algo sobre el mundo. Un número inventado
 
 Parar cuando ninguna afirmación que sostiene la conclusión siga en pie sin verificar,
 y cuando todo negativo `inferido` haya sido resuelto a mano. Las imprecisiones
-menores son cola aceptable: perseguirlas una a una infla el trabajo sin mover el
+menores son cola aceptable. Perseguirlas una a una infla el trabajo sin mover el
 veredicto.
 
 No bajar la vara para terminar. Lo legítimo es acotar el criterio a las afirmaciones
