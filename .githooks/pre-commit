@@ -23,6 +23,23 @@ if [ "$status" -ne 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------
+# Centinelas. las ideas compradas con auditorias de documentos no pueden
+# desaparecer en una reescritura.
+#
+# Un parche de auditoria vive en una redaccion concreta, y cuando el texto
+# se reescribe la redaccion cambia y el parche se va SIN QUE NADIE LO NOTE,
+# porque el resultado sigue leyendose bien. El hueco no deja hueco visible.
+# ---------------------------------------------------------------------------
+PYC=$(command -v python3 || command -v python)
+if [ -n "$PYC" ]; then
+  "$PYC" scripts/centinelas.py || {
+    echo "" >&2
+    echo "Commit BLOQUEADO por los centinelas. Ver arriba." >&2
+    exit 1
+  }
+fi
+
+# ---------------------------------------------------------------------------
 # Guardia de sincronia INSTALADA -> REPO (la direccion que el post-commit NO cubre).
 #
 # El post-commit distribuye repo -> instalada. La direccion inversa no tenia disparador:
