@@ -72,7 +72,7 @@ propias ediciones:
 3. **El bucle (lo corres tú):**
    - a. **Audita:** invoca el tool `Workflow` con el `script` de abajo (reader-only).
         Te devuelve los vacíos, cada uno con `file`, `section`, `missing` y
-        `severidad` (`bloqueante` = no se puede ejecutar/entender; `menor` = se
+        `severidad` (`bloqueante` = no se puede ejecutar/entender, `menor` = se
         entiende pero sería más claro).
    - b. **Parcha tú mismo:** con `Edit`, cierra cada vacío en el archivo que
         corresponda. Tienes el contexto que el lector no tiene: define las siglas

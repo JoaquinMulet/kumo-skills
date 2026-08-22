@@ -90,7 +90,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
     apalancado (fondos, financieras no bancarias)? El apalancamiento sobre
     apalancamiento no suma: multiplica, y se deshace todo junto.
 
-## 2. La pregunta de valoración, versión profunda: rastrear la cadena completa
+## 2. La pregunta de valoración, versión profunda. Rastrear la cadena completa
 
 La v1 preguntaba «¿quién pone el precio: mercado, modelo o gerencia?». La
 práctica enseñó que hay que rastrear cada eslabón, porque la respuesta
@@ -126,7 +126,7 @@ puede ser «nadie»:
 23. ¿Cuántas veces aparece «significant management estimates» o
     equivalente, y sobre qué montos?
 
-## 3. Limpieza estructural: interrogar las métricas que salen bien
+## 3. Limpieza estructural. Interrogar las métricas que salen bien
 
 **[sección nueva, la lección central de la v2]** Cuando una métrica de
 riesgo sale impecable, antes de aceptarla preguntar:
@@ -159,7 +159,7 @@ riesgo sale impecable, antes de aceptarla preguntar:
     otra línea que crece: mismo riesgo, distinta etiqueta, menos
     apertura.)
 
-## 4. La matemática de la evaporación: dimensionar el peor caso uno mismo
+## 4. La matemática de la evaporación. Dimensionar el peor caso uno mismo
 
 **[sección nueva]** El documento nunca hace este cálculo. Hay que hacerlo:
 
@@ -207,7 +207,7 @@ riesgo sale impecable, antes de aceptarla preguntar:
 42. ¿Qué hicieron con la caja (colchón o reparto) y es coherente con el
     momento del ciclo?
 
-## 7. Notas al pie: fuera de balance y contingencias
+## 7. Notas al pie. Fuera de balance y contingencias
 
 43. ¿Entidades de propósito especial: qué activos, qué máxima pérdida
     declarada, por qué no consolidan? ¿El saldo de los vehículos crece?

@@ -106,7 +106,7 @@ secciones-concepto**. Ese número fue lo que justificó una reescritura estructu
 completa en vez de una pasada de edición, y es la clase de argumento que un
 «creo que está desordenado» nunca gana.
 
-### El remedio no es mover párrafos: es la estructura en espiral
+### El remedio no es mover párrafos. Es la estructura en espiral
 
 Reordenar suele ser imposible, porque las dependencias son circulares: para
 explicar A hace falta B, y para explicar B hace falta A. La salida es **recorrer

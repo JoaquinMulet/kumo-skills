@@ -179,7 +179,7 @@ Para que el contraste sea palpable, compara dos versiones del mismo encargo.
 >
 > **[Auditoría externa]** Si tienes capacidad de invocar agentes, la verificación debe ser auditada y confirmada por un agente tercero externo e imparcial. En caso de que encuentre discrepancias, corrígelas. Solo informa el trabajo como terminado cuando tú y el agente auditor confirmen que fue terminado.
 
-El segundo prompt es más largo, sí. Pero ahorra al menos dos rondas de "no, así no, más corto, sin tecnicismos, enfocado en lo crítico" y produce un resultado utilizable a la primera. **Las ocho piezas no son adorno: son el costo fijo que evita la espiral de iteraciones de aclaración.**
+El segundo prompt es más largo, sí. Pero ahorra al menos dos rondas de "no, así no, más corto, sin tecnicismos, enfocado en lo crítico" y produce un resultado utilizable a la primera. **Las ocho piezas no son adorno. Son el costo fijo que evita la espiral de iteraciones de aclaración.**
 
 ## Trampas comunes
 

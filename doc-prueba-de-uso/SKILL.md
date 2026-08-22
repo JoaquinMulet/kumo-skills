@@ -24,11 +24,11 @@ Un informe estratégico pasó **dos** controles de calidad con lectores débiles
 un loop de completitud ("¿puedes explicar cada sección sin vacíos?" → sí) y una
 reestructura de storytelling ("¿se lee como un relato?" → sí). Aun así, cuando
 el usuario abrió el anexo del esquema de datos, su veredicto fue *"no se
-entiende nada"*, y tenía razón: el anexo nombraba 28 tablas sin un solo
+entiende nada"*, y tenía razón. El anexo nombraba 28 tablas sin un solo
 atributo, sin llaves, sin política de IDs. Un diseñador no podía construir la
 base de datos desde él.
 
-**El error no fue de escritura: fue de criterio de validación.** Los lectores
+**El error no fue de escritura. Fue de criterio de validación.** Los lectores
 verificaban que el contenido *se pudiera explicar*. Nadie verificaba que
 *sirviera para ejecutar su propósito*. Un lector puede resumir perfectamente un
 anexo que es inservible como referencia de diseño, porque resumir solo exige
@@ -85,9 +85,9 @@ plano, que alguien que no estuvo en la conversación pueda construir con él.**
    la prueba no mide la autosuficiencia de la sección.
 
    **Las dos calibraciones del lector, y por qué hacen falta las dos.** El modelo
-   **débil** (haiku) mide si la información *alcanza*: lo que no está, no lo puede
+   **débil** (haiku) mide si la información *alcanza*. Lo que no está, no lo puede
    suplir, así que sus vacíos son huecos reales de contenido. El modelo **fuerte**
-   mide algo distinto y más peligroso: si el documento es **interpretable de una sola
+   mide algo distinto y más peligroso: especificar si el documento es **interpretable de una sola
    manera**. Un lector capaz rellena los huecos sin darse cuenta, por eso no sirve
    para medir completitud, pero cuando *malinterpreta*, no está fallando: está
    mostrando que el texto admite dos lecturas y la equivocada era razonable. Esos son
@@ -131,7 +131,7 @@ plano, que alguien que no estuvo en la conversación pueda construir con él.**
 6. **Parche mínimo, del orquestador.** Se corrige SOLO lo real, con la
    aclaración más pequeña que desbloquea la tarea (una frase, una fila, una
    convención explicitada). Nunca se le pide al lector que "arregle" el
-   documento: no tiene el contexto.
+   documento. No tiene el contexto.
 
 7. **Iterar hasta convergencia.** Ronda nueva con lector fresco (nunca el
    mismo, ya está contaminado). Convergencia = artefacto pasa los CRÍTICOS del
@@ -167,7 +167,7 @@ export const meta = {
 // SECCIONES INCRUSTADAS con guard por el orquestador (contrato del caller del esqueleto
 // compartido: una lista vacía hace que la prueba corra sobre NADA y devuelva un veredicto
 // schema-válido. El porqué y los demás modos de fallo del andamiaje, en
-// desarrollo-riguroso/reference/esqueleto-de-verificacion.md — léelo antes de tocar esto):
+// desarrollo-riguroso/reference/esqueleto-de-verificacion.md. Léelo antes de tocar esto):
 const SECCIONES = [ /* { id, file, rol, tarea, pruebaLectura }, ... — literales */ ]
 if (!SECCIONES.length) throw new Error('Incrusta las secciones en el script antes de correrlo')
 const SCHEMA = {
