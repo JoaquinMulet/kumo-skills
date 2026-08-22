@@ -25,18 +25,18 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`gobernanza-primero`](gobernanza-primero/) | La puerta que corre ANTES de cualquier analisis de una empresa: si los incentivos estan mal, la historia de asignacion de capital ya predice el futuro y no hay para que seguir. |
 | [`checklist-lehman`](checklist-lehman/) | Las 70 preguntas que hay que hacerle a unos estados financieros, derivadas del 10-K de Lehman 2007 anotado por Buffett. Pasada obligatoria de todo informe de analisis de empresa. |
 
-### El mapa — por qué existe cada skill
+### El mapa. Por qué existe cada skill
 
 Las catorce responden seis preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
 
-- **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo — siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda — convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
+- **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo, siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda, convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
 - **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso` → `unslop`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar. Y el paso 5 existe porque puede además ser útil y sonar a máquina, que es lo primero que un lector nota y lo último que las otras cuatro miran.
-- **Cómo le hablamos al modelo.** `escritura-de-prompts` — el modelo está fijo; el prompt es la única palanca real, así que el prompting se vuelve método.
-- **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos; solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
+- **Cómo le hablamos al modelo.** `escritura-de-prompts`, el modelo está fijo. El prompt es la única palanca real, así que el prompting se vuelve método.
+- **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos. Solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
 - **Cómo analizamos una empresa.** `gobernanza-primero` corre primero y es una PUERTA, no un capítulo: si los incentivos están mal, la historia de asignación de capital es la mejor predicción del futuro y el resto del análisis sobra. Recién después entra `checklist-lehman`, las 70 preguntas que se le hacen a los estados financieros. Existen en ese orden porque leer bien unos números malos no sirve de nada.
-- **Con qué construimos agentes.** `agents-sdk` — conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `aeo-sitios-web` — el playbook para que cualquier sitio nuestro o de un cliente quede listo para la era agéntica (SEO/AEO): nació de la implementación verificada en kumocloud.cl (21→36 puntos el 2026-08-06).
+- **Con qué construimos agentes.** `agents-sdk`, conocimiento técnico de una plataforma que cambia más rápido que el pre-entrenamiento del modelo. Su valor no es explicar el SDK sino apuntar a las docs vivas: cada URL de su tabla se verificó con una petición real antes de escribirse. Y `aeo-sitios-web`, el playbook para que cualquier sitio nuestro o de un cliente quede listo para la era agéntica (SEO/AEO): nació de la implementación verificada en kumocloud.cl (21→36 puntos el 2026-08-06).
 
-### El ciclo — lo único que hay que entender el primer día
+### El ciclo. Lo único que hay que entender el primer día
 
 Kumo no guarda su experiencia en la cabeza de nadie: la guarda en dos archivos que se
 alimentan entre sí. **El estándar de la casa** dice cómo se trabaja en cualquier proyecto. **El
@@ -68,12 +68,12 @@ Kumo arranca sabiendo lo que este aprendió a los golpes, sin que nadie tenga qu
 Quién hace cada flecha, en concreto: las cuatro las ejecuta **Claude**, no un humano con una
 plantilla. En el paso 1 le pides empezar un proyecto, Claude carga la skill `desarrollo-riguroso`
 y escribe el `CLAUDE.md` de ese proyecto siguiendo
-[la plantilla del repo](desarrollo-riguroso/reference/plantilla-claude-md.md) — comandos exactos
+[la plantilla del repo](desarrollo-riguroso/reference/plantilla-claude-md.md), comandos exactos
 del stack, reglas del dominio, y una sección de lecciones que arranca casi vacía. En el paso 3
 le pides cerrar la sesión y Claude carga `retrospectiva-de-sesion`, que es la que reparte. Tú
-apruebas y corriges; el trabajo mecánico no es tuyo.
+apruebas y corriges. El trabajo mecánico no es tuyo.
 
-### Las otras diez — herramientas para momentos concretos del paso 3
+### Las otras diez. Herramientas para momentos concretos del paso 3
 
 No son parte del ciclo: son las que se invocan **mientras trabajas**, cuando aparece una de
 estas diez situaciones.
@@ -91,15 +91,15 @@ estas diez situaciones.
 | Tienes al frente unos estados financieros y no sabes qué preguntarles | [`checklist-lehman`](checklist-lehman/) |
 | Un texto está correcto y aun así suena a IA | [`unslop`](unslop/) |
 
-### Pipeline de calidad documental — los textos también se testean
+### Pipeline de calidad documental. Los textos también se testean
 
-No solo el código se testea; un `CLAUDE.md`, una skill o un spec pueden "leerse bien" y ser inútiles — *un artefacto que pasa un control de coherencia todavía puede fallar en su propósito*. Kumo endurece cualquier texto de valor con cuatro skills **en orden**:
+No solo el código se testea. Un `CLAUDE.md`, una skill o un spec pueden "leerse bien" y ser inútiles, *un artefacto que pasa un control de coherencia todavía puede fallar en su propósito*. Kumo endurece cualquier texto de valor con cuatro skills **en orden**:
 
 **`doc-completitud`** (que no falte nada) → **`doc-cadena-causal`** (que cada concepto se sostenga solo) → **`doc-narrativa`** (que se lea como relato) → **`doc-prueba-de-uso`** (que un lector frío pueda ejecutar la tarea que el texto habilita) → **`unslop`** (que suene a persona).
 
 `unslop` va al final y no es negociable, porque las cuatro anteriores AGREGAN texto y todo texto que agrega un modelo llega con sus marcas puestas. Correrlo antes es limpiar una casa mientras siguen entrando cajas. Y si después vuelves a editar con un modelo, hay que correrlo de nuevo.
 
-La prueba de uso es a la prosa lo que un test de integración es al código: **explicar ≠ poder hacer**. Se aplican a cualquier documento para cualquier fin — desde un anexo técnico hasta las skills de este mismo repo.
+La prueba de uso es a la prosa lo que un test de integración es al código: **explicar ≠ poder hacer**. Se aplican a cualquier documento para cualquier fin, desde un anexo técnico hasta las skills de este mismo repo.
 
 Las cuatro hacen la misma pregunta con una vara cada vez más alta. Cada caja es una pregunta que
 el texto tiene que aprobar antes de pasar a la siguiente:
@@ -134,19 +134,19 @@ flowchart TD
 ```
 
 El orden importa y no es negociable: no sirve pulir la redacción de un texto al que todavía le
-faltan datos. Y la última pregunta es la que sorprende — un documento puede estar completo y
+faltan datos. Y la última pregunta es la que sorprende, un documento puede estar completo y
 bien escrito, y aun así quien debe construir algo con él no puede. **Explicar no es lo mismo
 que habilitar.**
 
 Dos aclaraciones sobre el dibujo: **se pueden usar por separado** (si tu texto ya está completo
 y solo es denso, corres la de narrativa sola), pero cuando se usan juntas van en ese orden. Y hay
-dos tipos de flecha de vuelta que conviene no confundir: las **cortas** —cada pregunta arregla lo
-suyo y se vuelve a preguntar a sí misma— y la **larga**, que devuelve hasta el principio y **solo
+dos tipos de flecha de vuelta que conviene no confundir: las **cortas**, cada pregunta arregla lo
+suyo y se vuelve a preguntar a sí misma, y la **larga**, que devuelve hasta el principio y **solo
 se recorre si la pregunta 4 falla**. Esa última es la importante: lo que el lector tuvo que
 adivinar es exactamente lo que faltaba, así que se rellena y se baja de nuevo por todo el
 pipeline. Si nadie tuvo que adivinar, el texto sale por la derecha y no hay loop largo.
 
-## Cómo funcionan por dentro — las seis hacen lo mismo
+## Cómo funcionan por dentro. Las seis hacen lo mismo
 
 Seis de las diez skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
 en paralelo**, cada uno mirando el mismo material desde un ángulo distinto, y después alguien
@@ -182,14 +182,14 @@ flowchart TD
 ```
 
 **Ese abanico del paso 2 es el punto.** Los tres agentes corren **al mismo tiempo y sin verse
-entre sí** — ninguno sabe qué encontró el otro. Si en vez de tres ángulos distintos pusieras
+entre sí**, ninguno sabe qué encontró el otro. Si en vez de tres ángulos distintos pusieras
 tres agentes con la misma instrucción, los tres repetirían el mismo punto ciego y la
 coincidencia se sentiría como triple confirmación.
 
 **El diagrama es esquemático: dibuja lo que le pasa a UNA afirmación.** La lista del paso 1 se
-escribe una sola vez para todo el informe; de ahí en adelante, cada afirmación de esa lista
+escribe una sola vez para todo el informe. De ahí en adelante, cada afirmación de esa lista
 recorre su propio camino 2 → 3 → 4 por separado. Si el informe tiene 10 afirmaciones, el abanico
-se abre 10 veces: 30 agentes en total. Y esas 10 no esperan entre sí — cada afirmación avanza en
+se abre 10 veces: 30 agentes en total. Y esas 10 no esperan entre sí, cada afirmación avanza en
 cuanto sus tres ángulos terminan, hasta el tope de agentes simultáneos que la máquina permite;
 el resto hace fila. Por eso la cuenta (**ángulos × afirmaciones**) se hace *antes* de lanzar:
 tres ángulos parecen baratos hasta que se multiplican por veinte afirmaciones.
@@ -205,14 +205,14 @@ Las tres decisiones de diseño que explican por qué es así, y no de otra forma
   quien conduce tiene el contexto para saber cuál hallazgo es real. El grafo entrega un informe
   etiquetado, jamás un cambio ya aplicado.
 
-Sobre ese paso 5: **quien decide es Claude conduciendo la skill** — el que lanzó los agentes y
+Sobre ese paso 5: **quien decide es Claude conduciendo la skill**, el que lanzó los agentes y
 tiene el documento completo a la vista, no uno de los agentes lanzados. Antes de aplicar un
 cambio va a buscar el hallazgo en el archivo real para descartar los inventados, y te muestra lo
 grave para que decidas tú. La regla de la casa es que ningún agente suelto escribe el resultado
 final.
 
 Dentro del repo esos cinco pasos se llaman **ancla → lentes → síntesis → verificación →
-decisión del orquestador**; los vas a ver con esos nombres en el código de las skills. Y esto es
+decisión del orquestador**. Los vas a ver con esos nombres en el código de las skills. Y esto es
 lo que cada una pone en cada paso:
 
 | Skill | Su lista del paso 1 (la vara) | Sus agentes del paso 2 | Lo que se decide al final |
@@ -226,11 +226,11 @@ lo que cada una pone en cada paso:
 
 Las otras cuatro (`desarrollo-riguroso`, `retrospectiva-de-sesion`, `escritura-de-prompts`,
 `agents-sdk`) no lanzan agentes: las tres primeras son método que Claude aplica leyéndolas, y
-`agents-sdk` es conocimiento técnico que lo manda a leer las docs vivas de Cloudflare. Y eso es literal — no hay que invocarlas
+`agents-sdk` es conocimiento técnico que lo manda a leer las docs vivas de Cloudflare. Y eso es literal, no hay que invocarlas
 a mano: al iniciar la sesión Claude lee el nombre y la descripción de cada skill instalada, y
 cuando le pides algo que calza con una, la carga completa y la sigue (ver
 [Cómo se invocan](#cómo-se-invocan) más abajo). El detalle técnico de la maquinaria
-—incluidos los errores que cada skill pagó por separado— vive en
+, incluidos los errores que cada skill pagó por separado, vive en
 [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](desarrollo-riguroso/reference/esqueleto-de-verificacion.md).
 
 ## Instalación
@@ -266,7 +266,7 @@ Si la carpeta `~/.claude/skills/` no existe, créala antes. Reiniciar la sesión
 **Cuál de las dos elegir.** La personal (`~/.claude/skills/`) vive en tu equipo: la ves tú en
 todos tus proyectos y nadie más. La de proyecto (`<proyecto>/.claude/skills/`) se commitea junto
 al código: la ve cualquiera que clone ese repo, y solo dentro de él. Regla práctica: las skills
-transversales de Kumo van en la personal; una skill que solo tiene sentido en un proyecto
+transversales de Kumo van en la personal. Una skill que solo tiene sentido en un proyecto
 concreto va en la de ese proyecto.
 
 ### claude.ai (Pro / Max / Team / Enterprise)

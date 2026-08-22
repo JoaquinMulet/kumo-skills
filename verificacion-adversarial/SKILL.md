@@ -18,7 +18,7 @@ description: >-
 # Verificación adversarial
 
 Separa lo que se puede imprimir de lo que no. La idea central: **quien busca la
-evidencia nunca es quien la valida.** Un agente reúne el material; otro agente
+evidencia nunca es quien la valida.** Un agente reúne el material. Otro agente
 distinto, sin cariño por el hallazgo, intenta destruirlo. Solo lo que sobrevive
 llega al documento.
 
@@ -31,9 +31,9 @@ esas afirmaciones van a salir con el nombre de alguien encima.
 
 - Sí: un informe a cliente, un artículo, una tesis de inversión, un peritaje, una
   carta pública, un capítulo con cifras y citas.
-- No: una pregunta abierta sin afirmaciones previas — eso es investigar, no verificar.
-- No: el estado real de un sistema o un repo — para eso está `auditoria-de-realidad`.
-- No: si el documento se entiende mal pero sus hechos no están en duda — para eso
+- No: una pregunta abierta sin afirmaciones previas, eso es investigar, no verificar.
+- No: el estado real de un sistema o un repo, para eso está `auditoria-de-realidad`.
+- No: si el documento se entiende mal pero sus hechos no están en duda, para eso
   están `doc-completitud` y `doc-narrativa`.
 
 ## La puerta: confirmar antes de abrir la flota
@@ -52,12 +52,12 @@ Dimensionar al riesgo del entregable, no al entusiasmo:
 | Publicación, precios, peritaje, compra | 6–10 | 3 |
 
 **Lente** es el flanco por el que un refutador ataca. Tres refutadores idénticos repiten
-el mismo punto ciego; tres lentes distintas cubren fallos distintos. Las tres del
+el mismo punto ciego. Tres lentes distintas cubren fallos distintos. Las tres del
 andamiaje son **fuente** (¿existe el documento, dice literalmente eso, lo abrió?),
 **medición** (¿la cifra mide el período, el perímetro y la unidad que se le atribuyen?)
 e **inferencia** (¿la conclusión se sigue, o hay un salto de causalidad, extrapolación o
 muestra?). Se implementan como un texto que se añade al final del prompt del refutador
-—constante `LENTES` en el script—, y con tres se decide por mayoría.
+, constante `LENTES` en el script, y con tres se decide por mayoría.
 
 Aritmética antes de lanzar: refutadores = buscadores × afirmaciones cargantes × lentes.
 Si el plan supera unos quince agentes y no es un entregable de alto riesgo, achicarlo
@@ -67,11 +67,11 @@ antes de proponerlo.
 
 Tres papeles, y **no se intercambian**:
 
-- **Buscador** — subagente que reúne evidencia sobre un frente acotado. Devuelve
+- **Buscador.** Subagente que reúne evidencia sobre un frente acotado. Devuelve
   afirmaciones estructuradas, cada una con su cita textual, su fuente y su fecha.
-- **Refutador** — subagente distinto, sin memoria del buscador, cuya única instrucción
+- **Refutador.** Subagente distinto, sin memoria del buscador, cuya única instrucción
   es **destruir** la afirmación. No "evaluarla": destruirla. Desconfía por defecto.
-- **Editor** — el orquestador, o sea quien invoca esta skill. Recibe los veredictos,
+- **Editor.** El orquestador, o sea quien invoca esta skill. Recibe los veredictos,
   decide qué entra al texto y con qué salvaguardas, y escribe las correcciones.
 
 El editor nunca delega la redacción final a un agente: tiene el contexto del documento
@@ -82,7 +82,7 @@ que los subagentes no tienen.
 Usar el tool `Workflow` con dos etapas encadenadas. **Pipeline, no barrera**: cada
 afirmación pasa a refutación en cuanto su buscador termina, sin esperar a los demás.
 
-Adaptar los frentes (`FRENTES`) y el contexto (`CONTEXTO`) a cada encargo; el resto
+Adaptar los frentes (`FRENTES`) y el contexto (`CONTEXTO`) a cada encargo. El resto
 del andamiaje se reutiliza tal cual.
 
 ```js
@@ -274,14 +274,14 @@ Cada uno costó un error real. Leerlos antes de confiar en una corrida.
 ### 1. El negativo inferido (el más caro)
 
 Un refutador dictamina «esa cifra no es de tal autor» porque **otro** autor citaba
-otra cosa — sin abrir jamás el documento del primero. La inferencia es inválida: que
+otra cosa, sin abrir jamás el documento del primero. La inferencia es inválida: que
 Z cite 3% no implica que Y no escribiera 2,7%. Ambas cosas pueden ser ciertas.
 
 Por eso el schema exige `negativeBasis`. Un negativo **inferido** nunca se releva al
 usuario como hecho, y el orquestador debe ir al primario antes de descartar nada.
 «No lo encuentro» no es «no existe».
 
-*(Caso real: se descartó una cifra por «no rastreable»; el usuario abrió el artículo
+*(Caso real: se descartó una cifra por «no rastreable». El usuario abrió el artículo
 original y ahí estaba, verbatim, de un reportero con nombre y fecha exacta.)*
 
 ### 2. Convergencia no es corroboración cuando el origen es único
@@ -300,8 +300,8 @@ sentido. El refutador debe leer el párrafo entero alrededor de la cita, no la c
 ### 4. Errores de categoría
 
 Los más frecuentes, en cualquier dominio: mezclar lo **generado** con lo
-**almacenado** con lo **cobrado**; presentar gasto **comprometido** como demanda
-**absorbida**; presentar una **extrapolación estadística** como guía o dato oficial;
+**almacenado** con lo **cobrado**. Presentar gasto **comprometido** como demanda
+**absorbida**. Presentar una **extrapolación estadística** como guía o dato oficial;
 elevar una medición **local** a **nacional**. Cada uno produce una cifra correcta que
 mide otra cosa.
 
@@ -317,10 +317,10 @@ incomoda. El instinto natural es el inverso y está mal calibrado.
 
 ## Qué hace el editor con los resultados
 
-1. **Lista blanca** — lo que sobrevive, con su cita y su fuente. Marcar cuáles exigen
+1. **Lista blanca.** Lo que sobrevive, con su cita y su fuente. Marcar cuáles exigen
    una salvaguarda de redacción obligatoria y escribirla palabra por palabra.
-2. **Lista negra** — lo que no se imprime y por qué. Ser implacable.
-3. **Revisar a mano los `inferido`** — no son refutaciones, son sospechas. O se
+2. **Lista negra.** Lo que no se imprime y por qué. Ser implacable.
+3. **Revisar a mano los `inferido`.** No son refutaciones, son sospechas. O se
    confirman abriendo el primario, o se devuelven a la lista blanca.
 4. **Corregir en la fuente.** Si el documento no se ha enviado, el error se arregla
    en el texto y desaparece. No conservar el fallo como auto-corrección visible: eso
@@ -336,7 +336,7 @@ ser mejor material: **decir que no existe y por qué**.
 
 «El regulador dejó de publicar esa serie justo el año en que empezó el problema» o
 «ninguna de las cinco empresas divulga esa métrica» son hallazgos publicables, no
-huecos. Una ausencia sistemática dice algo sobre el mundo; un número inventado, no.
+huecos. Una ausencia sistemática dice algo sobre el mundo. Un número inventado, no.
 
 ## Criterio de cierre
 

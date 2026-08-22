@@ -9,9 +9,9 @@ Esta skill convierte la habilidad de prompting en un método. El objetivo no es 
 
 ## Principio rector
 
-**La respuesta es el síntoma; el problema casi siempre vive en el prompt.** Cuando una salida no sirve, la postura no es discutirle al modelo ni pedirle "más corto, mejor, más profesional". Es reescribir la instrucción. El prompt es la única palanca real: el modelo está fijo, sus parámetros no se tocan. Lo único que decide qué neuronas se activan al responder es el texto que tú escribes.
+**La respuesta es el síntoma. El problema casi siempre vive en el prompt.** Cuando una salida no sirve, la postura no es discutirle al modelo ni pedirle "más corto, mejor, más profesional". Es reescribir la instrucción. El prompt es la única palanca real: el modelo está fijo, sus parámetros no se tocan. Lo único que decide qué neuronas se activan al responder es el texto que tú escribes.
 
-El mismo modelo respondiendo a "resume este reporte" produce un amasijo genérico; respondiendo a "resume este reporte de auditoría en tres bullets para el comité ejecutivo, enfatizando los hallazgos críticos y omitiendo detalles operativos" produce algo que el comité puede leer en treinta segundos. Misma materia prima, dos resultados sin punto de comparación. La diferencia está toda en el prompt.
+El mismo modelo respondiendo a "resume este reporte" produce un amasijo genérico. Respondiendo a "resume este reporte de auditoría en tres bullets para el comité ejecutivo, enfatizando los hallazgos críticos y omitiendo detalles operativos" produce algo que el comité puede leer en treinta segundos. Misma materia prima, dos resultados sin punto de comparación. La diferencia está toda en el prompt.
 
 ## Modos de uso
 
@@ -26,7 +26,7 @@ En los cuatro casos el procedimiento es el mismo: revisar la anatomía completa 
 
 ## Precondiciones: no empieces sin estas dos cosas
 
-Antes de aplicar cualquiera de los cuatro modos —construir, auditar, diagnosticar o mejorar— asegúrate de tener dos piezas. Si falta alguna, **no inventes ni asumas**: pídela en una pregunta corta y amable, y espera la respuesta antes de levantar el lápiz.
+Antes de aplicar cualquiera de los cuatro modos, construir, auditar, diagnosticar o mejorar, asegúrate de tener dos piezas. Si falta alguna, **no inventes ni asumas**: pídela en una pregunta corta y amable, y espera la respuesta antes de levantar el lápiz.
 
 ### 1. El prompt o la tarea sobre la cual trabajar
 
@@ -46,7 +46,7 @@ Tres prompts radicalmente distintos, según el porqué.
 
 ### Cómo pedirlo si no está
 
-Pregunta corto y amable; explica por qué necesitas saberlo para que la persona no sienta que la estás interrogando. Formas que funcionan:
+Pregunta corto y amable. Explica por qué necesitas saberlo para que la persona no sienta que la estás interrogando. Formas que funcionan:
 
 > "Antes de armarlo, ¿me cuentas para qué vas a usar el resultado? Saberlo cambia qué piezas del prompt enfatizo y cuáles puedo dejar livianas."
 
@@ -62,7 +62,7 @@ La **instrucción del sistema** es un texto persistente con reglas o preferencia
 
 ## Anatomía completa de un prompt útil
 
-Un buen prompt rara vez es una sola oración. Combina hasta **ocho piezas**. Las primeras siete son condicionales: no todas son obligatorias en todos los casos — una tarea trivial puede ir con dos o tres. La octava (auditoría externa) es no negociable: cierra siempre todo prompt producido con esta metodología. Cuando un prompt falla, casi siempre es porque le falta alguna de estas ocho. Antes de declarar un prompt listo, revísalas en orden.
+Un buen prompt rara vez es una sola oración. Combina hasta **ocho piezas**. Las primeras siete son condicionales: no todas son obligatorias en todos los casos, una tarea trivial puede ir con dos o tres. La octava (auditoría externa) es no negociable: cierra siempre todo prompt producido con esta metodología. Cuando un prompt falla, casi siempre es porque le falta alguna de estas ocho. Antes de declarar un prompt listo, revísalas en orden.
 
 ### 1. Rol
 
@@ -76,19 +76,19 @@ Preguntas para asignar bien el rol:
 
 ### 2. Contexto
 
-El trasfondo que el modelo necesita para hacer bien la tarea: quién va a leer la salida, qué decisiones previas ya se tomaron, qué restricciones existen, qué datos están en juego. Mucho de esto te resulta obvio porque vives en el problema; al modelo no le es obvio. Lo que no está dentro de su ventana de contexto sencillamente no existe para él.
+El trasfondo que el modelo necesita para hacer bien la tarea: quién va a leer la salida, qué decisiones previas ya se tomaron, qué restricciones existen, qué datos están en juego. Mucho de esto te resulta obvio porque vives en el problema. Al modelo no le es obvio. Lo que no está dentro de su ventana de contexto sencillamente no existe para él.
 
 Regla operativa: **cuéntale lo que un colega que recién llega necesitaría para hacer la tarea sin volver a preguntarte cada cinco minutos.** Si el documento ya pasó por dos revisiones, dilo. Si la audiencia es técnica o ejecutiva, dilo. Si hay tres opciones consideradas y dos descartadas, di cuáles y por qué.
 
 ### 3. Tarea concreta
 
-Qué quieres específicamente que produzca. Aquí el enemigo es la vaguedad. "Mira esto y dime qué piensas" obliga al modelo a adivinar; "extrae las tres cláusulas que considerarías más arriesgadas para el comprador y explica por qué cada una lo es" no.
+Qué quieres específicamente que produzca. Aquí el enemigo es la vaguedad. "Mira esto y dime qué piensas" obliga al modelo a adivinar. "extrae las tres cláusulas que considerarías más arriesgadas para el comprador y explica por qué cada una lo es" no.
 
 Fórmula útil:
 
 > **verbo + objeto + alcance**
 
-Ejemplo: "extrae *(verbo)* las tres cláusulas más arriesgadas *(objeto)* y explica por qué cada una lo es *(alcance)*". Lo concreto se recuerda y se ejecuta; lo abstracto se evapora.
+Ejemplo: "extrae *(verbo)* las tres cláusulas más arriesgadas *(objeto)* y explica por qué cada una lo es *(alcance)*". Lo concreto se recuerda y se ejecuta. Lo abstracto se evapora.
 
 ### 4. Formato de salida
 
@@ -115,7 +115,7 @@ Antes de declarar terminada una tarea, define qué evidencia hace falta y obliga
 
 1. **Qué evidencia** debe levantar el modelo durante el trabajo (qué cálculos, qué referencias cruzadas, qué chequeos intermedios).
 2. **Qué resultados son esperables** si todo salió bien (un cuadre, un total, una propiedad que debe cumplirse).
-3. **Qué reglas de validación** debe aplicar sobre su propia salida antes de entregarla — y qué hacer si las reglas fallan: reportar la inconsistencia en vez de entregar un análisis incorrecto.
+3. **Qué reglas de validación** debe aplicar sobre su propia salida antes de entregarla, y qué hacer si las reglas fallan: reportar la inconsistencia en vez de entregar un análisis incorrecto.
 
 Patrones reutilizables según el tipo de tarea:
 
@@ -124,7 +124,7 @@ Patrones reutilizables según el tipo de tarea:
 - **Extracción de cláusulas o referencias**: "marca al final cuáles tienen referencias cruzadas que no pudiste resolver."
 - **Código**: "antes de entregar, ejecuta mentalmente la función con un caso de prueba y reporta si pasa o falla."
 
-Equilibrio importante: **sobre-especificar una tarea creativa la asfixia; sub-especificar una tarea operativa la vuelve impredecible.** Para tareas estándar o repetitivas (análisis financiero, extracción de datos, validación de formularios), lista fases críticas y validaciones una por una. Para tareas exploratorias o creativas (proponer ideas, redactar borradores, plantear hipótesis), da reglas genéricas —no inventar datos, distinguir lo que está en la fuente de lo que infieres, marcar las dudas— y deja que la inteligencia del modelo decida cómo cumplirlas.
+Equilibrio importante: **sobre-especificar una tarea creativa la asfixia. Sub-especificar una tarea operativa la vuelve impredecible.** Para tareas estándar o repetitivas (análisis financiero, extracción de datos, validación de formularios), lista fases críticas y validaciones una por una. Para tareas exploratorias o creativas (proponer ideas, redactar borradores, plantear hipótesis), da reglas genéricas, no inventar datos, distinguir lo que está en la fuente de lo que infieres, marcar las dudas, y deja que la inteligencia del modelo decida cómo cumplirlas.
 
 ### 7. Restricciones explícitas
 
@@ -140,13 +140,13 @@ Bloque estándar, va literal al final de todo prompt:
 
 Por qué siempre, no solo "cuando corresponda":
 
-- El sesgo de auto-confirmación está siempre presente. No hay tarea tan simple donde el modelo no pueda equivocarse y firmar el error con confianza. Las reglas de validación de la pieza #6 las verifica el mismo agente que produjo el trabajo; la pieza #8 mueve esa verificación a un agente con ojos fríos que no tiene inversión en los pasos previos.
+- El sesgo de auto-confirmación está siempre presente. No hay tarea tan simple donde el modelo no pueda equivocarse y firmar el error con confianza. Las reglas de validación de la pieza #6 las verifica el mismo agente que produjo el trabajo. La pieza #8 mueve esa verificación a un agente con ojos fríos que no tiene inversión en los pasos previos.
 - La condicional "si tienes capacidad de invocar agentes" hace el bloque seguro entre superficies: en claude.ai estándar o una llamada plana a la API, el bloque es inerte y no rompe nada. En Claude Code, Claude Cowork, o un setup multi-agente con el Agent SDK, se activa.
-- Estandarizarlo elimina la decisión "esta tarea lo amerita". La amerita siempre que la capacidad esté disponible; cuando no está disponible, no cuesta nada.
+- Estandarizarlo elimina la decisión "esta tarea lo amerita". La amerita siempre que la capacidad esté disponible. Cuando no está disponible, no cuesta nada.
 
 Cuando puedas, nombra al auditor: si sabes qué agente cumplirá el rol (un sub-agente del SDK, un `Task` específico de Claude Code, una *task* de Cowork), nómbralo en el bloque para que el modelo no lo elija a ciegas. Si no, la condicional genérica basta.
 
-**Ojo con el auditor de mentira.** El bloque dice "agente tercero externo e imparcial", pero si el propio agente que hizo el trabajo invoca al auditor **desde su misma conversación**, le pasa su contexto, su encuadre y sus racionalizaciones: es el mismo sesgo con otro nombre, y encima con la apariencia de haberlo resuelto. La condición real de imparcialidad no es que sea *otro agente*, es que tenga **contexto limpio y vea solo lo juzgable** — el prompt y la salida, nada del razonamiento intermedio. Donde exista la capacidad de correr un grafo (Claude Code, el Agent SDK), el auditor debe ser un **nodo aparte** que reciba únicamente esos dos textos. Como bloque de texto portátil el párrafo de arriba sigue siendo correcto y va literal; esta nota es cómo se implementa cuando de verdad hay agentes disponibles.
+**Ojo con el auditor de mentira.** El bloque dice "agente tercero externo e imparcial", pero si el propio agente que hizo el trabajo invoca al auditor **desde su misma conversación**, le pasa su contexto, su encuadre y sus racionalizaciones: es el mismo sesgo con otro nombre, y encima con la apariencia de haberlo resuelto. La condición real de imparcialidad no es que sea *otro agente*, es que tenga **contexto limpio y vea solo lo juzgable**, el prompt y la salida, nada del razonamiento intermedio. Donde exista la capacidad de correr un grafo (Claude Code, el Agent SDK), el auditor debe ser un **nodo aparte** que reciba únicamente esos dos textos. Como bloque de texto portátil el párrafo de arriba sigue siendo correcto y va literal. Esta nota es cómo se implementa cuando de verdad hay agentes disponibles.
 
 ## Ejemplo completo: las ocho piezas aplicadas
 
@@ -167,15 +167,15 @@ Para que el contraste sea palpable, compara dos versiones del mismo encargo.
 > **[Formato]** Una tabla con cuatro columnas: descripción, monto, categoría, observación si la hay. Después de la tabla, una línea final que diga "CUADRE OK" o "CUADRE NO OK: [detalle del problema]".
 >
 > **[Ejemplos]** Cómo categorizar casos ambiguos:
-> - "Pago Movistar — internet oficina" → servicios
-> - "Pago Juan Pérez — consultoría legal externa" → proveedores
+> - "Pago Movistar, internet oficina" → servicios
+> - "Pago Juan Pérez, consultoría legal externa" → proveedores
 > - "Devolución impuesto IVA" → otros (es ingreso, no gasto)
 >
 > **[Validación]** Antes de entregar:
 > 1. La suma algebraica de TODOS los movimientos del período debe igualar la diferencia entre saldo final y saldo inicial. Si no cuadra, no entregues el análisis: dime qué movimiento parece inconsistente.
 > 2. Cada monto que cites debe coincidir con una línea concreta de la cartola. Si tienes que aproximar o agregar, márcalo explícitamente.
 >
-> **[Restricciones]** No incluyas movimientos de ingreso en el ranking de gastos. No incluyas transferencias internas entre cuentas propias. No agregues comentarios sobre la salud financiera general — solo lo que esté soportado por los datos del mes.
+> **[Restricciones]** No incluyas movimientos de ingreso en el ranking de gastos. No incluyas transferencias internas entre cuentas propias. No agregues comentarios sobre la salud financiera general, solo lo que esté soportado por los datos del mes.
 >
 > **[Auditoría externa]** Si tienes capacidad de invocar agentes, la verificación debe ser auditada y confirmada por un agente tercero externo e imparcial. En caso de que encuentre discrepancias, corrígelas. Solo informa el trabajo como terminado cuando tú y el agente auditor confirmen que fue terminado.
 
@@ -187,7 +187,7 @@ Cuando audites un prompt, busca específicamente estas cuatro.
 
 ### Dirigir al testigo
 
-Como Claude fue entrenado a partir de millones de conversaciones, su sesgo natural es confirmar lo que el usuario sugiere. Si dejas caer tu hipótesis en la pregunta —"creo que el problema está en el módulo de pagos, ¿lo puedes confirmar?"—, el modelo se inclina a darte la razón con argumentos plausibles.
+Como Claude fue entrenado a partir de millones de conversaciones, su sesgo natural es confirmar lo que el usuario sugiere. Si dejas caer tu hipótesis en la pregunta, "creo que el problema está en el módulo de pagos, ¿lo puedes confirmar?", el modelo se inclina a darte la razón con argumentos plausibles.
 
 Regla de oro: **pregunta la meta, no busques validación de la intuición que ya traes.** "Revisa estos logs y dime dónde está el problema" es preguntar la meta. "¿No es cierto que el problema está en pagos?" es dirigir al testigo.
 
@@ -205,17 +205,17 @@ Si le vas a dar un reporte de ochenta páginas para que conteste una pregunta so
 
 ### Mezclar tareas
 
-"Resume este texto, extrae las cifras y además tradúcelo al inglés" obliga al modelo a coordinar tres trabajos con criterios distintos y suele producir tres resultados mediocres en lugar de uno bueno. Cada subtarea tiene su propio rol ideal, su propio formato y su propia definición de hecho — meterlas en una sola instrucción colapsa todo.
+"Resume este texto, extrae las cifras y además tradúcelo al inglés" obliga al modelo a coordinar tres trabajos con criterios distintos y suele producir tres resultados mediocres en lugar de uno bueno. Cada subtarea tiene su propio rol ideal, su propio formato y su propia definición de hecho, meterlas en una sola instrucción colapsa todo.
 
 **Tres mensajes separados, cada uno con su propio foco, casi siempre rinden mejor.** Si las tareas dependen entre sí, hazlo en cadena (resumen primero, sobre el resumen pedir las cifras, sobre el original pedir traducción).
 
 ## Iterar el prompt como código
 
-Cuando la salida no sirve, la tentación natural —importada de cómo trabajamos con humanos— es discutirle al modelo: "no, eso no es lo que pedí, hazlo otra vez pero más corto". A veces funciona. Pero hay una postura más productiva.
+Cuando la salida no sirve, la tentación natural, importada de cómo trabajamos con humanos, es discutirle al modelo: "no, eso no es lo que pedí, hazlo otra vez pero más corto". A veces funciona. Pero hay una postura más productiva.
 
-> **Cambio de hábito.** Cuando una respuesta no te sirve, resiste la tentación de discutirle al modelo. La respuesta es el síntoma; el problema casi siempre vive en el prompt. Iterar bien significa reescribir la instrucción, no negociar con la salida.
+> **Cambio de hábito.** Cuando una respuesta no te sirve, resiste la tentación de discutirle al modelo. La respuesta es el síntoma. El problema casi siempre vive en el prompt. Iterar bien significa reescribir la instrucción, no negociar con la salida.
 
-**Trata la iteración como un ciclo de software.** Si la salida está mal, primero pregúntate qué le faltaba al prompt antes de pelearte con la respuesta. Lista diagnóstica corta —recorre las ocho piezas:
+**Trata la iteración como un ciclo de software.** Si la salida está mal, primero pregúntate qué le faltaba al prompt antes de pelearte con la respuesta. Lista diagnóstica corta, recorre las ocho piezas:
 
 - ¿Faltó **rol** asignado?
 - ¿Faltó **contexto** que el modelo necesitaba?
@@ -231,13 +231,13 @@ Reescribes el prompt, lo intentas de nuevo, comparas. Los prompts que terminan f
 
 ### Mantén tu expectativa fuera del prompt
 
-Un complemento clave de la iteración es contrastar lo que esperabas con lo que produjo el modelo, **sin haber revelado antes tu hipótesis**. Cuando la salida coincide con tu expectativa, normalmente vas por buen camino; cuando difiere, la diferencia dispara la pregunta diagnóstica útil —¿se equivocó el modelo, te equivocaste tú, o el criterio nunca estuvo bien definido?—.
+Un complemento clave de la iteración es contrastar lo que esperabas con lo que produjo el modelo, **sin haber revelado antes tu hipótesis**. Cuando la salida coincide con tu expectativa, normalmente vas por buen camino. Cuando difiere, la diferencia dispara la pregunta diagnóstica útil, ¿se equivocó el modelo, te equivocaste tú, o el criterio nunca estuvo bien definido?,.
 
 Si metes tu expectativa dentro del prompt, la complacencia te la va a devolver maquillada y pierdes el contraste. Pregunta la meta ("revisa estos logs y dime dónde está el problema"), no busques validación ("creo que el problema está en pagos, confírmalo").
 
 ## Limpiar el contexto antes de iterar
 
-Hay una decisión menor en el ciclo de iteración que termina siendo crucial: **dónde** ocurre la nueva pregunta. Si reescribiste el prompt porque la respuesta anterior no te sirvió y vuelves a preguntar dentro del mismo chat, el modelo sigue viendo todo lo previo —la pregunta anterior, la respuesta que descartaste, las pistas que sin querer dejaste caer— y eso pesa en la nueva respuesta.
+Hay una decisión menor en el ciclo de iteración que termina siendo crucial: **dónde** ocurre la nueva pregunta. Si reescribiste el prompt porque la respuesta anterior no te sirvió y vuelves a preguntar dentro del mismo chat, el modelo sigue viendo todo lo previo, la pregunta anterior, la respuesta que descartaste, las pistas que sin querer dejaste caer, y eso pesa en la nueva respuesta.
 
 A ese acto de empezar una conversación nueva, dejando atrás todo lo que estaba antes, lo llamamos **limpiar el contexto**.
 
@@ -249,7 +249,7 @@ Pedirle "olvida lo anterior y respóndeme con criterio independiente" funciona m
 
 ### Excepción razonable
 
-Si estás **construyendo sobre la respuesta anterior** —pidiéndole que la expanda, la corrija puntualmente, la traduzca, la reformatee— el contexto previo es justo lo que necesitas. No limpies por reflejo.
+Si estás **construyendo sobre la respuesta anterior**, pidiéndole que la expanda, la corrija puntualmente, la traduzca, la reformatee, el contexto previo es justo lo que necesitas. No limpies por reflejo.
 
 ### Cómo se limpia, según la interfaz
 
@@ -266,20 +266,20 @@ Todo lo anterior se hace a mano y rinde. Pero hay una propiedad que a mano es **
 hecho en un chat por variante, un prompt que funciona una de cada tres veces se ve idéntico a
 uno que funciona siempre. Se compara la mejor corrida de cada versión, no su consistencia.
 
-**Umbral — cuándo aplica este anexo.** Solo si el prompt (a) entra a producción o a un proceso
+**Umbral, cuándo aplica este anexo.** Solo si el prompt (a) entra a producción o a un proceso
 recurrente, (b) alimenta una decisión con costo, o (c) ya falló de forma intermitente y no
 sabes por qué. Para un prompt de una vez, esto es puro sobrecosto: la metodología a mano
-alcanza. Y rige la puerta de la casa — **no lances el fan-out sin visto bueno explícito** de
+alcanza. Y rige la puerta de la casa, **no lances el fan-out sin visto bueno explícito** de
 quien pide el prompt, con la cuenta de agentes en la mano.
 
 El diseño, con el presupuesto barato de Kumo (5 agentes):
 
 1. **Rúbrica primero y congelada.** Sale de la pieza #6: qué evidencia debe levantar la salida,
    qué resultado es esperable, qué reglas debe cumplir. Se escribe **antes** de ver ninguna
-   salida — es el ancla, y un ancla escrita después de ver los resultados solo racionaliza el
+   salida, es el ancla, y un ancla escrita después de ver los resultados solo racionaliza el
    que más gustó.
-2. **Fan-out N×M.** N variantes del prompt × M corridas cada una. Default **2 × 2**; cada
-   agente es una ventana nueva, así que "limpiar el contexto" —que a mano es fricción— sale
+2. **Fan-out N×M.** N variantes del prompt × M corridas cada una. Default **2 × 2**. Cada
+   agente es una ventana nueva, así que "limpiar el contexto", que a mano es fricción, sale
    gratis por construcción.
 3. **Juez ciego, ajeno y de otra familia.** Etiquetas aleatorizadas, orden de las salidas
    randomizado, y **nunca el agente que escribió las variantes**. Ciego no basta: el sesgo de
@@ -297,25 +297,25 @@ se pide explícitamente con la aritmética, no se toma por default.
 **Segundo grafo, para el modo auditar.** Las 8 piezas de la anatomía y las 4 trampas son
 **lentes independientes** sobre el mismo prompt: ninguna necesita la salida de otra, y hoy se
 recorren como lista secuencial. Con presupuesto barato, agrúpalas en **4 lentes** (piezas 1-4,
-piezas 5-8, las cuatro trampas, coherencia global) y sintetiza en un nodo; doce agentes, una
+piezas 5-8, las cuatro trampas, coherencia global) y sintetiza en un nodo. Doce agentes, una
 lente cada uno, es la versión escalada.
 
-El andamiaje reusable —cómo se declara el ancla, los topes, los schemas con prueba de trabajo—
+El andamiaje reusable, cómo se declara el ancla, los topes, los schemas con prueba de trabajo,
 vive en [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md);
 **léelo antes de escribir el workflow**, no re-derives la forma.
 
 ## Prompts de orquestación multi-agente
 
-Hay una especie distinta de prompt que las ocho piezas no cubren sola: el que recibe un **agente raíz que dirige un enjambre de sub-agentes** en una búsqueda persistente (demostrar algo difícil, cazar una causa raíz esquiva, agotar un espacio de diseño). Ese prompt no describe una tarea — describe una **política de búsqueda**, y le apila nueve piezas propias encima de las ocho base: contrato de resultado con definición negativa, cierre de salidas-escape, premisa operativa fijada, política de portafolio por heurísticas, independencia epistémica con polinización diferida, economía de rutas bloqueadas, moneda concreta con adversarial continuo, permisos de herramientas con carve-out, y presupuesto con criterio de parada honesto.
+Hay una especie distinta de prompt que las ocho piezas no cubren sola: el que recibe un **agente raíz que dirige un enjambre de sub-agentes** en una búsqueda persistente (demostrar algo difícil, cazar una causa raíz esquiva, agotar un espacio de diseño). Ese prompt no describe una tarea, describe una **política de búsqueda**, y le apila nueve piezas propias encima de las ocho base: contrato de resultado con definición negativa, cierre de salidas-escape, premisa operativa fijada, política de portafolio por heurísticas, independencia epistémica con polinización diferida, economía de rutas bloqueadas, moneda concreta con adversarial continuo, permisos de herramientas con carve-out, y presupuesto con criterio de parada honesto.
 
-Las nueve piezas, sus trampas y un ejemplo completo viven en [reference/orquestacion-de-agentes.md](reference/orquestacion-de-agentes.md). Léelo antes de escribir o auditar un prompt de orquestación; para fan-outs simples y paralelos basta con las ocho piezas y el anexo de estabilidad.
+Las nueve piezas, sus trampas y un ejemplo completo viven en [reference/orquestacion-de-agentes.md](reference/orquestacion-de-agentes.md). Léelo antes de escribir o auditar un prompt de orquestación. Para fan-outs simples y paralelos basta con las ocho piezas y el anexo de estabilidad.
 
 ## Mejora compuesta: codificar el aprendizaje
 
 Cuando termines de iterar y el prompt funcione, hay un nivel más que rinde más con el tiempo que cualquier técnica puntual. Cada conversación con Claude produce dos cosas:
 
-1. **La salida del trabajo** — el documento, el análisis, el código.
-2. **La conversación misma** — las correcciones que diste, lo que tuviste que repetirle, los lugares donde se desvió y los lugares donde acertó.
+1. **La salida del trabajo.** El documento, el análisis, el código.
+2. **La conversación misma.** Las correcciones que diste, lo que tuviste que repetirle, los lugares donde se desvió y los lugares donde acertó.
 
 La segunda es información concentrada sobre cómo trabajas tú y qué necesita Claude para servirte bien. Casi nadie la usa: la gente cierra el chat y empieza de cero la próxima vez.
 
@@ -327,7 +327,7 @@ Pídele a Claude algo del estilo:
 
 > *Mira las correcciones que te hice en estas sesiones. Identifica los tipos de error que se repitieron y proponme procedimientos o reglas para que la próxima vez no tenga que corregirlas.*
 
-Claude es particularmente bueno para esto porque vio la conversación con una fidelidad que tú no tienes —tu memoria pasa por filtros; la suya no— y porque generaliza desde ejemplos concretos sin que tú tengas que articular el patrón primero.
+Claude es particularmente bueno para esto porque vio la conversación con una fidelidad que tú no tienes, tu memoria pasa por filtros. La suya no, y porque generaliza desde ejemplos concretos sin que tú tengas que articular el patrón primero.
 
 ### Dónde codificar, según la interfaz
 
@@ -341,27 +341,27 @@ El principio común: codificar el aprendizaje fuera de tu cabeza, en el lugar qu
 
 Con el tiempo esta práctica se parece al interés compuesto. Cada sesión deja el sistema un poco más afilado y la siguiente arranca desde un punto de partida mejor. Las correcciones que tenías que hacer al principio dejan de aparecer porque el sistema ya las anticipa. **Los problemas suben de nivel de abstracción**: empiezas a corregir cosas más finas porque las gruesas ya están resueltas.
 
-Hacer la misma tarea diez veces sin reflexionar te deja diez veces en el punto cero. Hacerla diez veces con esta práctica de captura te deja con un sistema que ya resuelve la mayor parte de la fricción por ti. La diferencia no se nota en la primera sesión; se nota en la décima.
+Hacer la misma tarea diez veces sin reflexionar te deja diez veces en el punto cero. Hacerla diez veces con esta práctica de captura te deja con un sistema que ya resuelve la mayor parte de la fricción por ti. La diferencia no se nota en la primera sesión. Se nota en la décima.
 
 ## Cómo entregar el resultado
 
 Adapta la entrega al modo en que entró el usuario:
 
-- **Modo "construir prompt nuevo"** — entrega el prompt completo, listo para copiar y pegar, con las ocho piezas etiquetadas o claramente identificables. El bloque de auditoría externa va siempre al final, también en prompts triviales: la condicional lo hace inerte cuando la capacidad de invocar agentes no existe. Si hubo decisiones donde elegiste por el usuario (rol asumido, formato propuesto), nómbralas brevemente al final para que pueda ajustarlas.
+- **Modo "construir prompt nuevo".** Entrega el prompt completo, listo para copiar y pegar, con las ocho piezas etiquetadas o claramente identificables. El bloque de auditoría externa va siempre al final, también en prompts triviales: la condicional lo hace inerte cuando la capacidad de invocar agentes no existe. Si hubo decisiones donde elegiste por el usuario (rol asumido, formato propuesto), nómbralas brevemente al final para que pueda ajustarlas.
 
-- **Modo "auditar prompt existente"** — enumera los chequeos pieza por pieza + trampas, marcando qué cumple y qué falta. Termina con la versión corregida.
+- **Modo "auditar prompt existente".** Enumera los chequeos pieza por pieza + trampas, marcando qué cumple y qué falta. Termina con la versión corregida.
 
-- **Modo "diagnosticar fallo"** — identifica primero qué falló en el prompt original (cuál pieza faltó, qué trampa cayó), después propón la versión nueva. Si la mejor jugada es limpiar el contexto y empezar en chat nuevo, dilo explícitamente — no asumas que el usuario lo sabe.
+- **Modo "diagnosticar fallo".** Identifica primero qué falló en el prompt original (cuál pieza faltó, qué trampa cayó), después propón la versión nueva. Si la mejor jugada es limpiar el contexto y empezar en chat nuevo, dilo explícitamente, no asumas que el usuario lo sabe.
 
-- **Modo "mejorar prompt"** — muestra el prompt nuevo de corrido + lista breve de qué cambió y por qué.
+- **Modo "mejorar prompt".** Muestra el prompt nuevo de corrido + lista breve de qué cambió y por qué.
 
 Las dos precondiciones (prompt/tarea y porqué) son no negociables: si falta alguna, pídela antes de redactar nada (ver *Precondiciones* arriba). Información secundaria como rol esperado, audiencia o formato puede pedirse en la misma pregunta o resolverse asumiendo y nombrando el supuesto al final de la entrega.
 
 ## Qué NO hacer
 
-- No empezar a trabajar sin las dos precondiciones (prompt/tarea + porqué): te queda un prompt genérico defendible que probablemente no calce con el uso real. Si falta el porqué, pídelo amablemente — no lo adivines.
+- No empezar a trabajar sin las dos precondiciones (prompt/tarea + porqué): te queda un prompt genérico defendible que probablemente no calce con el uso real. Si falta el porqué, pídelo amablemente, no lo adivines.
 - No producir prompts inflados con palabrería profesional que no aporta precisión.
-- No imponer las primeras siete piezas como obligación rígida cuando la tarea es genuinamente trivial ("convierte 30 grados Celsius a Fahrenheit" no necesita rol ni definition of done). La octava (auditoría externa) sí cierra siempre — la condicional la hace inerte si la capacidad no está.
+- No imponer las primeras siete piezas como obligación rígida cuando la tarea es genuinamente trivial ("convierte 30 grados Celsius a Fahrenheit" no necesita rol ni definition of done). La octava (auditoría externa) sí cierra siempre, la condicional la hace inerte si la capacidad no está.
 - No agregar reglas de validación a tareas creativas hasta asfixiarlas.
 - No quedarse callado cuando el prompt del usuario cae en una trampa común: nombrarla por su nombre ("aquí estás dirigiendo al testigo", "esta instrucción es vaga porque…") enseña más que reescribir en silencio.
 - No iterar dentro del mismo chat cuando el cambio de pregunta es estructural: recomendar explícitamente abrir uno nuevo.

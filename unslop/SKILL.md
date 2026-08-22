@@ -12,7 +12,7 @@ description: >-
   quitar el tono de IA, o equivalentes en cualquier idioma.
 ---
 
-# Unslop — quitar las marcas de IA y devolver la voz
+# Unslop. Quitar las marcas de IA y devolver la voz
 
 Un texto puede estar completo, bien fundado y bien ordenado, y aun así delatar
 en la primera línea que lo escribió una máquina. Eso no lo arregla ninguna de
@@ -21,11 +21,11 @@ texto y esta juzga **cómo suena**.
 
 ## Dónde va en el orden
 
-1. `doc-completitud` — ¿está todo?
-2. `doc-cadena-causal` — ¿cada cosa se sostiene sola?
-3. `doc-narrativa` — ¿se lee bien?
-4. `doc-prueba-de-uso` — ¿se puede actuar con esto?
-5. **`unslop` — ¿suena a persona?** ← esta
+1. `doc-completitud`. ¿está todo?
+2. `doc-cadena-causal`. ¿cada cosa se sostiene sola?
+3. `doc-narrativa`. ¿se lee bien?
+4. `doc-prueba-de-uso`. ¿se puede actuar con esto?
+5. **`unslop`, ¿suena a persona?** ← esta
 
 **Va al final, siempre.** Las cuatro anteriores agregan texto, y todo texto que
 un modelo agrega llega con sus marcas puestas. Correr unslop antes de ellas es
@@ -44,7 +44,7 @@ gane una vez.
    y arregla lo que quede.
 
 El paso 4 no es decorativo. Los tres primeros son mecánicos y encuentran lo
-listado; el cuarto es el único que encuentra lo que la lista todavía no tiene.
+listado. El cuarto es el único que encuentra lo que la lista todavía no tiene.
 
 ## Devolver la voz, que es la mitad del trabajo
 

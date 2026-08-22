@@ -13,12 +13,12 @@ description: >-
   confirma que quedó igual o más completo (no se pierde nada).
 ---
 
-# Doc Storytelling Restructure — de esquema a relato
+# Doc Storytelling Restructure. De esquema a relato
 
 Convierte un documento correcto pero plano y denso en uno que se **lea como una
 historia**, con prosa que explica y referencia técnica ordenada en apéndices. La
 garantía clave: **sube el techo (que se lea bien) sin bajar el piso (que nada se
-pierda)** — un verificador compara la reescritura contra un inventario del
+pierda)**, un verificador compara la reescritura contra un inventario del
 contenido original.
 
 ## Cuándo usarla
@@ -33,13 +33,13 @@ Es la hermana de `doc-completitud`: aquélla asegura que **nada falte**;
 luego storytelling (este loop termina verificando que no se haya perdido nada).
 
 > **⚠ Antes de correr esta skill, pasa por `doc-cadena-causal`.** Esta juzga el
-> texto *como texto* —si fluye, si es denso, si está ordenado— y por diseño **no
+> texto *como texto*, si fluye, si es denso, si está ordenado, y por diseño **no
 > detecta el concepto nombrado pero no fundado**: el que está presente, definido,
 > bien ubicado y hasta con analogía, y del que el lector igual no puede decir
 > *por qué existe*. Peor: el plan de redacción que produce reordena y comprime,
 > así que sobre un concepto sin fundamento **comprime el síntoma**. Caso real:
-> este flujo dejó un capítulo mejor escrito —arco, analogías, fórmulas al
-> apéndice— y no tocó el hueco, que el lector encontró después. El orden con
+> este flujo dejó un capítulo mejor escrito, arco, analogías, fórmulas al
+> apéndice, y no tocó el hueco, que el lector encontró después. El orden con
 > dependencia real es: completitud → **cadena causal** → narrativa → prueba de uso.
 
 ## Si reordenas, vuelve a medir el orden
@@ -60,7 +60,7 @@ documentación.**
 
 Cada pasada de auditoría (completitud, cadena causal, prueba de uso) termina en
 parches al texto. Un parche vive en una redacción concreta. **Cuando el documento
-se reescribe —y esta skill reescribe—, la redacción cambia y el parche desaparece
+se reescribe, y esta skill reescribe, la redacción cambia y el parche desaparece
 sin que nadie lo note**, porque el resultado sigue leyéndose bien: el hueco no
 deja hueco visible, deja un texto fluido al que le falta una respuesta.
 
@@ -69,12 +69,12 @@ mecánicamente. Los **arreglos semánticos** no sobreviven a nada.
 
 Por eso, antes de invocar la reescritura:
 
-1. **Lista los arreglos que las pasadas anteriores dejaron en el documento** —
+1. **Lista los arreglos que las pasadas anteriores dejaron en el documento**,
    cada «esto no se entendía y lo explicamos» de esta sesión y de las previas.
 2. **Convierte cada uno en un centinela**: una frase textual, corta y distintiva,
    en un test de regresión que falla si desaparece. Una línea por arreglo.
 3. **Corre el test antes y después de reescribir.** Antes, para comprobar que el
-   centinela da verde sobre el texto viejo — un centinela que nunca estuvo en
+   centinela da verde sobre el texto viejo, un centinela que nunca estuvo en
    verde no prueba nada. Después, para ver qué se cayó.
 
 ```python
@@ -86,7 +86,7 @@ REQUERIDO = {
 
 **El caso real.** Una reescritura estructural completa perdió la explicación de
 por qué la contraparte quiere el otro lado del contrato. Las cuatro skills habían
-corrido sobre el documento viejo y dieron ese hueco por cerrado; sobre el nuevo
+corrido sobre el documento viejo y dieron ese hueco por cerrado. Sobre el nuevo
 nadie las volvió a correr. **Lo cazó el test de regresión**, y solo porque en una
 sesión anterior ese arreglo se había escrito como centinela. De los otros arreglos
 de la lista, diez aparecieron como «perdidos» y en realidad estaban reformulados:
@@ -97,9 +97,9 @@ y por eso el centinela debe apuntar a la **idea mínima** (`sin haberlo pedido`,
 reescritura y se vuelve ruido.
 
 Corolario: **una reescritura estructural invalida las auditorías previas.** No
-son arreglos sobre un texto que sigue ahí; son arreglos sobre un texto que ya no
+son arreglos sobre un texto que sigue ahí. Son arreglos sobre un texto que ya no
 existe. Si la estructura cambió, el ciclo se corre otra vez sobre el texto nuevo
-— y el test de regresión es lo que hace que la segunda corrida sea barata en vez
+, y el test de regresión es lo que hace que la segunda corrida sea barata en vez
 de empezar de cero.
 
 ## Cómo ejecutar
@@ -107,10 +107,10 @@ de empezar de cero.
 1. **Identifica el archivo objetivo.** Pide la ruta absoluta si no está clara.
    Recomienda respaldar/commitear antes, porque reescribe el archivo en su lugar.
 2. **Parámetros opcionales:**
-   - `editorModel` — modelo de los editores/verificador (lectores baratos).
+   - `editorModel`. Modelo de los editores/verificador (lectores baratos).
      Default `haiku`.
 3. **Deriva el inventario DURO tú mismo, antes de invocar nada.** Todo lo contable se
-   extrae mecánicamente y se incrusta en el script como constante — no se le pregunta a
+   extrae mecánicamente y se incrusta en el script como constante, no se le pregunta a
    un agente lo que un `grep` sabe:
 
    ```bash
@@ -125,13 +125,13 @@ de empezar de cero.
 4. **Invoca el tool `Workflow`** con el `script` de abajo, **incrustando la ruta del
    documento y el inventario duro como constantes** (contrato del caller del esqueleto
    compartido: una ruta vacía hace que los editores lean «SOLO undefined» y la fase de
-   inventario devuelva un checklist-error schema-válido — lee
+   inventario devuelva un checklist-error schema-válido, lee
    [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md)
    antes de tocar el script). Al recibir el resultado, **verifica el inventario blando
    antes de seguir**: si no nombra contenido real del documento, la corrida es inválida.
 
    **Los dos inventarios NO se mezclan en una sola lista.** El duro es un oráculo duro y
-   por eso puede disparar reposición automática; el blando lo produjo un agente y sus
+   por eso puede disparar reposición automática. El blando lo produjo un agente y sus
    faltantes van **a ti**, nunca al parchador. Unirlos sube el recall y también los
    fantasmas, y cada ítem alucinado que entre al ancla es contenido inexistente que un
    reparador automático va a escribir en el documento sin que nadie lo decida. Es
@@ -140,14 +140,14 @@ de empezar de cero.
    (para que lo apruebe o ajuste), (b) el **veredicto de completitud** del inventario
    duro (COMPLETO / qué se repuso), y (c) los **faltantes del inventario blando**, que
    resuelves tú a mano: cada uno se busca con `Grep` en el documento antes de reponerlo
-   — si el agente lo inventó, se descarta. Si el usuario quiere afinar el plan antes de
+, si el agente lo inventó, se descarta. Si el usuario quiere afinar el plan antes de
    aceptar, puedes reusar el plan y reescribir de nuevo.
 
 > El loop hace cinco cosas: **inventaría** lo semántico del original (el ancla dura,
 > lo contable, ya la derivaste tú con `grep`), pide recomendaciones a **editores con
 > lentes distintas** (narrativa, densidad, estructura), **sintetiza** un plan de
 > redacción, **reescribe** según el plan, y **verifica contra los dos inventarios**
-> — repone automático lo que falte del duro, y te devuelve los faltantes del blando
+>, repone automático lo que falte del duro, y te devuelve los faltantes del blando
 > para que los confirmes con `Grep` antes de tocar el documento.
 
 > **⚠ Documentos con contenido gestionado por generador (citas numeradas, notas al
@@ -155,10 +155,10 @@ de empezar de cero.
 > Un agente reescritor a ciegas puede separar un marcador de cita de su frase o romper
 > el anclaje de la numeración. El flujo correcto: los editores recomiendan → el plan
 > lista EDICIONES PUNTUALES (no reescritura total) → **el orquestador ejecuta con
-> `Edit`** (marcadores pegados a su frase; cortes de párrafo solo entre oraciones
+> `Edit`** (marcadores pegados a su frase. Cortes de párrafo solo entre oraciones
 > completas) → cierre doble: verificación de inventario + **corrida del generador**
 > confirmando que el conteo y el anclaje de las citas no cambiaron. (Caso real: 8
-> ediciones sobre un capítulo con 21 citas gestionadas — inventario 351/351 presente
+> ediciones sobre un capítulo con 21 citas gestionadas, inventario 351/351 presente
 > y generador sin cambios.)
 
 ## Script para el tool Workflow
@@ -280,15 +280,15 @@ return {
 ## Variantes
 - **Solo el plan (sin reescribir):** corta el workflow tras la fase `Plan` y
   muéstrale el plan de redacción al usuario para que lo apruebe antes de tocar el
-  archivo. Recomendado para documentos grandes o sensibles; **obligatorio** para
-  archivos con contenido gestionado por generador (ver advertencia arriba) — ahí
+  archivo. Recomendado para documentos grandes o sensibles. **obligatorio** para
+  archivos con contenido gestionado por generador (ver advertencia arriba), ahí
   el plan no va al usuario sino al orquestador, que lo ejecuta con `Edit`.
 - **Más lentes:** agrega editores (p. ej. "tono para sponsor no técnico",
   "ruta de lectura por rol") al arreglo `LENTES`.
 - **Combo con completitud:** corre primero `doc-completitud` (que no falte
-  nada) y luego este (que se lea bien); este loop ya re-verifica completitud al
+  nada) y luego este (que se lea bien). Este loop ya re-verifica completitud al
   final, así no deshace el trabajo del primero.
 - **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible, corre las lentes
   con uno o dos `Agent` secuenciales en vez del fan-out y sintetiza el plan tú mismo. El
-  método no cambia —lentes → plan → reescritura → verificación de que no se perdió nada—,
-  solo va en serie; conviene igual pausar en el plan para aprobación (variante de arriba).
+  método no cambia, lentes → plan → reescritura → verificación de que no se perdió nada,
+  solo va en serie. Conviene igual pausar en el plan para aprobación (variante de arriba).

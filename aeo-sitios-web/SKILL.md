@@ -26,12 +26,12 @@ Cloudflare): puntaje 0-100 en 5 categorías. Se corre ANTES de tocar nada
   asistentes cambian casi en cada consulta (SparkToro, enero 2026, 2.961
   consultas). Lo que resiste es el porcentaje de visibilidad agregado.
 - **Google no exige ningún archivo especial**: sus funciones de IA usan los
-  sistemas de ranking de siempre; fragmentar contenido «para la IA» es
+  sistemas de ranking de siempre. Fragmentar contenido «para la IA» es
   contraproducente (guía oficial de AI features). El contenido claro y con
   fuentes fechadas sigue siendo la base (paper GEO, KDD 2024: estadísticas
-  +37 %, citas +30 %; el keyword stuffing RESTA).
+  +37 %, citas +30 %. El keyword stuffing RESTA).
 - **Cloudflare cobra por dos ejes que no se tocan**: Workers Paid (US$5/mes)
-  es plan de CUENTA; Pro (US$20-25/mes) es plan de ZONA por dominio. Antes de
+  es plan de CUENTA. Pro (US$20-25/mes) es plan de ZONA por dominio. Antes de
   recomendar una feature, verificar en la doc viva de qué plan cuelga y si el
   origen puede darla gratis (caso resuelto: Markdown for Agents → nivel 3).
 
@@ -42,7 +42,7 @@ Cloudflare): puntaje 0-100 en 5 categorías. Se corre ANTES de tocar nada
    PerplexityBot, Google-Extended, Applebot-Extended. Más `Sitemap:`.
 2. **Content Signals** en robots.txt, según la postura del dueño:
    `Content-Signal: search=yes, ai-input=yes, ai-train=yes` (postura Kumo:
-   máxima exposición; un cliente puede elegir otra, pero que sea SU decisión
+   máxima exposición. Un cliente puede elegir otra, pero que sea SU decisión
    declarada). Solo el 4 % de los grandes dominios lo tiene: ventaja fácil.
 3. **sitemap.xml** válido con `lastmod` reales.
 4. **OJO Cloudflare**: jamás activar el robots.txt administrado ni el bloqueo
@@ -61,7 +61,7 @@ for UA in ClaudeBot GPTBot PerplexityBot Googlebot; do curl -s -o /dev/null -w "
    reconocidos: `rel="api-catalog"`, `rel="service-doc"`, `rel="sitemap"`.
    El escáner descarta rel inventados: usar los de la lista IANA.
 2. **Catálogo de APIs (RFC 9727)** en `/.well-known/api-catalog`
-   (`application/linkset+json`; si el archivo no tiene extensión, fijar el
+   (`application/linkset+json`. Si el archivo no tiene extensión, fijar el
    content-type en `_headers`). Solo si el sitio TIENE endpoints públicos.
 3. **llms.txt** honesto: qué es el negocio, cómo leer el sitio, cifras con
    fecha y método, enlaces a cada página. Es un derivado: se re-verifica
@@ -73,7 +73,7 @@ for UA in ClaudeBot GPTBot PerplexityBot Googlebot; do curl -s -o /dev/null -w "
 ## Nivel 3: Markdown de origen (sin plan Pro)
 
 Los agentes que piden `Accept: text/markdown` reciben Markdown (hasta 80 %
-menos tokens). Cloudflare lo vende en el plan Pro de zona; nosotros lo
+menos tokens). Cloudflare lo vende en el plan Pro de zona. Nosotros lo
 servimos del origen gratis:
 
 1. **Generador determinista**: `scripts/generar_md.py` (en esta skill)
@@ -94,7 +94,7 @@ servimos del origen gratis:
 
 **Verificación** (en Pages, PRIMERO contra la URL del deploy
 `https://<hash>.<proyecto>.pages.dev`: la propagación del dominio entre colos
-no es atómica; y en Git Bash exportar `MSYS_NO_PATHCONV=1` o curl rompe los
+no es atómica. Y en Git Bash exportar `MSYS_NO_PATHCONV=1` o curl rompe los
 `-w` que empiezan con `/`):
 ```bash
 curl -s -H "Accept: text/markdown" -o /dev/null -w "%{http_code} %{content_type}\n" https://tudominio.cl/   # 200 text/markdown
@@ -111,7 +111,7 @@ las use. Patrón verificado en kumo-agente (Cloudflare Agents SDK:
 
 - **Herramientas de lectura libres** (preguntar, consultar disponibilidad) y
   **acciones con confirmación humana en dos pasos**: la primera llamada
-  devuelve `input_required` (elicitation) con el resumen; sin `confirmar:
+  devuelve `input_required` (elicitation) con el resumen. Sin `confirmar:
   true` del humano del agente visitante NO hay acción. Un cliente sin
   capacidad de elicitation recibe error y no puede ejecutar: correcto, sin
   canal de confirmación no hay acción.
@@ -120,9 +120,9 @@ las use. Patrón verificado en kumo-agente (Cloudflare Agents SDK:
 - **Seguridad**: el endpoint público pasa por un proxy con rate limit por IP;
   el Worker solo acepta con token compartido. SIN geo (el agente corre en
   cualquier datacenter aunque su humano esté en el país) y SIN Turnstile
-  (está diseñado para bloquear agentes; esta puerta existe para atenderlos).
+  (está diseñado para bloquear agentes. Esta puerta existe para atenderlos).
   Gotcha: el rate limit en KV no atrapa ráfagas sub-minuto (consistencia
-  eventual); acota el abuso sostenido, y el costo del abuso se acota por
+  eventual). Acota el abuso sostenido, y el costo del abuso se acota por
   diseño (confirmación en dos pasos).
 - El handler exige `Accept: application/json, text/event-stream` (406 si no).
 
@@ -134,7 +134,7 @@ las use. Patrón verificado en kumo-agente (Cloudflare Agents SDK:
   fecha y enlace verificado con petición real (y sección escéptica incluida:
   la honestidad radical es la marca de la casa).
 - WebMCP (bridge en el navegador) es toggle del dashboard de Cloudflare
-  (Agent Readiness → Labs), acción del dueño de la cuenta; con `data-mcp-url`
+  (Agent Readiness → Labs), acción del dueño de la cuenta. Con `data-mcp-url`
   se apunta al MCP propio. DNS-AID, Web Bot Auth y los protocolos de comercio
   (x402/UCP/ACP) siguen en borrador o sin adopción: se vigilan, no se
   implementan todavía.

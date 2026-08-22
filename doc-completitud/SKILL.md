@@ -15,7 +15,7 @@ description: >-
   cero vacíos bloqueantes.
 ---
 
-# Doc Completeness Loop — "a prueba de Haiku"
+# Doc Completeness Loop. "a prueba de Haiku"
 
 Hace que un documento se explique solo. La idea central: **usar el modelo más
 débil como vara**. Si un lector barato y sin contexto, leyendo únicamente el
@@ -33,7 +33,7 @@ Hay dos papeles, y NO se intercambian:
 - **Editor = TÚ, el orquestador.** El que invoca esta skill es quien parcha, porque
   **tiene todo el contexto** (el repo, el dominio, la intención del documento). Un
   agente editor a ciegas parcharía peor: inventa, se desvía del estilo, o malinterpreta.
-  Por eso el parchado **nunca** se delega a un subagente; lo haces tú con `Edit`.
+  Por eso el parchado **nunca** se delega a un subagente. Lo haces tú con `Edit`.
 
 En una frase: **el ciego encuentra, el que sabe arregla.**
 
@@ -45,7 +45,7 @@ En una frase: **el ciego encuentra, el que sabe arregla.**
 - Pide explícitamente "que un Haiku lo explique", "a prueba de tontos", "que se
   entienda solo".
 
-NO la uses para mejorar el estilo o la narrativa de un documento — para eso está
+NO la uses para mejorar el estilo o la narrativa de un documento, para eso está
 la skill hermana `doc-narrativa`. Esta solo sube el **piso** (que
 nada falte), no el techo (que se lea lindo).
 
@@ -65,10 +65,10 @@ propias ediciones:
    p.ej. una skill con `SKILL.md` + `references/*.md`): pásalos todos y el lector
    juzga el conjunto, abriendo las referencias que el principal menciona.
 2. **Parámetros** (defaults salvo que el usuario pida otra cosa):
-   - `readerModel` — el "lector débil" que mide la comprensión. Default `haiku`.
-   - `readers` — cuántos lectores ciegos independientes por ronda. Default `2`
-     (dos lecturas en frío divergen y cubren más; útil para cazar más huecos).
-   - `maxRounds` — tope de iteraciones que **tú** correrás. Default `5`.
+   - `readerModel`. El "lector débil" que mide la comprensión. Default `haiku`.
+   - `readers`. Cuántos lectores ciegos independientes por ronda. Default `2`
+     (dos lecturas en frío divergen y cubren más. Útil para cazar más huecos).
+   - `maxRounds`. Tope de iteraciones que **tú** correrás. Default `5`.
 3. **El bucle (lo corres tú):**
    - a. **Audita:** invoca el tool `Workflow` con el `script` de abajo (reader-only).
         Te devuelve los vacíos, cada uno con `file`, `section`, `missing` y
@@ -78,7 +78,7 @@ propias ediciones:
         corresponda. Tienes el contexto que el lector no tiene: define las siglas
         en el propio documento, agrega la fórmula que falta, explica el porqué del
         porqué, aclara el "cómo" que se asumía. **NO elimines contenido, NO cambies
-        cifras**; solo aclara y completa. Conserva el estilo y el tono. Define cada
+        cifras**. Solo aclara y completa. Conserva el estilo y el tono. Define cada
         término una sola vez y reutilízalo.
    - c. **Re-audita:** vuelve a invocar el Workflow (un run nuevo, lectores nuevos)
         sobre los archivos ya parchados. Repite hasta el criterio de parada.
@@ -87,80 +87,80 @@ propias ediciones:
 
 > Cada ronda usa lectores **nuevos** (sin memoria de la anterior): lectura en frío,
 > honesta, sin contaminación. Es normal que el conteo de vacíos **suba antes de
-> bajar** — el lector pasa de dudas conceptuales a exigir detalle de implementación
+> bajar**, el lector pasa de dudas conceptuales a exigir detalle de implementación
 > cada vez más fino.
 
-> **⚠ Modo de fallo conocido — el lector hereda el contexto del proyecto.** Un subagente
+> **⚠ Modo de fallo conocido, el lector hereda el contexto del proyecto.** Un subagente
 > recibe el `CLAUDE.md` y las instrucciones del repo en su contexto, así que un prompt
 > débil hace que audite *los archivos de metodología del proyecto* en vez del documento
 > objetivo, o que **alucine** vacíos sobre términos que no están en el archivo (los toma de
 > su contexto, no del doc). Dos defensas: (1) el prompt **acota duro** al archivo objetivo
-> ("ignora CLAUDE.md y todo el proyecto; solo existe este archivo; todo `file` reportado debe
-> ser uno de los listados") — ya está en el script; (2) **tú, el orquestador, descartas**
+> ("ignora CLAUDE.md y todo el proyecto. Solo existe este archivo. Todo `file` reportado debe
+> ser uno de los listados"), ya está en el script. (2) **tú, el orquestador, descartas**
 > cualquier vacío cuyo `file` no sea el objetivo y, ante un término marcado, **verificas con
 > `Grep` que de verdad NO aparezca** en el documento antes de parchar: si el lector lo inventó,
 > lo ignoras. No bajes la vara, pero tampoco parches fantasmas. (Síntomas reales vistos: lectores
 > que auditaron `CLAUDE.md`/`SKILL.md` en vez del HTML objetivo, y un `sonnet` que marcó "WACC"
 > y "clean surplus" como vacíos cuando esos términos no estaban en el documento.)
 
-> **⚠ Modo de fallo conocido — la auditoría que audita el VACÍO (el peor de todos, porque parece
+> **⚠ Modo de fallo conocido, la auditoría que audita el VACÍO (el peor de todos, porque parece
 > éxito).** Si los lectores reciben una lista de archivos vacía, devuelven `SIN_VACIOS` con cero
 > vacíos: una auditoría perfecta de ningún documento. El output estructurado **enmascara** el
-> fallo — el lector rellena el schema obedientemente en vez de gritar. Las tres defensas están
+> fallo, el lector rellena el schema obedientemente en vez de gritar. Las tres defensas están
 > instanciadas en el script de abajo: rutas **incrustadas como literales** con su guard, campo
 > obligatorio **`resumen_leido`** (descarta la ronda si falta o es genérico), y **cero hallazgos
 > en la primera ronda tratado como instrumento roto** hasta demostrar lo contrario. **Antes de
 > modificar el script, lee [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](../desarrollo-riguroso/reference/esqueleto-de-verificacion.md)**
-> — ahí vive el porqué de cada defensa y el resto de los modos de fallo del andamiaje, que son
+>, ahí vive el porqué de cada defensa y el resto de los modos de fallo del andamiaje, que son
 > comunes a las cinco skills-grafo de Kumo. (Caso real: dos rondas "limpias" de 2 lectores cada
-> una fueron inválidas por esto; la ronda con las tres defensas encontró 1 bloqueante y un error
+> una fueron inválidas por esto. La ronda con las tres defensas encontró 1 bloqueante y un error
 > matemático real del autor.)
 
-> **⚠ Punto ciego estructural — la completitud de NODOS no compone a completitud del SISTEMA.**
-> (La metáfora es de grafos: cada documento es un **nodo**; cada referencia o dependencia de un
-> documento hacia otro es una **arista**. Esta skill audita nodos — un documento a la vez.)
+> **⚠ Punto ciego estructural, la completitud de NODOS no compone a completitud del SISTEMA.**
+> (La metáfora es de grafos: cada documento es un **nodo**. Cada referencia o dependencia de un
+> documento hacia otro es una **arista**. Esta skill audita nodos, un documento a la vez.)
 > La regla «una referencia explícita a otro documento cuenta como definición» es correcta para medir
-> la autosuficiencia de UN documento — y exime exactamente las ARISTAS: ningún lector individual
+> la autosuficiencia de UN documento, y exime exactamente las ARISTAS: ningún lector individual
 > audita si el puntero apunta a algo que existe y contiene lo prometido, si las obligaciones
 > cruzadas están operacionalizadas en AMBOS lados (A declara «B lo hace rutina» pero B no lo
 > incluye), ni si existe una **ruta de lectura garantizada** que haga que el documento apuntado se
-> lea cuando se necesita — un puntero que nadie sigue es letra muerta. Para un conjunto de
+> lea cuando se necesita, un puntero que nadie sigue es letra muerta. Para un conjunto de
 > documentos vinculados (skills que se referencian entre sí, un `CLAUDE.md` + su estándar), corre
 > además la **auditoría de grafo**: lectores con TODOS los archivos del conjunto cuya única tarea es
-> auditar las aristas — (1) cada referencia resuelve a contenido real en el destino, (2) cada
+> auditar las aristas, (1) cada referencia resuelve a contenido real en el destino, (2) cada
 > obligación cruzada existe en los dos lados, (3) cada dependencia funcional declara cuándo y cómo
 > se lee el documento del que depende. (Caso real: cuatro rondas de lectores dieron por completa una
-> skill cuyo estándar de referencia podía no leerse NUNCA en una sesión real — la regla de género
-> eximió la arista y nadie la miró; lo encontró el usuario, no el aparato.)
+> skill cuyo estándar de referencia podía no leerse NUNCA en una sesión real, la regla de género
+> eximió la arista y nadie la miró. Lo encontró el usuario, no el aparato.)
 
-> **Nota — la cláusula aritmética paga su costo.** Exigir al lector que pueda «reproducir cada paso
+> **Nota, la cláusula aritmética paga su costo.** Exigir al lector que pueda «reproducir cada paso
 > aritmético» no solo caza prosa floja: caza errores del AUTOR. (Caso real: en un capítulo de
 > finanzas, un lector recalculó un ejemplo y descubrió que una afirmación era matemáticamente falsa
-> — el despeje trataba como constante una variable que dependía del precio evaluado; obligó a
+>, el despeje trataba como constante una variable que dependía del precio evaluado. Obligó a
 > reformular la fórmula central de la sección, no la prosa.) No quites esa cláusula del prompt
 > para acelerar la ronda.
 
-> **⚠ Modo de fallo conocido — el glosario remoto no basta para términos *load-bearing*; defínelos
+> **⚠ Modo de fallo conocido, el glosario remoto no basta para términos *load-bearing*. Defínelos
 > inline.** En un bundle, un término *crítico* (uno que sostiene un riesgo, una cifra o el argumento
 > central) definido SOLO en el glosario de otro archivo se marca igual como **bloqueante**, ronda tras
 > ronda: el lector ciego recorre el archivo donde el término se *usa* y no abre el glosario del archivo
 > que lo *define*. La pista de que estás ante esto: el mismo término reaparece como vacío aunque YA lo
 > agregaste al glosario compartido. La defensa NO es repetir "está en el glosario": es **definirlo inline
 > en el punto de uso** (un paréntesis breve la primera vez que aparece en ese archivo). Regla práctica:
-> glosario para términos de comodidad; **inline** para los que cargan un riesgo o una cifra del veredicto.
+> glosario para términos de comodidad. **inline** para los que cargan un riesgo o una cifra del veredicto.
 > (Caso testigo: "ICB" y "FDP" estaban en el glosario y aun así fueron bloqueantes dos rondas seguidas
 > hasta definirlos inline donde frenan el crecimiento del negocio.)
 
-> **Nota de convergencia — con `sonnet` el loop baja a 0 bloqueantes pero nunca a 0 menores.** Con
+> **Nota de convergencia, con `sonnet` el loop baja a 0 bloqueantes pero nunca a 0 menores.** Con
 > lectores `sonnet` (vara más alta que el `haiku` estándar) el conteo de bloqueantes oscila en 1-3
 > varias rondas, cada vez en un archivo distinto y más fino: pasa de huecos conceptuales a
 > inconsistencias aritméticas cruzadas y citas faltantes, y por último a "este dato no muestra su
 > derivación". Eso es señal de **éxito**, no de estancamiento: para cuando una ronda vuelve con **0
-> bloqueantes** (verdict `SOLO_MENORES`). Los menores residuales —jerga estándar, una cifra sin su
-> aritmética completa, una conversión FX sin tasa— son la cola fina aceptable; perseguirlos uno a uno
+> bloqueantes** (verdict `SOLO_MENORES`). Los menores residuales, jerga estándar, una cifra sin su
+> aritmética completa, una conversión FX sin tasa, son la cola fina aceptable. Perseguirlos uno a uno
 > infla el documento. Dos sub-lecciones que ahorran rondas: (1) **arregla las inconsistencias numéricas
-> cruzadas de verdad** (la misma cifra distinta entre dos archivos, una suma que no cuadra) — esas
-> escalan de `menor` a `bloqueante` con lectores nuevos; (2) cuando un número es un **juicio** (un
+> cruzadas de verdad** (la misma cifra distinta entre dos archivos, una suma que no cuadra), esas
+> escalan de `menor` a `bloqueante` con lectores nuevos. (2) cuando un número es un **juicio** (un
 > supuesto, una estimación), decláralo como tal y muestra su composición, en vez de dejarlo como punto-
 > estimado huérfano que el lector no puede reproducir.
 
@@ -179,10 +179,10 @@ documento se infla y contradice su propósito. Reglas de convergencia:
   cubiertos se resuelven con juicio, y eso cierra la clase entera de "¿y si pasa X
   raro?" sin una regla por cada borde.
 - **No bajes la vara para ganar.** No edites el prompt del lector para que deje de
-  encontrar cosas; lo legítimo es enfocar el criterio de parada en *bloqueantes* y
+  encontrar cosas. Lo legítimo es enfocar el criterio de parada en *bloqueantes* y
   documentar los bordes como juicio.
 
-## Script para el tool Workflow (SOLO AUDITA — no edita)
+## Script para el tool Workflow (SOLO AUDITA. No edita)
 
 ```js
 export const meta = {
@@ -259,7 +259,7 @@ el Workflow (paso 3c) hasta que `verdict` sea `SIN_VACIOS` o `SOLO_MENORES`.
 ## Su punto ciego: «presente» no es «a tiempo»
 
 Esta skill cuenta **presencia**. Un concepto usado seis capítulos antes de
-explicarse está presente, así que **pasa** — y es el defecto que más se denuncia
+explicarse está presente, así que **pasa**, y es el defecto que más se denuncia
 como «no se entiende nada». Presencia y orden son ejes distintos: el inventario
 completo puede estar entero y el documento seguir siendo ilegible.
 
@@ -272,8 +272,8 @@ Los parches que produce esta skill viven en una redacción concreta y **no
 sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
 desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
 
-Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
-corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+Antes de cerrar, convierte cada arreglo en un **centinela**, una frase textual,
+corta y distintiva, dentro de un test de regresión que falle si desaparece. La
 doctrina completa, con el caso real que la originó, está en
 [`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
 
@@ -281,12 +281,12 @@ doctrina completa, con el caso real que la originó, está en
 - **Solo auditar (sin parchar):** corre el Workflow una vez y reporta los vacíos.
   Útil para un "¿qué le falta a este doc?".
 - **Lector más exigente:** sube `readerModel` a `sonnet` para una vara más alta
-  (encuentra vacíos más sutiles; "a prueba de Haiku" es el estándar barato). Para la
+  (encuentra vacíos más sutiles. "a prueba de Haiku" es el estándar barato). Para la
   ronda de **cierre**, un solo lector `sonnet` enfocado en bloqueantes da un veredicto
   fiable de "ejecutable / bloqueado".
 - **Doc muy largo:** si el archivo es enorme, parte el documento y corre el loop por
   secciones para que el lector no se sature.
 - **Sin el tool Workflow:** si el entorno no tiene `Workflow` disponible (o el doc es
   corto), corre el paso de auditoría con un solo `Agent` (`model: haiku`) por ronda en vez
-  del fan-out. El método es idéntico —lector ciego audita → el orquestador parcha → lector
-  nuevo re-audita— y solo pierdes los lectores en paralelo; para una o dos secciones alcanza.
+  del fan-out. El método es idéntico, lector ciego audita → el orquestador parcha → lector
+  nuevo re-audita, y solo pierdes los lectores en paralelo. Para una o dos secciones alcanza.

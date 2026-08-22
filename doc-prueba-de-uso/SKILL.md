@@ -16,7 +16,7 @@ description: >-
   parchado son SIEMPRE del orquestador.
 ---
 
-# Doc Prueba de Uso — el documento se prueba HACIENDO, no explicando
+# Doc Prueba de Uso. El documento se prueba HACIENDO, no explicando
 
 ## La lección que originó esta skill (el error del Anexo D, Aero360, 07-2026)
 
@@ -24,24 +24,24 @@ Un informe estratégico pasó **dos** controles de calidad con lectores débiles
 un loop de completitud ("¿puedes explicar cada sección sin vacíos?" → sí) y una
 reestructura de storytelling ("¿se lee como un relato?" → sí). Aun así, cuando
 el usuario abrió el anexo del esquema de datos, su veredicto fue *"no se
-entiende nada"* — y tenía razón: el anexo nombraba 28 tablas sin un solo
+entiende nada"*, y tenía razón: el anexo nombraba 28 tablas sin un solo
 atributo, sin llaves, sin política de IDs. Un diseñador no podía construir la
 base de datos desde él.
 
 **El error no fue de escritura: fue de criterio de validación.** Los lectores
-verificaban que el contenido *se pudiera explicar*; nadie verificaba que
+verificaban que el contenido *se pudiera explicar*. Nadie verificaba que
 *sirviera para ejecutar su propósito*. Un lector puede resumir perfectamente un
-anexo que es inservible como referencia de diseño — porque resumir solo exige
+anexo que es inservible como referencia de diseño, porque resumir solo exige
 lo que está, y ejecutar exige lo que falta.
 
 La prueba correcta apareció con el arreglo (propuesta por el usuario): *"pásale
-el anexo a Haiku y pídele que te arme la base de datos; analiza su respuesta e
+el anexo a Haiku y pídele que te arme la base de datos. Analiza su respuesta e
 itera el anexo hasta que el resultado sea el esperado"*. Tres rondas después el
 anexo era una referencia real: esquema relacional con llaves subrayadas,
 diagramas E-R con cardinalidades y un diccionario de ~30 entidades.
 
 **Regla madre: a cada sección de un documento se le exige lo mismo que a un
-plano — que alguien que no estuvo en la conversación pueda construir con él.**
+plano, que alguien que no estuvo en la conversación pueda construir con él.**
 
 ## Cuándo usarla
 
@@ -55,7 +55,7 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
   **`doc-prueba-de-uso` (que sirva para hacer)**.
 
 > Ojo con un punto ciego propio: esta skill mide si el lector puede **ejecutar la
-> tarea**, y un concepto puede estar sin fundamento sin bloquear ninguna tarea —
+> tarea**, y un concepto puede estar sin fundamento sin bloquear ninguna tarea,
 > el lector calcula, registra y responde bien, y aun así no sabe por qué existe
 > la pieza que está usando. Por eso `doc-cadena-causal` va antes y no la
 > reemplaza esta.
@@ -65,37 +65,37 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
 1. **Inventario de propósitos.** Para cada capítulo/sección del documento,
    completa la frase: *"después de leer SOLO esto, el lector debe poder
    \_\_\_"*. Si no puedes completarla, esa sección no tiene propósito operativo
-   (o es puramente narrativa — está bien, se excluye de la prueba). El
+   (o es puramente narrativa, está bien, se excluye de la prueba). El
    propósito define el **rol** del lector de prueba (DBA, CFO, PM, abogado…) y
    su **tarea** ("arma el DDL", "reconstruye el modelo en una tabla", "escribe
    el backlog").
 
 2. **Rubric ANTES de la prueba.** El orquestador escribe, por sección, los
    criterios verificables del artefacto esperado (para un esquema: PKs, FKs,
-   constraints exactos; para finanzas: los supuestos y cifras que deben poder
+   constraints exactos. Para finanzas: los supuestos y cifras que deben poder
    reconstruirse). Sin rubric previo, la calificación se contamina con lo que
    el lector haya producido. Separa CRÍTICOS (si falla uno, iterar) de
    IMPORTANTES. Para documentos que enseñan un MÉTODO (una fórmula, un
-   protocolo): inventa casos con números que **NO estén en el documento** —
-   obliga a aplicar, no a copiar — y **precalcula tú las respuestas correctas**
+   protocolo): inventa casos con números que **NO estén en el documento**,
+   obliga a aplicar, no a copiar, y **precalcula tú las respuestas correctas**
    en el rubric antes de lanzar al lector.
 
 3. **Extracción aislada.** Cada sección se copia a un archivo propio en el
-   scratchpad. El lector recibe SOLO ese archivo — si lee el documento entero,
+   scratchpad. El lector recibe SOLO ese archivo, si lee el documento entero,
    la prueba no mide la autosuficiencia de la sección.
 
    **Las dos calibraciones del lector, y por qué hacen falta las dos.** El modelo
    **débil** (haiku) mide si la información *alcanza*: lo que no está, no lo puede
    suplir, así que sus vacíos son huecos reales de contenido. El modelo **fuerte**
    mide algo distinto y más peligroso: si el documento es **interpretable de una sola
-   manera**. Un lector capaz rellena los huecos sin darse cuenta —por eso no sirve
-   para medir completitud— pero cuando *malinterpreta*, no está fallando: está
+   manera**. Un lector capaz rellena los huecos sin darse cuenta, por eso no sirve
+   para medir completitud, pero cuando *malinterpreta*, no está fallando: está
    mostrando que el texto admite dos lecturas y la equivocada era razonable. Esos son
    los bugs que sobreviven toda revisión, porque nadie los ve como vacíos.
    Regla: **débil para completitud, fuerte para ambigüedad**, y las
    malinterpretaciones del fuerte se tratan como defecto del documento, nunca del
    lector. *(Caso real: un lector produjo un guard que reventaba justo cuando el
-   script estaba bien configurado — generalizando mal un ejemplo del documento que a
+   script estaba bien configurado, generalizando mal un ejemplo del documento que a
    su autor le parecía obvio. El arreglo fue el ejemplo, no el lector.)*
 
 4. **Lector con tarea + prueba de lectura + vacíos.** El prompt del
@@ -104,18 +104,18 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
      archivo. [Haz la tarea]."
    - *Prueba de lectura*: 2-3 preguntas cuya respuesta exige haber leído de
      verdad (citar una línea textual, nombrar elementos específicos). Detecta
-     lectores que inventan sin leer — pasó en producción.
+     lectores que inventan sin leer, pasó en producción.
    - *El artefacto completo* (no resumido).
    - *AMBIGÜEDADES/VACÍOS*: todo lo que tuvo que adivinar, indicando dónde
      buscó. Con la **regla de referencias canónicas**: si el dato está
-     explícitamente referenciado a otra sección ("ver §5.3"), NO es un vacío —
+     explícitamente referenciado a otra sección ("ver §5.3"), NO es un vacío,
      es la arquitectura del documento (cada número vive en un solo lugar);
      se anota aparte como referencia externa.
 
 5. **Calificación + disciplina de fantasmas.** El orquestador compara el
    artefacto contra el rubric y **verifica cada vacío reclamado contra el
    documento antes de parchar** (grep/lectura directa). Los lectores débiles
-   producen fantasmas en cantidad — en el caso origen, ~10 de 12 hallazgos de
+   producen fantasmas en cantidad, en el caso origen, ~10 de 12 hallazgos de
    una ronda eran falsos (el lector no vio una entidad que SÍ estaba en el
    diagrama, ignoró convenciones declaradas en la leyenda). Señales de lector
    degradado: responde en otro idioma, inventa valores que el documento niega,
@@ -124,7 +124,7 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    ENUNCIADO del caso, no del documento**. Cuando el orquestador inventa el caso
    de prueba, una ambigüedad del enunciado ("¿el 9 % es crecimiento total o
    per-share?") llega reportada como vacío del documento. Verifica cada vacío
-   contra AMBOS — el documento y tu propio enunciado —: si la duda nace del
+   contra AMBOS, el documento y tu propio enunciado: si la duda nace del
    enunciado y el documento contiene la convención que la resuelve (y el lector
    la aplicó bien), no se parcha nada.
 
@@ -140,12 +140,12 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
    lectura hacia lo recién agregado, para confirmar que las correcciones se
    captan en frío. Si el documento ya pasó `doc-completitud` y `doc-narrativa`,
    la prueba de uso puede converger en UNA ronda (caso real: rubric 6/6 críticos
-   al primer intento) — el criterio de parada es el rubric, no un número de
-   rondas ritual; una ronda perfecta no se repite por ceremonia.
+   al primer intento), el criterio de parada es el rubric, no un número de
+   rondas ritual. Una ronda perfecta no se repite por ceremonia.
 
 ## Reglas de oro
 
-- **Probar haciendo, no explicando.** "¿Se entiende?" mide prosa; "hazlo" mide
+- **Probar haciendo, no explicando.** "¿Se entiende?" mide prosa. "hazlo" mide
   utilidad. Solo la segunda encuentra los atributos que faltan.
 - **El rubric se escribe antes de ver respuestas.**
 - **Fantasma no verificado = no se toca el documento.**
@@ -153,7 +153,7 @@ plano — que alguien que no estuvo en la conversación pueda construir con él.
   duplicando números para complacer al lector aislado.
 - **Cada sección, su rol y su tarea.** Un solo "¿puedes explicarlo?" genérico
   es exactamente el error que esta skill corrige.
-- **El artefacto del lector es descartable.** No es código para producción; es
+- **El artefacto del lector es descartable.** No es código para producción. Es
   el instrumento de medición del documento.
 
 ## Script para el tool Workflow (fan-out por secciones)
@@ -207,20 +207,20 @@ Los parches que produce esta skill viven en una redacción concreta y **no
 sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
 desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
 
-Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
-corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+Antes de cerrar, convierte cada arreglo en un **centinela**, una frase textual,
+corta y distintiva, dentro de un test de regresión que falle si desaparece. La
 doctrina completa, con el caso real que la originó, está en
 [`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
 
 ## Variantes
 
-- **Sección única** (el caso origen): sin Workflow — un solo `Agent` con model
+- **Sección única** (el caso origen): sin Workflow, un solo `Agent` con model
   haiku por ronda, iterando 2-3 veces. Más simple y suficiente.
 - **Prueba de consistencia**: cuando una sección presenta la misma información
   en varias representaciones (texto + diagrama + tabla), pide además "reporta
   toda contradicción entre las representaciones". Ojo: produce más fantasmas
-  (leer diagramas SVG degrada a los lectores débiles) — la disciplina del paso
+  (leer diagramas SVG degrada a los lectores débiles), la disciplina del paso
   5 se vuelve crítica.
 - **Rubric implícito**: para secciones narrativas (una tesis, un cierre), la
-  "tarea" es reproducir la decisión y sus porqués ante un tercero exigente; el
+  "tarea" es reproducir la decisión y sus porqués ante un tercero exigente. El
   rubric es la lista de decisiones/argumentos que deben sobrevivir.

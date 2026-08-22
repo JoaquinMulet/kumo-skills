@@ -3,7 +3,7 @@ name: gobernanza-primero
 description: La puerta de gobernanza e incentivos que corre ANTES de cualquier análisis de negocio o valoración — si los incentivos de una empresa están mal, la historia de asignación de capital es la mejor predicción del futuro y no hay para qué analizar más. Usa esta skill al partir el análisis de CUALQUIER empresa, al leer una memoria anual o proxy, al evaluar la administración o el directorio, o cuando el usuario menciona gobernanza, incentivos, asignación de capital, compensación de ejecutivos, calidad de la gestión, "vale la pena analizarla", o equivalentes en cualquier idioma.
 ---
 
-# Gobernanza primero — la puerta antes del análisis
+# Gobernanza primero. La puerta antes del análisis
 
 Decidido por el dueño el 14 de agosto de 2026, tras el análisis de Cencosud:
 **si una empresa tiene mal los incentivos, no tiene para qué analizarse más.**
@@ -27,7 +27,7 @@ memoria: se citan con año y se releen antes de usarlas):
   pueda usar con ventaja. El precio del capital viaja hasta el bono del
   gerente, en las 2 direcciones. El "premio" por devolver caja no es un
   interés pagado a la filial: es un abono en la fórmula del bono del
-  gerente (la filial es 100% del grupo; no hay a quién más compensar).
+  gerente (la filial es 100% del grupo. No hay a quién más compensar).
 - **Carta de 1996 (GEICO):** la fórmula separa crecer de operar para que el
   cargo no fabrique cortoplacismo: el bono mide (1) el crecimiento en
   pólizas y (2) la rentabilidad SOLO del negocio maduro (pólizas con más de
@@ -49,11 +49,11 @@ memoria: se citan con año y se releen antes de usarlas):
 
 ## Los 4 exámenes de la puerta
 
-Correr los 4; cada uno con evidencia citada (documento, página) y grado de
+Correr los 4. Cada uno con evidencia citada (documento, página) y grado de
 respaldo declarado. La búsqueda mecánica se hace con script sobre el PDF
 (pypdf o similar), declarando que es sensible a la extracción de texto.
 
-**Examen 1 — ¿El capital tiene precio por dentro?**
+**Examen 1, ¿El capital tiene precio por dentro?**
 Fuente: la nota de segmentos (NIIF 8 / ASC 280) de los estados auditados.
 Mirar dónde vive el costo financiero: si los negocios se presentan con
 costo financiero cero y todo el interés del grupo está estacionado en la
@@ -62,7 +62,7 @@ La nota refleja cómo el tomador de decisiones mira el negocio (esa es la
 definición de la norma), así que es señal fuerte, pero es PRESENTACIÓN: no
 prueba sola la ausencia de un cargo interno. Se combina con el examen 2.
 
-**Examen 2 — ¿Qué paga el bono?**
+**Examen 2, ¿Qué paga el bono?**
 Fuente: memoria anual / proxy statement, sección de compensaciones.
 Preguntas: ¿el bono anual depende del resultado de la unidad del gerente o
 del consolidado? ¿Hay cargo por el capital empleado o retorno sobre capital
@@ -73,20 +73,20 @@ páginas. Una memoria que promete "asignación de capital disciplinada" y
 menciona el retorno sobre el capital 0 veces en 200+ páginas es un
 hallazgo, no una casualidad.
 
-**Examen 3 — El historial es el testigo (mínimo 10 años, ideal todo).**
+**Examen 3, El historial es el testigo (mínimo 10 años, ideal todo).**
 El patrón de mala asignación es medible y tiene 4 huellas: (1) comprar
 caro en la cima del ciclo (caja libre negativa en los años de compras, con
-la utilidad viéndose sana); (2) el crecimiento comprado que no rinde
+la utilidad viéndose sana). (2) el crecimiento comprado que no rinde
 (ingreso real por debajo de peaks viejos, crecimiento orgánico ≈ 0);
 (3) vender las joyas en el valle para pagar la fiesta (desinversiones de
-los mejores negocios en los años de apriete); (4) una matriz que no se
+los mejores negocios en los años de apriete). (4) una matriz que no se
 achica con nada (costo corporativo real constante o creciente a través de
 las desinversiones). Las 3 curvas (utilidad, caja libre, owner earnings)
 más el capex ejecutado contra la necesidad de reposición son el
-instrumento; la subinversión en mantenimiento durante los aprietes es la
+instrumento. La subinversión en mantenimiento durante los aprietes es la
 quinta huella.
 
-**Examen 4 — El contraste explícito contra el estándar.**
+**Examen 4, El contraste explícito contra el estándar.**
 Poner lado a lado lo que la empresa publica contra el arreglo de las
 cartas de 1994 y 1996. El contraste hace legible el veredicto para
 cualquier lector: no es "gobernanza mediocre" en abstracto, es "el precio
@@ -110,12 +110,12 @@ desde 1994".
 
 Si el análisis completo ya existe cuando la evidencia aparece (caso
 Cencosud), el hallazgo no se agrega como una sección más: **el hallazgo
-central manda el orden** — capítulo propio, la conclusión abre con él, y
+central manda el orden**, capítulo propio, la conclusión abre con él, y
 las demás cifras pasan a ser su respaldo.
 
 **Señales de reapertura** (observables, no promesas): bonos de gerentes de
-unidad atados al retorno sobre el capital que emplean; un cargo interno por
-capital publicado; una matriz que se achica cuando el grupo vende; cambio
+unidad atados al retorno sobre el capital que emplean. Un cargo interno por
+capital publicado. Una matriz que se achica cuando el grupo vende. Cambio
 de controlador o de CEO con historial probado de asignador. Las frases de
 la memoria («asignación disciplinada», «visión de largo plazo») no son
 señales: son marketing hasta que una fórmula de bono las respalde.
@@ -132,20 +132,20 @@ El ejemplo completo vive en el análisis de Cencosud (informe, sección
 5 bis). Las cifras que hacen de patrón:
 
 - Examen 1: los 5 negocios presentados con costo financiero CERO en la
-  nota de segmentos; 408 mil millones de CLP de interés del año
+  nota de segmentos. 408 mil millones de CLP de interés del año
   estacionados enteros en la columna corporativa.
 - Examen 2: memoria integrada 2025, página 53: bono anual que depende
   «fundamentalmente de los resultados de la Compañía en el último
-  ejercicio» más permanencia; LTI que paga 20% al año durante 3 años SOLO
-  por quedarse; ROIC y «retorno sobre el capital»: 0 menciones en 244
+  ejercicio» más permanencia. LTI que paga 20% al año durante 3 años SOLO
+  por quedarse. ROIC y «retorno sobre el capital»: 0 menciones en 244
   páginas cuya carta del presidente promete «adecuada asignación de
   capital».
 - Examen 3: 2010-2014 caja libre negativa 5 años seguidos comprando en la
-  cima (Carrefour Colombia 2012 en subasta); ingreso real de 2025 bajo el
-  peak de 2013; venta del 51% de las tarjetas (2015) y IPO de los malls
-  (2019) para pagar deuda; subinversión en mantenimiento 5 de 6 años entre
-  2015 y 2020; matriz de ~275 mil millones netos anuales que no se achicó
-  con ninguna desinversión (407 en 2010 con la mitad del grupo); recompra
+  cima (Carrefour Colombia 2012 en subasta). Ingreso real de 2025 bajo el
+  peak de 2013. Venta del 51% de las tarjetas (2015) y IPO de los malls
+  (2019) para pagar deuda. Subinversión en mantenimiento 5 de 6 años entre
+  2015 y 2020. Matriz de ~275 mil millones netos anuales que no se achicó
+  con ninguna desinversión (407 en 2010 con la mitad del grupo). Recompra
   en la cima de liquidez (The Fresh Market 2022).
 - Veredicto: reprueba. La conclusión del informe abre con la advertencia y
   el precio va segundo a propósito.
@@ -153,16 +153,16 @@ El ejemplo completo vive en el análisis de Cencosud (informe, sección
 ## Caso de contraste: ILC, agosto 2026 (aprueba con nota)
 
 Mismo país, misma bolsa, y la otra cara. El análisis completo vive en
-`Experimentos con AI/ILC/gobernanza-ilc.md`; lo que lo hace ejemplo:
+`Experimentos con AI/ILC/gobernanza-ilc.md`. Lo que lo hace ejemplo:
 
 - Examen 1: holding de empresas REGULADAS, cada filial con su directorio,
   su capital regulatorio y su deuda propia: el capital no es gratis por
-  dentro por construcción; la matriz declara su rol («analizar cada
+  dentro por construcción. La matriz declara su rol («analizar cada
   requerimiento de capital y aportar si es necesario para generar valor»)
   y los aportes van individualizados con monto.
 - Examen 2: el variable de los ejecutivos SÍ nombra la rentabilidad sobre
   el patrimonio como métrica (con la nota: «entre otras», sin pesos
-  publicados); los directores llevan participación en utilidades con
+  publicados). Los directores llevan participación en utilidades con
   techo. ROIC y cargo por capital: 0 menciones igual: el estándar de
   Buffett tampoco está, pero el resultado se reporta en métricas de dueño.
 - Examen 3 (verificado contra estados de la CMF): ROAE de 2 dígitos
@@ -180,14 +180,14 @@ Mismo país, misma bolsa, y la otra cara. El análisis completo vive en
 
 La lección del par Cencosud e ILC: la retórica es idéntica en las 2
 memorias («asignación de capital disciplinada» y «adecuada asignación de
-capital»); lo que separa a una de otra es la MÉTRICA en el bono, la
+capital»). Lo que separa a una de otra es la MÉTRICA en el bono, la
 contabilidad POR ACCIÓN en la portada, y el historial verificado. La
 puerta se pasa con esas 3 cosas, nunca con la retórica.
 
 ## Los 4 arquetipos medidos (agosto 2026, bolsa chilena)
 
 La puerta corrida sobre 4 holdings el mismo dia dejo un mapa que sirve de
-referencia rapida; los analisis completos viven en las carpetas de cada
+referencia rapida. Los analisis completos viven en las carpetas de cada
 empresa dentro de «Experimentos con AI»:
 
 | Empresa | Veredicto | Lo que decide |
@@ -201,7 +201,7 @@ Las 2 lecciones del mapa:
 
 - **La propiedad familiar alinea contra el fraude, no contra la
   reinversion mediocre.** Quinenco y Copec tienen el mismo alineamiento
-  por propiedad; los separa la disciplina de devolver la caja cuando no
+  por propiedad. Los separa la disciplina de devolver la caja cuando no
   hay precio (Quinenco) contra la conviccion de reinvertir siempre
   (Copec). La prueba del dolar retenido de Buffett es el instrumento que
   los distingue: cada peso retenido debe crear al menos un peso de valor.
@@ -214,7 +214,7 @@ Las 2 lecciones del mapa:
 
 - La búsqueda mecánica necesita BORDES DE PALABRA y normalización de
   acentos: «eva» aparece en «nueva» y en «eva-luación» cortada por el
-  salto de línea; «tir» vive adentro de «invertir». Sin eso, el conteo
+  salto de línea. «tir» vive adentro de «invertir». Sin eso, el conteo
   miente en las 2 direcciones.
 - El índice GRI o NCG de las memorias repite los títulos de capítulos
   («creación de valor» suele ser el capítulo de sostenibilidad): filtrar

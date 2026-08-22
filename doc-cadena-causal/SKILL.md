@@ -16,7 +16,7 @@ description: >-
   orquestador verifica los hallazgos y redacta los parches.
 ---
 
-# Doc Causal Chain — "¿por qué existe esta cosa?"
+# Doc Causal Chain. "¿por qué existe esta cosa?"
 
 Encuentra los conceptos **nombrados pero no fundados**. Es el hueco que sobrevive
 a toda revisión de estilo, porque el estilo juzga el texto *como texto* y este
@@ -36,28 +36,28 @@ Las otras tres skills de documentos preguntan cosas que un concepto sin causa
 
 Las tres pasan y el hueco sobrevive. Caso real: un curso explicaba que «la tasa de
 descuento depende de la garantía del contrato» y explicaba *qué* era la garantía
-— sin decir nunca por qué existe una garantía, qué problema resuelve, quién la
+, sin decir nunca por qué existe una garantía, qué problema resuelve, quién la
 pone, de cuánto es, ni que al lector **no le aplicaba** porque describía el
 mercado interbancario. El lector razonó bien sobre el texto y llegó a una
 pregunta que no tenía respuesta.
 
 ## Dónde va en el orden (importa)
 
-1. `doc-completitud` — ¿está todo?
-2. **`doc-cadena-causal` — ¿cada cosa se sostiene sola?** ← esta
-3. `doc-narrativa` — ¿se lee bien?
-4. `doc-prueba-de-uso` — ¿se puede actuar con esto?
+1. `doc-completitud`. ¿está todo?
+2. **`doc-cadena-causal`, ¿cada cosa se sostiene sola?** ← esta
+3. `doc-narrativa`. ¿se lee bien?
+4. `doc-prueba-de-uso`. ¿se puede actuar con esto?
 
 **Antes de narrativa, nunca después.** Narrativa produce un plan que reordena y
-comprime; si comprimes un concepto sin fundamento, comprimes el síntoma. En el
-caso real, el flujo de tres lentes dejó el capítulo mejor escrito —arco,
-analogías, fórmulas al apéndice— y no tocó el hueco.
+comprime. Si comprimes un concepto sin fundamento, comprimes el síntoma. En el
+caso real, el flujo de tres lentes dejó el capítulo mejor escrito, arco,
+analogías, fórmulas al apéndice, y no tocó el hueco.
 
 ## La deuda de orden: usado antes de explicado
 
 **Este es el defecto estructural más grave y el más invisible de los tres que
 esta skill persigue.** Un concepto puede estar perfectamente explicado, con su
-causa, su fórmula y su ejemplo — y aun así romper el documento, si aparece
+causa, su fórmula y su ejemplo, y aun así romper el documento, si aparece
 mencionado **en párrafos anteriores** a donde se explica, se calcula o se deduce.
 
 No es un problema de redacción. Es un problema de **orden**, y por eso ninguna
@@ -67,7 +67,7 @@ puede evaluar, y a partir de ahí lee todo lo demás con una deuda encima. Cuand
 llega la explicación, tres capítulos después, ya decidió que el material no se
 entiende.
 
-**El síntoma con el que llega el usuario** no es «está mal ordenado» — es «no se
+**El síntoma con el que llega el usuario** no es «está mal ordenado», es «no se
 entiende nada», «esto es muy árido», «me perdí al principio». Si escuchas eso
 sobre un documento que a ti te parece completo y bien escrito, **mide el orden
 antes de tocar una sola frase**.
@@ -83,7 +83,7 @@ Se mecaniza entero, y por eso es barato correrlo tantas veces como haga falta.
    anterior a su sección asignada. El veredicto es una cifra: *deuda total en
    secciones-concepto*.
 3. **Exime la navegación.** El índice, el encabezado y los «lo veremos en el
-   capítulo N» nombran conceptos sin usarlos; contarlos produce ruido que hace
+   capítulo N» nombran conceptos sin usarlos. Contarlos produce ruido que hace
    que se ignore el informe entero.
 
 ```json
@@ -92,7 +92,7 @@ Se mecaniza entero, y por eso es barato correrlo tantas veces como haga falta.
 ```
 
 Los instrumentos están escritos y probados en
-[`reference/`](reference/) — cópialos y cambia el contrato:
+[`reference/`](reference/), cópialos y cambia el contrato:
 
 | Archivo | Qué hace |
 |---|---|
@@ -103,7 +103,7 @@ Los instrumentos están escritos y probados en
 
 En el caso real, la primera medición dio **8 conceptos con deuda, 22
 secciones-concepto**. Ese número fue lo que justificó una reescritura estructural
-completa en vez de una pasada de edición — y es la clase de argumento que un
+completa en vez de una pasada de edición, y es la clase de argumento que un
 «creo que está desordenado» nunca gana.
 
 ### El remedio no es mover párrafos: es la estructura en espiral
@@ -112,18 +112,18 @@ Reordenar suele ser imposible, porque las dependencias son circulares: para
 explicar A hace falta B, y para explicar B hace falta A. La salida es **recorrer
 el material más de una vez, cada vez con más precisión**:
 
-1. **Primera pasada — formas, sin ninguna cifra derivada.** Qué existe, quién
+1. **Primera pasada, formas, sin ninguna cifra derivada.** Qué existe, quién
    hace qué, en qué dirección se mueve cada cosa. El lector construye el modelo
    mental completo sin necesitar un solo número calculado.
-2. **Segunda pasada — magnitudes.** Ahora sí las cifras, sobre un esqueleto que
+2. **Segunda pasada, magnitudes.** Ahora sí las cifras, sobre un esqueleto que
    el lector ya tiene.
-3. **Tercera pasada — el caso real.**
+3. **Tercera pasada, el caso real.**
 
 Y la primera pasada se protege con **su propio guardia mecánico**: un script que
 falla si aparece cualquier cifra derivada en esos capítulos, con una lista blanca
 explícita de los datos *crudos* que sí pueden estar (los observados, el nocional,
 las fechas). Sin ese guardia, una cifra se cuela en la primera pasada en la
-primera edición que hagas — **el riesgo no es alto, es certeza**.
+primera edición que hagas, **el riesgo no es alto, es certeza**.
 
 ### Por qué hace falta el guardia y no basta la disciplina
 
@@ -132,17 +132,17 @@ después**, así que cada mención adelantada le parece natural. Es el mismo mot
 por el que no se puede autoevaluar la claridad de lo que uno escribió. La deuda
 de orden solo la ve un lector que llega en frío… o un `grep` con un contrato.
 
-## La rejilla — cinco preguntas por concepto
+## La rejilla. Cinco preguntas por concepto
 
 Se evalúan **en el orden en que el documento presenta el concepto**: explicarlo
-bien pero *después* del primer uso ya es fallar — ver la sección anterior, que es
+bien pero *después* del primer uso ya es fallar, ver la sección anterior, que es
 la versión mecanizada de esta misma exigencia.
 
 1. **¿POR QUÉ EXISTE?** ¿Se dice qué problema resuelve, antes de usarlo? Si el
    lector no puede completar «esto existe porque si no, pasaría X», falla.
 2. **¿QUIÉN Y A QUIÉN?** Quién lo hace, quién paga, quién recibe, y si eso puede
    cambiar de lado.
-3. **¿DE DÓNDE SALE EL NÚMERO?** Cómo se calcula u observa — o aparece como cifra
+3. **¿DE DÓNDE SALE EL NÚMERO?** Cómo se calcula u observa, o aparece como cifra
    caída del cielo.
 4. **¿QUÉ PASARÍA SI NO ESTUVIERA?** El contrafactual.
 5. **¿ME APLICA A MÍ?** ¿Se dice explícitamente si aplica al caso del lector, o
@@ -151,7 +151,7 @@ la versión mecanizada de esta misma exigencia.
 Veredicto por pregunta: `OK` / `DEBIL` / `FALTA`, **con cita textual** del
 documento que lo demuestra y una frase de arreglo.
 
-## El patrón — dónde buscar primero
+## El patrón. Dónde buscar primero
 
 **No fallan los conceptos que el documento *calcula*.** El cálculo obliga a
 explicar la causa: si no explicas el arbitraje, la fórmula del forward no se
@@ -161,7 +161,7 @@ sostiene.
 presentación, precios que se toman como dato, y los fundamentos que se dan por
 sabidos porque «todos saben qué es eso». Ninguno tiene una fórmula que lo delate.
 
-Y fallan casi siempre en **P1 y P4 juntas** — son la misma pregunta vista por los
+Y fallan casi siempre en **P1 y P4 juntas**, son la misma pregunta vista por los
 dos lados. La P3 casi nunca falla en documentos numéricos.
 
 ### El detector barato: ratio lista / prosa
@@ -214,10 +214,10 @@ compensa casi todo. Casi.») y no repiten el vocabulario del objetivo. Un
 detector con 50 % de falsos positivos se ignora a la tercera corrida.
 
 Lo que sí acota el trabajo es **filtrar por forma del rótulo**: los títulos
-**interrogativos o promisorios** —los que preguntan algo, prometen una revelación
+**interrogativos o promisorios**, los que preguntan algo, prometen una revelación
 o nombran un agente sin identificarlo («alguien», «el que decide», «lo que
-nadie te cuenta»)— son un subconjunto pequeño y son donde vive el defecto. Esos
-se revisan semánticamente, uno por uno; los descriptivos («El bono, cierre a
+nadie te cuenta»), son un subconjunto pequeño y son donde vive el defecto. Esos
+se revisan semánticamente, uno por uno. Los descriptivos («El bono, cierre a
 cierre») casi nunca fallan.
 
 ## Cómo ejecutar
@@ -226,11 +226,11 @@ cierre») casi nunca fallan.
    documento. No se lo pidas a un agente: es barato para ti y evita que la
    auditoría se salte lo que no vio.
 2. **Repártelos en grupos temáticos** de 10-15 conceptos por auditor. Menos, y
-   desperdicias agentes; más, y el auditor se apura y empieza a inventar.
+   desperdicias agentes. Más, y el auditor se apura y empieza a inventar.
 3. **Invoca el tool `Workflow`** con el script de abajo, incrustando la ruta y
    los grupos como constantes.
 4. **Verifica los hallazgos graves TÚ, con `Grep`, antes de reparar nada.** Los
-   auditores débiles producen falsos positivos con evidencia inventada — en la
+   auditores débiles producen falsos positivos con evidencia inventada, en la
    corrida real, uno citó una sigla que aparecía **cero veces** en el archivo, y
    otro marcó como ausente un concepto explicado dos veces.
 5. **Redacta los parches tú**, no un agente a ciegas: tienes el contexto del
@@ -308,14 +308,14 @@ return { totalConceptos: filas.length, sintesis, filas }
 Hay un defecto hermano que **ninguna revisión de texto encuentra**, por muchas
 lentes que se le pongan: la **incoherencia interna de las cifras**. Un documento
 puede tener cada concepto perfectamente fundado y aun así afirmar números que no
-cruzan entre sí — un bono que se emite «a la par» con un cupón incompatible con
+cruzan entre sí, un bono que se emite «a la par» con un cupón incompatible con
 su propia curva, por ejemplo.
 
 Eso no se audita después: **se previene al construir**. La regla es *un solo
 origen de verdad, y las identidades corriendo como test*: ninguna cifra escrita a
 mano si un modelo puede calcularla, y las condiciones que deben cumplirse
 impresas como `True`/`False` cada vez que el modelo corre. Es disciplina de
-autoría, no etapa de revisión — un agente leyendo el documento no puede
+autoría, no etapa de revisión, un agente leyendo el documento no puede
 recalcular el modelo. Ver `desarrollo-riguroso`.
 
 ## Tus hallazgos deben sobrevivir a la próxima reescritura
@@ -324,16 +324,16 @@ Los parches que produce esta skill viven en una redacción concreta y **no
 sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
 desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
 
-Antes de cerrar, convierte cada arreglo en un **centinela** —una frase textual,
-corta y distintiva— dentro de un test de regresión que falle si desaparece. La
+Antes de cerrar, convierte cada arreglo en un **centinela**, una frase textual,
+corta y distintiva, dentro de un test de regresión que falle si desaparece. La
 doctrina completa, con el caso real que la originó, está en
 [`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
 
 ## Skills hermanas
 
-- `doc-completitud` — que **nada falte** (inventario presente).
-- `doc-narrativa` — que **se lea bien** (arco, densidad, estructura).
-- `doc-prueba-de-uso` — que **se pueda actuar** (el lector ejecuta la tarea).
-- `verificacion-adversarial` — que **sea verdad** (afirmaciones contra fuentes).
+- `doc-completitud`. Que **nada falte** (inventario presente).
+- `doc-narrativa`. Que **se lea bien** (arco, densidad, estructura).
+- `doc-prueba-de-uso`. Que **se pueda actuar** (el lector ejecuta la tarea).
+- `verificacion-adversarial`. Que **sea verdad** (afirmaciones contra fuentes).
 
 Esta cubre el eje que ninguna cubría: que **cada pieza se sostenga sola**.

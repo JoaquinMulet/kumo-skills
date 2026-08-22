@@ -3,7 +3,7 @@ name: checklist-lehman
 description: Checklist v2 de 70 preguntas para leer estados financieros, derivado del 10-K de Lehman Brothers 2007 anotado por Warren Buffett y refinado aplicándolo al 10-K de Morgan Stanley 2025. Se aplica a CADA informe de análisis de empresa como pasada obligatoria, produciendo un anexo con las respuestas con evidencia y página, o la marca de dato faltante, y define qué vigilar cada trimestre. Usa esta skill al leer un 10-K, una memoria o estados financieros completos, al cerrar un informe de análisis de empresa, o cuando el usuario mencione checklist de estados, análisis inverso, Lehman, «qué preguntas hacerle a estos números», o equivalentes.
 ---
 
-# Checklist para leer estados financieros — v2
+# Checklist para leer estados financieros. V2
 
 Derivada del 10-K de Lehman (2007) anotado por Buffett, y refinada
 aplicándola al 10-K de Morgan Stanley (2025). **Principio rector: cada
@@ -15,13 +15,13 @@ demostró más difícil: **interrogar lo que se ve bien.**
 
 - Se corre sobre CADA informe de análisis de empresa, como pasada
   obligatoria antes del cierre (después de la puerta `gobernanza-primero`,
-  que decide si el análisis parte; este checklist decide si está
+  que decide si el análisis parte. Este checklist decide si está
   completo).
 - El entregable es un ANEXO con las 70 preguntas respondidas: cada
   respuesta con su evidencia (cifra, documento, página o módulo del
   modelo) o la marca explícita **[SIN DATO]** con lo que falta conseguir.
   Un checklist con huecos silenciosos es peor que ninguno.
-- Las preguntas sin respuesta alimentan la lista de «lo que falta»; las
+- Las preguntas sin respuesta alimentan la lista de «lo que falta». Las
   respuestas que acusan alimentan los riesgos y, si mandan, la tesis (el
   hallazgo central manda el orden). La sección 10 no se archiva: define el
   tablero de vigilancia trimestral.
@@ -66,7 +66,7 @@ demostró más difícil: **interrogar lo que se ve bien.**
 
 ### La carrera contra el capital
 
-10. **[nueva — la pregunta de divergencia]** Comparar la tasa de
+10. **[nueva, la pregunta de divergencia]** Comparar la tasa de
     crecimiento de las líneas de riesgo contra la tasa de crecimiento del
     patrimonio. Cualquier exposición que compone más rápido que el capital
     tiene una fecha matemáticamente cierta en que lo domina. Calcular: ¿en
@@ -101,7 +101,7 @@ puede ser «nadie»:
     amortizado no es una valoración conservadora: es la ausencia de
     valoración. Un préstamo vale su valor de origen hasta el día en que
     alguien decide que no.
-18. **[nueva — el test de circularidad]** Para préstamos garantizados:
+18. **[nueva, el test de circularidad]** Para préstamos garantizados:
     ¿quién valora el colateral? ¿Y quién valora los activos que componen
     ese colateral? Si la cadena es «banco presta a costo amortizado →
     contra colateral valorado al valor neto que reporta el deudor → valor
@@ -128,7 +128,7 @@ puede ser «nadie»:
 
 ## 3. Limpieza estructural: interrogar las métricas que salen bien
 
-**[sección nueva — la lección central de la v2]** Cuando una métrica de
+**[sección nueva, la lección central de la v2]** Cuando una métrica de
 riesgo sale impecable, antes de aceptarla preguntar:
 
 24. ¿Esta métrica está limpia porque el riesgo es bajo, o porque el
@@ -161,7 +161,7 @@ riesgo sale impecable, antes de aceptarla preguntar:
 
 ## 4. La matemática de la evaporación: dimensionar el peor caso uno mismo
 
-**[sección nueva]** El documento nunca hace este cálculo; hay que hacerlo:
+**[sección nueva]** El documento nunca hace este cálculo. Hay que hacerlo:
 
 30. Definir el perímetro de la exposición al tema de riesgo del ciclo:
     núcleo (directo) + capas adyacentes (compromisos no girados, derivados
@@ -171,9 +171,9 @@ riesgo sale impecable, antes de aceptarla preguntar:
     → exceso de capital sobre requisitos regulatorios → capital sobre
     mínimos absolutos → patrimonio total. Anotar cada cifra.
 32. Correr tres escenarios: (a) pérdida total del perímetro: ¿sobrevive el
-    patrimonio contable y el ratio regulatorio?; (b) colapso severo
+    patrimonio contable y el ratio regulatorio?. (b) colapso severo
     realista: aplicar recuperaciones históricas de instrumentos
-    comparables y colchones estructurales; (c) el escenario de liquidez:
+    comparables y colchones estructurales. (c) el escenario de liquidez:
     compromisos girados todos a la vez + colateral invendible + fondeo
     cerrado.
 33. **[la pregunta que decide]** ¿Cuál es el único parámetro que separa
@@ -234,7 +234,7 @@ riesgo sale impecable, antes de aceptarla preguntar:
     La tabla gana.
 52. ¿Qué cambió en el lenguaje vs. el año anterior? ¿Qué párrafos
     aparecieron, qué desapareció?
-53. **[nueva — la ausencia como hallazgo]** ¿La línea que más crece es la
+53. **[nueva, la ausencia como hallazgo]** ¿La línea que más crece es la
     que tiene el desglose más pobre? Un negocio de 96 mil millones sin
     apertura por tipo de colateral, castigos de valorización ni frecuencia
     de revalidación es una decisión de opacidad. Anotar explícitamente qué
@@ -294,18 +294,18 @@ gatillos:
 
 ## Los diez principios (seis originales + cuatro de la v2)
 
-1. **Compara, no mires:** el cambio año contra año informa; el número
+1. **Compara, no mires:** el cambio año contra año informa. El número
    aislado no.
 2. **Voluntario vs. involuntario:** distingue lo que compraron de lo que
    no pudieron vender.
-3. **¿Quién pone el precio? — y ahora: rastrea la cadena completa.**
+3. **¿Quién pone el precio?, y ahora: rastrea la cadena completa.**
    Mercado > modelo > gerencia > nadie (costo amortizado contra colateral
    marcado por el deudor). Mientras más eslabones sin mercado, menos vale
    el patrimonio contable.
 4. **Suma lo invisible:** balance + notas + contingencias, todas activadas
    a la vez.
 5. **Juzga hechos de capital, no narrativa.**
-6. **Coherencia:** prosa vs. tabla, gana la tabla; tabla vs. entorno, gana
+6. **Coherencia:** prosa vs. tabla, gana la tabla. Tabla vs. entorno, gana
    el entorno.
 7. **[nuevo] La limpieza puede ser estructural:** una métrica impecable
    puede medir que el sistema de medición es ciego, no que el riesgo sea
@@ -328,8 +328,8 @@ gatillos:
   `Experimentos con AI/Cencosud/respuestas/checklist-lehman.md`. Los
   hallazgos que el checklist agregó sobre un análisis ya revisado 6 veces:
   la línea que más creció (+7,2%) es la propiedad de inversión valorada
-  por la gerencia; el apalancamiento sobre patrimonio tangible es 5,8x y
-  un 17% de caída lo borra; la recompra de 164 mil MM de 2025 se ejecutó
+  por la gerencia. El apalancamiento sobre patrimonio tangible es 5,8x y
+  un 17% de caída lo borra. La recompra de 164 mil MM de 2025 se ejecutó
   con la caja libre en 47 y el semestre siguiente en deterioro (el eco de
   la pregunta 55). La adenda v2 agrega el test de circularidad sobre el
   revalúo y la matemática de evaporación del perímetro argentino.
