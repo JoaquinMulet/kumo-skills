@@ -34,7 +34,7 @@ CENTINELAS = {
         "por que toda capa tiene agujeros": r"ninguna predicción cubre lo que su autor no imaginó",
         "el agujero es una eleccion": r"forma que tiene esa capa de haber elegido qué mira",
         # De doc-cadena-causal. contradicciones internas.
-        "el trinquete NO es el que bloquea": r"trinquete no es el que te bloquea",
+        "el trinquete NO es el que bloquea": r"trinquete no es el que\s+(?:te\s+)?bloquea",
         "quien apaga el informe": r"apagándolo, y ahí pierdes la lista entera",
         # De doc-completitud. la definicion inline del termino central.
         "que es una comprobacion de clase": r"lee el código fuente entero como\s+texto",
@@ -49,9 +49,9 @@ CENTINELAS = {
         "la linea base se computa": r"no es un\s+trinquete, es un comentario",
         "la misma vara": r"MISMA vara",
         # La leccion que ordena la eleccion de herramientas.
-        "catalogo mide forma, lo tuyo mide verdad": r"miden la forma; solo las que nacen de un fallo tuyo",
+        "catalogo mide forma, lo tuyo mide verdad": r"miden la forma[.;]\s+[Ss]olo las que nacen de un fallo tuyo",
         # El puntero al anexo tiene que decir QUE lleva.
-        "el puntero nombra la receta": r"receta de 5 pasos para escribir una comprobación de",
+        "el puntero nombra la receta": r"receta de 5 pasos para escribir una\s+comprobación de",
     },
     "desarrollo-riguroso/reference/higiene-continua.md": {
         # De doc-completitud. el vacio mas grande.

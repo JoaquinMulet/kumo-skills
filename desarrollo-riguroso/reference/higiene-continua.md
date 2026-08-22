@@ -118,6 +118,11 @@ te olvida el patrón exacto.
 5. **Mete el defecto a propósito en el repo, confirma el rojo, y revierte.** Los pasos 4
    y 5 no se sustituyen entre sí: el 4 prueba el detector, el 5 prueba que está enchufado.
 
+**Dos detalles que muerden en el paso 5.** `git checkout -- archivo` restaura desde el
+**índice**, así que si ya hiciste `git add` te devuelve la versión mala, va
+`git checkout HEAD -- archivo`. Y los scripts con escapes van a un **archivo**, nunca a un
+heredoc, que se come las barras invertidas y rompe las expresiones regulares en silencio.
+
 **Qué esperar.** La primera vez que corre suele encontrar más sitios de los que
 arreglaste, porque el patrón se copió entre archivos sin que nadie lo decidiera. Eso es
 lo que la hace rentable. Si encuentra exactamente uno, revisa que de verdad esté
@@ -164,6 +169,11 @@ El bucle completo es este, y lo único delicado son los dos comentarios.
     borrar el arbol temporal
       // en un finally, o cada corrida deja basura en el disco
 
+La rama por defecto del remoto se resuelve sola con
+`git symbolic-ref --short refs/remotes/origin/HEAD`, y si eso falla porque nadie la fijó,
+`git remote set-head origin --auto` la deja apuntando bien. Nunca la escribas a mano, un
+`origin/main` clavado revienta en silencio en un repo cuya rama es `master`.
+
 Tres cosas que hay que respetar o el trinquete miente.
 
 - **La configuración sale siempre del árbol actual**, nunca del viejo.
@@ -201,6 +211,8 @@ se lee como mandato se termina apagando.
 4. **Escribe y enciende el trinquete** con esas métricas (su núcleo está en la sección
    anterior; son unas 100 líneas y no hay nada que instalar). No exige limpiar nada, solo
    no empeorar.
+4b. Los hooks van **versionados en el repo**, no en la carpeta local de git, o solo
+   existen en la máquina de quien los escribió.
 5. **Escribe la primera comprobación de clase a partir del último fallo real** que tuvo el
    proyecto. Esta es la que va a encontrar algo.
 6. **Prueba cada portón rompiéndolo** y revierte.

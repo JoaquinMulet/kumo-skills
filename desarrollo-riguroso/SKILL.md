@@ -255,18 +255,19 @@ artefacto reusable — un lector frío, con ese archivo como única fuente, ejec
 que el archivo existe para habilitar. Validar un artefacto reusable releyéndolo es la forma
 más débil de verificación que existe.
 
-## Higiene continua del repo — capas con agujeros en distintos lugares
+## Higiene continua del repo, capas con agujeros en distintos lugares
 
 Las pruebas responden «¿funciona?». No responden «¿está creciendo mal?» ni «¿lo que
 entrego dice la verdad?». Esta sección es el aparato para esas dos preguntas.
 
-**El encuadre que ordena todo, y que es fácil de perder: quien lee, entiende y modifica
-el código eres tú (el agente). Ninguna herramienta refactoriza nada — solo apuntan dónde
+**El encuadre que ordena todo, y que es fácil de perder. Quien lee, entiende y modifica el
+código eres tú (el agente). Ninguna herramienta refactoriza nada, solo apuntan dónde
 mirar.** De ahí sale el criterio para elegirlas. Sirve la que entrega una lista corta,
 ordenada por lo que se gana, con ruta y línea para ir a leer. No sirve la que entrega un
-puntaje, un porcentaje o un tablero. **Un número no dice qué hacer.**
+puntaje, un porcentaje o un tablero. **Un número no dice qué hacer.** Y para elegirlas bien
+hay que entender primero cómo un defecto las esquiva.
 
-### El modelo: láminas de queso, y el peligro de olvidar los agujeros
+### El modelo de las láminas de queso, y el peligro de olvidar los agujeros
 
 Piensa en cada control como una lámina de queso suizo. La lámina es la capa que revisa el
 código, un linter, la suite, un revisor. Los agujeros son los casos que esa capa no mira, y
@@ -290,38 +291,39 @@ De ahí las dos preguntas al agregar un control. **¿Qué clase de defecto atrap
 que ninguna otra atrapa?** y **si el sistema fallara ahora mismo, ¿esta capa diría algo?**
 Si la respuesta a la segunda es no, la capa es decorativa por más verde que se vea.
 
-Y no se responden discutiendo, se responden **midiendo**: mete un defecto de esa clase a
+Y no se responden discutiendo, se responden **midiendo**. Mete un defecto de esa clase a
 propósito, corre todas las capas, y anota cuáles hablaron. Si dos hablan siempre juntas,
-una de las dos es redundante. Si una no habla nunca, sobra. *(Caso real: al encender un
+una de las dos es redundante. Si una no habla nunca, sobra. *(Caso real. Al encender un
 análisis de camino de datos, sus primeros hallazgos incluyeron seis declaraciones sin usar
 que el linter y el detector de código muerto locales no veían, porque la regla que las
 cubre era otra que nadie había encendido. Esa capa se ganó su lugar el primer día, y se
 supo porque se comparó lo que dijo cada una sobre el mismo código.)*
 
-### La lección que ordena la elección de herramientas
+### Herramientas de catálogo contra comprobaciones propias
 
-Las herramientas de catálogo miden **forma**: complejidad, duplicación, código muerto,
+Las herramientas de catálogo miden **forma**. Complejidad, duplicación, código muerto y
 estilo. Son baratas, valen la pena, y en un día completo de uso no encontraron ni un solo
 defecto de comportamiento.
 
-El defecto grave lo encontró una **comprobación de clase**: una prueba corriente, en tu
+El defecto grave lo encontró una **comprobación de clase**. Es una prueba corriente, en tu
 suite de siempre, que en vez de ejercitar una función **lee el código fuente entero como
 texto** y falla si encuentra un patrón que ya causó daño una vez. No mira un caso, mira
 la clase, así que también atrapa el código que nadie ha escrito todavía. Ninguna herramienta genérica podía encontrarlo, porque el patrón no es feo
-ni complejo ni duplicado: es correcto en forma y mentiroso en contenido.
+ni complejo ni duplicado, es correcto en forma y mentiroso en contenido.
 
-**Las de catálogo miden la forma; solo las que nacen de un fallo tuyo miden la verdad de
+**Las de catálogo miden la forma. Solo las que nacen de un fallo tuyo miden la verdad de
 tu dominio.** Por eso el orden correcto al entrar a un repo es instalar esas herramientas
 de catálogo primero, porque son baratas, y entender que **el trabajo real empieza cuando
 escribes la primera comprobación derivada de un fallo que ya pasó**.
 
 Corolario que cuesta aceptar. La mayor parte del tiempo de una jornada de higiene no se
 va arreglando código, se va **arreglando la medición**. Vale la pena igual, porque una
-medición equivocada no es neutra: hace creer que el sistema está sano.
+medición equivocada no es neutra, hace creer que el sistema está sano.
 
 ### Las tres piezas, y por qué son tres y no una
 
 Confundirlas es el error habitual, porque las tres «miden calidad» y hacen cosas opuestas.
+Diagnóstico, valla y lista de trabajo, en ese orden.
 
 1. **Instrumentos.** Miden y no opinan. Se configuran una vez y los corres tú, en el
    portón de antes de cada commit junto con la suite, y a mano cuando quieras ver cómo está
@@ -343,23 +345,17 @@ commit que lo rompe, y nadie se entera. Un número que el mantenedor puede edita
 trinquete, es un comentario.
 
 La línea base se calcula. Se mide el árbol de trabajo, se mide el árbol del commit que
-devuelve `git merge-base <rama-por-defecto-del-remoto> HEAD`, y se comparan. La rama por
-defecto se resuelve sola con
-`git symbolic-ref --short refs/remotes/origin/HEAD` (y si eso falla porque nadie la fijó,
-`git remote set-head origin --auto` la deja apuntando bien). Nunca la escribas a mano:
-un `origin/main` clavado revienta en silencio en un repo cuya rama es `master`. Para aflojarlo habría que reescribir la
-historia del remoto. Y como el portón corre antes de empujar, un número peor nunca llega
-al remoto, así que la base solo puede quedarse igual o mejorar. **El trinquete se sostiene
-solo.**
+devuelve `git merge-base <rama-por-defecto-del-remoto> HEAD`, y se comparan. Esa rama se
+resuelve con git y nunca se escribe a mano, porque un `origin/main` clavado revienta en
+silencio en un repo cuya rama es `master` (los 2 comandos exactos están en el anexo). Para
+aflojar la base habría que reescribir la historia del remoto. Y como el portón corre antes
+de empujar, un número peor nunca llega al remoto, así que solo puede quedarse igual o
+mejorar. **El trinquete se sostiene solo.**
 
-Dos trampas medidas en carne propia.
-
-- **Las dos mediciones usan la MISMA vara.** La configuración sale siempre del árbol de
-  trabajo, nunca del árbol viejo. Sin eso, estrenar una regla se lee como «el código
-  empeoró de 0 a 40» y quitar una regla se lee como una mejora. Las dos lecturas son
-  falsas.
-- **Toda métrica va en el mismo sentido: menos es mejor.** Si una va al revés hay que
-  recordar el sentido de cada una, y ese es justo el momento en que alguien se equivoca.
+Dos trampas medidas en carne propia. Las dos mediciones usan la MISMA vara, la del árbol
+actual, o estrenar una regla se lee como «el código empeoró de 0 a 40» y quitarla como una
+mejora. Y toda métrica va en el mismo sentido, menos es mejor, porque recordar el sentido
+de cada una es justo el momento en que alguien se equivoca.
 
 ### Verde no significa limpio, y es el error más caro de esta sección
 
@@ -374,18 +370,16 @@ Tres formas distintas del mismo engaño, las tres medidas en un solo día.
   que pasaban con cualquier contenido. Antes de contar una capa, verifica **contra qué
   artefacto corre**.
 - **Una función puede estar a medio encender.** El archivo de actualizaciones automáticas
-  funcionaba y generaba propuestas, mientras las **alertas** de esa misma función estaban
-  apagadas en la configuración del repositorio. Escribir el archivo no es habilitar la
-  función. Se comprueba **pidiéndole su resultado por su interfaz** y viendo si responde
-  datos o un rechazo. En el caso real fue una llamada a la API que lista sus alertas, que
-  contestó «están deshabilitadas para este repositorio» con el archivo de configuración
-  perfectamente escrito y versionado.
+  generaba propuestas mientras las **alertas** de esa misma función estaban apagadas en la
+  configuración del repositorio. Escribir el archivo no es habilitar la función. Se
+  comprueba **pidiéndole su resultado por su interfaz**, y ahí la API contestó «están
+  deshabilitadas para este repositorio» con el archivo perfecto y versionado.
 
-La regla que engloba las tres: **prueba el efecto, no la presencia.**
+Las tres se engloban en una regla. **Prueba el efecto, no la presencia.**
 
 ### Qué corre en cada etapa, y por qué la duración NO decide
 
-**Jamás limites lo que se ejecuta por lo que tarda.** Los costos no son comparables: un
+**Jamás limites lo que se ejecuta por lo que tarda.** Los costos no son comparables. Un
 portón lento cuesta minutos, y un defecto que se escapa cuesta un entregable equivocado,
 una ronda perdida con quien confía en el resultado, y la confianza en todo el aparato.
 Comparar «4 minutos» con «publiqué un dato falso» es comparar unidades distintas.
@@ -401,7 +395,7 @@ desplegar. Todo lo demás corre lo antes posible y corre COMPLETO.
 - **Antes de cada envío**, todo lo anterior más lo que necesita red. Verificación contra
   los servicios reales y el trinquete. Esta etapa corre **exactamente lo que corre la
   integración continua**, sin recortes. Si tu portón local corre **menos** que ella, tu
-  verde es de otro color: abre su archivo de configuración y compara comando por comando.
+  verde es de otro color. Abre su archivo de configuración y compara comando por comando.
 - **Después de desplegar**, lo que solo existe desplegado. Protocolo y cliente real contra
   la instancia viva. Una pieza que ES un borde solo se prueba cruzándolo.
 - **Programado**, lo que depende del mundo y no del código. Vulnerabilidades publicadas
@@ -412,8 +406,6 @@ Si un portón se vuelve tan lento que estorba, la respuesta es **hacerlo más r�
 (caché, paralelismo, incremental), nunca ejecutar menos. Recortar la cobertura para ganar
 minutos es cambiar una molestia visible por un riesgo invisible.
 
-Los hooks van **versionados en el repo**, no en la carpeta local de git, o solo existen en
-la máquina de quien los escribió.
 
 ### Reglas de commit que se siguen de todo esto
 
@@ -421,9 +413,9 @@ la máquina de quien los escribió.
   que ninguna de las dos se pueda revisar ni revertir. La excepción legítima es un ayudante
   y su adopción, porque un ayudante que nadie llama es código muerto y el propio detector
   lo marcaría. Cuando uses la excepción, dila en el mensaje.
-- **El repo se entrega más limpio de lo que estaba.** Antes de escribir el mensaje: qué
-  dejó de usarse con este cambio, qué número o texto quedó repetido en dos lugares, qué
-  comentario describe cómo era antes.
+- **El repo se entrega más limpio de lo que estaba.** Antes de escribir el mensaje, revisa
+  qué dejó de usarse con este cambio, qué número o texto quedó repetido en dos lugares, y
+  qué comentario describe cómo era antes.
 - **El commit de formato masivo va solo**, y su identificador (el SHA del commit) se anota en
   `.git-blame-ignore-revs`, que se activa con
   `git config blame.ignoreRevsFile .git-blame-ignore-revs`. Sin eso, un solo commit se come el historial de todo
@@ -438,34 +430,28 @@ rojo y que sale con código distinto de cero, y **después** revierte. Vale para
 trinquete, para cada comprobación de clase y para cada regla nueva. Una prueba que no puede
 fallar da confianza falsa, y es peor que no tenerla.
 
-Dos detalles que muerden al revertir. `git checkout -- archivo` restaura desde el
-**índice**, así que si ya hiciste `git add` te devuelve la versión mala: va
-`git checkout HEAD -- archivo`. Y los scripts con escapes van a un **archivo**, nunca a un
-heredoc, que se come las barras invertidas y rompe las expresiones regulares en silencio.
 
 ### Cuando el portón te bloquea por deuda que no es tuya
 
-El trinquete no es el que te bloquea acá, y conviene decirlo porque suena a contradicción.
-Él solo compara contra la línea base, así que la deuda vieja le da igual mientras no crezca.
-Los que te bloquean son los otros portones, el linter, el compilador y las comprobaciones de
-clase, que miran el archivo entero y no distinguen qué línea escribiste tú. Tocas un archivo
-con deuda de hace un año y se ponen rojos por algo que no hiciste.
-
-Pasa, y la reacción correcta no es saltarse el portón. Es **arreglar esa deuda en su propio
-commit** y después seguir. Un portón que se salta una vez se salta siempre, y la deuda que
-bloquea a uno bloquea a todos.
+El trinquete no es el que bloquea acá, y conviene decirlo porque suena a contradicción. Él
+solo compara contra la línea base, así que la deuda vieja le da igual mientras no crezca.
+Los que bloquean son los otros portones, el linter, el compilador y las comprobaciones de
+clase, que miran el archivo entero y no distinguen qué línea escribiste tú. Tocas un
+archivo con deuda de hace un año y se ponen rojos por algo que no hiciste. La reacción
+correcta no es saltarse el portón, es **arreglar esa deuda en su propio commit** y después
+seguir. Un portón que se salta una vez se salta siempre, y la deuda que bloquea a uno
+bloquea a todos.
 
 ### Dónde está el resto
 
-El anexo operativo vive en
-[`reference/higiene-continua.md`](reference/higiene-continua.md) y lleva lo que se
-consulta mientras ejecutas: **la receta de 5 pasos para escribir una comprobación de
-clase**, que es la pieza que de verdad encuentra defectos, **el núcleo del trinquete y del informe**, porque los 2 se
-escriben, no se instalan, **la tabla de equivalencias por lenguaje**, **el procedimiento de 7 pasos para instalar esto en un repo que no lo
-tiene**, cómo leer la
-salida de una herramienta sin que te mienta, cómo acotar una medición antes de creerle,
-por qué la unidad accionable no es la que reporta la herramienta, y qué herramientas de
-catálogo NO hacen falta todavía. **Ábrelo al entrar a un repo nuevo**, que es cuando los
+El anexo operativo vive en [`reference/higiene-continua.md`](reference/higiene-continua.md)
+y lleva lo que se consulta mientras ejecutas. **La receta de 5 pasos para escribir una
+comprobación de clase**, que es la pieza que de verdad encuentra defectos, **el núcleo del
+trinquete y del informe**, porque los 2 se escriben y no se instalan, **la tabla de
+equivalencias por lenguaje**, **el procedimiento de 7 pasos para instalar esto en un repo
+que no lo tiene**, cómo leer la salida de una herramienta sin que te mienta, cómo acotar
+una medición antes de creerle, cuál es la unidad sobre la que se decide, y qué herramientas
+de catálogo NO hacen falta todavía. **Ábrelo al entrar a un repo nuevo**, que es cuando los
 7 pasos son la tarea.
 
 ## Cómo crece este estándar — la paranoia del compounding
