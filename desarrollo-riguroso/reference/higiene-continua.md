@@ -31,26 +31,35 @@ entrada.
 mal, no que el código esté podrido.** Cuando la cifra cae de 15 hallazgos a 4 al arreglar
 la configuración, esos 11 eran ruido que habría costado una tarde.
 
-Causa concreta que conviene tener a mano: **un BOM al inicio de un archivo de
-configuración.** Un BOM (marca de orden de bytes) son tres bytes invisibles
-(`EF BB BF`) que algunos editores de Windows escriben al principio de un archivo
-de texto. No se ven al abrirlo y aparecen como un carácter basura delante de la
-primera llave cuando otro programa intenta leerlo. Se detecta y se quita leyendo el archivo
-como bytes y comparando los tres primeros con `EF BB BF`; si están, se reescribe el
-archivo sin ellos. Los editores suelen ofrecerlo como «guardar sin BOM», y en Windows el
-culpable habitual es `Out-File`, que lo antepone por defecto. El programa principal lo tolera y la siguiente herramienta falla al
-leerlo. Un BOM no rompe nada visible, rompe al próximo programa que lea el archivo.
+Y la causa concreta que más veces está detrás de una cifra escandalosa es **un BOM al
+inicio de un archivo de configuración**, porque hace fallar la lectura de esa configuración
+sin que nadie lo note.
+
+Un BOM (marca de orden de bytes) son tres bytes invisibles, `EF BB BF`, que algunos
+editores de Windows escriben al principio de un archivo de texto. **El programa que
+escribió el archivo lo tolera y el siguiente que lo lea falla**, con un error que habla de
+un carácter inesperado delante de la primera llave. Un BOM no rompe nada visible, rompe al
+próximo programa que lea el archivo.
+
+Se detecta leyendo el archivo como bytes y comparando los tres primeros; si están, se
+reescribe sin ellos. Los editores lo ofrecen como «guardar sin BOM», y en Windows el
+culpable habitual es `Out-File`, que lo antepone por defecto.
 
 ## La unidad accionable no siempre es la que reporta la herramienta
 
 Los detectores de clones reportan **parejas**. La unidad sobre la que uno actúa es la
 **familia**, o sea todos los sitios que comparten el mismo fragmento. Cuatro copias
-producen seis parejas y se leen como seis problemas distintos.
+producen seis parejas y se leen como seis problemas distintos. El costo de esa lectura es
+doble. el informe parece más largo de lo que es, así que se abandona antes, y quien intenta
+arreglarlo va sitio por sitio en vez de escribir el ayudante único que resuelve los cuatro
+de una vez.
 
-El informe agrupa las parejas en familias, ordena por `(sitios - 1) x líneas`. Esa resta
-es lo que de verdad se ahorra: de N copias sobrevive una, la del ayudante, así que
-lo que desaparece son las otras N menos 1, e **imprime el fragmento compartido**, para no tener que abrir
-cuatro archivos y adivinar de qué se trata.
+El informe agrupa las parejas en familias, las ordena por `(sitios - 1) x líneas`, e
+**imprime el fragmento compartido**, para no tener que abrir cuatro archivos y adivinar de
+qué se trata.
+
+Esa resta es lo que de verdad se ahorra. De N copias sobrevive una, la que queda dentro del
+ayudante, así que lo que desaparece son las otras N menos 1.
 
 Regla general más allá de los clones: **antes de mostrar la salida de una herramienta,
 pregúntate cuál es la unidad sobre la que se decide, y agrupa hasta llegar a ella.**
@@ -141,6 +150,10 @@ El bucle completo es este, y lo único delicado son los dos comentarios.
     base = git merge-base <rama-por-defecto> HEAD
     dir  = crear un arbol de trabajo temporal en ese commit
     copiar al dir los archivos de CONFIGURACION del arbol actual
+      // son los que le dicen a cada instrumento COMO medir, y los
+      // conoces porque los escribiste tu en el paso 3 del arranque: el
+      // del linter, el del detector de clones, el del detector de
+      // codigo muerto, y el del compilador si define que se compila
       // porque si el arbol viejo midiera con su propia configuracion
       // serian 2 varas distintas, y estrenar una regla se leeria como
       // que el codigo empeoro
@@ -173,8 +186,10 @@ ordena.
     5. debajo, la lista de funciones sobre el umbral de complejidad y la de
        declaraciones sin usar, cada una con ruta y linea
 
-Y cerrar con una frase que diga que es una lista y no una orden. Un informe que se lee
-como mandato se termina apagando.
+Y cerrar con una frase que diga que es una lista y no una orden, por ejemplo esta, que es
+la que usa el informe real: «Esto es una LISTA, no una orden. Cada arreglo va en su propio
+commit, y el trinquete ya impide que estos números empeoren mientras tanto.» Un informe que
+se lee como mandato se termina apagando.
 
 ## Cómo se instala esto en un repo que no lo tiene, en orden
 

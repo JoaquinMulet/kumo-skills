@@ -268,9 +268,17 @@ puntaje, un porcentaje o un tablero. **Un número no dice qué hacer.**
 
 ### El modelo: láminas de queso, y el peligro de olvidar los agujeros
 
-Cada control tiene agujeros. El defecto pasa cuando los agujeros de todas las capas se
-alinean. La conclusión ingenua es «pon más capas», y es falsa: **más capas solo ayudan si
-sus agujeros están en lugares distintos.**
+Piensa en cada control como una lámina de queso suizo. La lámina es la capa que revisa el
+código, un linter, la suite, un revisor. Los agujeros son los casos que esa capa no mira, y
+los tiene siempre, porque toda capa se construye prediciendo qué defecto va a aparecer y
+ninguna predicción cubre lo que su autor no imaginó. **El agujero no es un descuido, es la
+forma que tiene esa capa de haber elegido qué mira.**
+
+Apiladas, cada lámina tapa los agujeros de las vecinas, y el defecto pasa solo cuando
+encuentra un agujero alineado en todas. De ahí que la conclusión ingenua sea «pon más
+capas», y de ahí que sea falsa. **Más capas solo ayudan si sus agujeros están en lugares
+distintos.** Una lámina fotocopiada agrega trabajo y no tapa nada, porque sus agujeros caen
+exactamente donde los de la original.
 
 Un caso real que lo mide. Un servidor tenía 72 comprobaciones sobre una pieza y cuatro
 revisores adversariales (agentes frescos, sin el contexto del autor, cuyo encargo
@@ -303,8 +311,8 @@ la clase, así que también atrapa el código que nadie ha escrito todavía. Nin
 ni complejo ni duplicado: es correcto en forma y mentiroso en contenido.
 
 **Las de catálogo miden la forma; solo las que nacen de un fallo tuyo miden la verdad de
-tu dominio.** Por eso el orden correcto al entrar a un repo es instalar los instrumentos
-genéricos primero, porque son baratos, y entender que **el trabajo real empieza cuando
+tu dominio.** Por eso el orden correcto al entrar a un repo es instalar esas herramientas
+de catálogo primero, porque son baratas, y entender que **el trabajo real empieza cuando
 escribes la primera comprobación derivada de un fallo que ya pasó**.
 
 Corolario que cuesta aceptar. La mayor parte del tiempo de una jornada de higiene no se
@@ -315,14 +323,17 @@ medición equivocada no es neutra: hace creer que el sistema está sano.
 
 Confundirlas es el error habitual, porque las tres «miden calidad» y hacen cosas opuestas.
 
-1. **Instrumentos.** Miden y no opinan. Se configuran una vez y se corren cuando alguien
-   pregunta.
+1. **Instrumentos.** Miden y no opinan. Se configuran una vez y los corres tú, en el
+   portón de antes de cada commit junto con la suite, y a mano cuando quieras ver cómo está
+   una carpeta. Por sí solos no bloquean nada, solo imprimen.
 2. **Trinquete.** Es un portón. Falla solo si una métrica **empeoró**. No pide mejorar el
    número histórico, así que una base con deuda vieja se puede seguir trabajando sin una
    limpieza previa imposible.
 3. **Informe de oportunidades.** No es portón. Es la lista de trabajo, ordenada por lo
-   que se gana. Nunca falla y nunca bloquea, porque un informe que bloquea se termina
-   apagando.
+   que se gana. Nunca falla y nunca bloquea, y el porqué importa. Un informe lista todo lo
+   que se podría mejorar, o sea casi siempre algo, y si además frena el trabajo te obliga a
+   elegir entre atender deuda vieja y avanzar. Esa elección se resuelve una sola vez,
+   apagándolo, y ahí pierdes la lista entera por haberla querido obligatoria.
 
 ### El trinquete se COMPUTA, jamás se guarda en un archivo
 
@@ -433,6 +444,12 @@ Dos detalles que muerden al revertir. `git checkout -- archivo` restaura desde e
 heredoc, que se come las barras invertidas y rompe las expresiones regulares en silencio.
 
 ### Cuando el portón te bloquea por deuda que no es tuya
+
+El trinquete no es el que te bloquea acá, y conviene decirlo porque suena a contradicción.
+Él solo compara contra la línea base, así que la deuda vieja le da igual mientras no crezca.
+Los que te bloquean son los otros portones, el linter, el compilador y las comprobaciones de
+clase, que miran el archivo entero y no distinguen qué línea escribiste tú. Tocas un archivo
+con deuda de hace un año y se ponen rojos por algo que no hiciste.
 
 Pasa, y la reacción correcta no es saltarse el portón. Es **arreglar esa deuda en su propio
 commit** y después seguir. Un portón que se salta una vez se salta siempre, y la deuda que
