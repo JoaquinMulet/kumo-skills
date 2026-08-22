@@ -273,7 +273,8 @@ alinean. La conclusión ingenua es «pon más capas», y es falsa: **más capas 
 sus agujeros están en lugares distintos.**
 
 Un caso real que lo mide. Un servidor tenía 72 comprobaciones sobre una pieza y cuatro
-revisores adversariales, con una lente distinta cada uno, encontraron tres defectos
+revisores adversariales (agentes frescos, sin el contexto del autor, cuyo encargo
+no es revisar sino **refutar**), con una lente distinta cada uno, encontraron tres defectos
 graves en veinte minutos. Las 72 eran la misma lámina fotocopiada 72 veces. Los tres
 hallazgos salieron de tres revisores distintos.
 
@@ -281,15 +282,24 @@ De ahí las dos preguntas al agregar un control. **¿Qué clase de defecto atrap
 que ninguna otra atrapa?** y **si el sistema fallara ahora mismo, ¿esta capa diría algo?**
 Si la respuesta a la segunda es no, la capa es decorativa por más verde que se vea.
 
+Y no se responden discutiendo, se responden **midiendo**: mete un defecto de esa clase a
+propósito, corre todas las capas, y anota cuáles hablaron. Si dos hablan siempre juntas,
+una de las dos es redundante. Si una no habla nunca, sobra. *(Caso real: al encender un
+análisis de camino de datos, sus primeros hallazgos incluyeron seis declaraciones sin usar
+que el linter y el detector de código muerto locales no veían, porque la regla que las
+cubre era otra que nadie había encendido. Esa capa se ganó su lugar el primer día, y se
+supo porque se comparó lo que dijo cada una sobre el mismo código.)*
+
 ### La lección que ordena la elección de herramientas
 
 Las herramientas de catálogo miden **forma**: complejidad, duplicación, código muerto,
 estilo. Son baratas, valen la pena, y en un día completo de uso no encontraron ni un solo
 defecto de comportamiento.
 
-El defecto grave lo encontró una **comprobación de clase escrita a mano a partir de un
-fallo real anterior**. Recorre el código fuente entero buscando un patrón que ya causó
-daño una vez. Ninguna herramienta genérica podía encontrarlo, porque el patrón no es feo
+El defecto grave lo encontró una **comprobación de clase**: una prueba corriente, en tu
+suite de siempre, que en vez de ejercitar una función **lee el código fuente entero como
+texto** y falla si encuentra un patrón que ya causó daño una vez. No mira un caso, mira
+la clase, así que también atrapa el código que nadie ha escrito todavía. Ninguna herramienta genérica podía encontrarlo, porque el patrón no es feo
 ni complejo ni duplicado: es correcto en forma y mentiroso en contenido.
 
 **Las de catálogo miden la forma; solo las que nacen de un fallo tuyo miden la verdad de
@@ -321,8 +331,12 @@ mantenedor es un agente de IA**, porque al ver rojo puede subir el número en el
 commit que lo rompe, y nadie se entera. Un número que el mantenedor puede editar no es un
 trinquete, es un comentario.
 
-La línea base se calcula. Se mide el árbol de trabajo, se mide el árbol del
-`git merge-base` contra el remoto, y se comparan. Para aflojarlo habría que reescribir la
+La línea base se calcula. Se mide el árbol de trabajo, se mide el árbol del commit que
+devuelve `git merge-base <rama-por-defecto-del-remoto> HEAD`, y se comparan. La rama por
+defecto se resuelve sola con
+`git symbolic-ref --short refs/remotes/origin/HEAD` (y si eso falla porque nadie la fijó,
+`git remote set-head origin --auto` la deja apuntando bien). Nunca la escribas a mano:
+un `origin/main` clavado revienta en silencio en un repo cuya rama es `master`. Para aflojarlo habría que reescribir la
 historia del remoto. Y como el portón corre antes de empujar, un número peor nunca llega
 al remoto, así que la base solo puede quedarse igual o mejorar. **El trinquete se sostiene
 solo.**
@@ -351,7 +365,10 @@ Tres formas distintas del mismo engaño, las tres medidas en un solo día.
 - **Una función puede estar a medio encender.** El archivo de actualizaciones automáticas
   funcionaba y generaba propuestas, mientras las **alertas** de esa misma función estaban
   apagadas en la configuración del repositorio. Escribir el archivo no es habilitar la
-  función. Se comprueba pidiendo su salida, no mirando el archivo.
+  función. Se comprueba **pidiéndole su resultado por su interfaz** y viendo si responde
+  datos o un rechazo. En el caso real fue una llamada a la API que lista sus alertas, que
+  contestó «están deshabilitadas para este repositorio» con el archivo de configuración
+  perfectamente escrito y versionado.
 
 La regla que engloba las tres: **prueba el efecto, no la presencia.**
 
@@ -396,8 +413,9 @@ la máquina de quien los escribió.
 - **El repo se entrega más limpio de lo que estaba.** Antes de escribir el mensaje: qué
   dejó de usarse con este cambio, qué número o texto quedó repetido en dos lugares, qué
   comentario describe cómo era antes.
-- **El commit de formato masivo va solo**, y su identificador se anota en el archivo que
-  la herramienta de autoría ignora. Sin eso, un solo commit se come el historial de todo
+- **El commit de formato masivo va solo**, y su identificador (el SHA del commit) se anota en
+  `.git-blame-ignore-revs`, que se activa con
+  `git config blame.ignoreRevsFile .git-blame-ignore-revs`. Sin eso, un solo commit se come el historial de todo
   el repo.
 - **Quien envía mira el resultado.** Y si no va a mirarlo, el portón tiene que correr antes
   del envío.
@@ -424,8 +442,10 @@ bloquea a uno bloquea a todos.
 
 El anexo operativo vive en
 [`reference/higiene-continua.md`](reference/higiene-continua.md) y lleva lo que se
-consulta mientras ejecutas: **la tabla de equivalencias por lenguaje**, **el
-procedimiento de 7 pasos para instalar esto en un repo que no lo tiene**, cómo leer la
+consulta mientras ejecutas: **la receta de 5 pasos para escribir una comprobación de
+clase**, que es la pieza que de verdad encuentra defectos, **el núcleo del trinquete y del informe**, porque los 2 se
+escriben, no se instalan, **la tabla de equivalencias por lenguaje**, **el procedimiento de 7 pasos para instalar esto en un repo que no lo
+tiene**, cómo leer la
 salida de una herramienta sin que te mienta, cómo acotar una medición antes de creerle,
 por qué la unidad accionable no es la que reporta la herramienta, y qué herramientas de
 catálogo NO hacen falta todavía. **Ábrelo al entrar a un repo nuevo**, que es cuando los

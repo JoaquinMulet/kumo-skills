@@ -32,7 +32,13 @@ mal, no que el código esté podrido.** Cuando la cifra cae de 15 hallazgos a 4 
 la configuración, esos 11 eran ruido que habría costado una tarde.
 
 Causa concreta que conviene tener a mano: **un BOM al inicio de un archivo de
-configuración.** El programa principal lo tolera y la siguiente herramienta falla al
+configuración.** Un BOM (marca de orden de bytes) son tres bytes invisibles
+(`EF BB BF`) que algunos editores de Windows escriben al principio de un archivo
+de texto. No se ven al abrirlo y aparecen como un carácter basura delante de la
+primera llave cuando otro programa intenta leerlo. Se detecta y se quita leyendo el archivo
+como bytes y comparando los tres primeros con `EF BB BF`; si están, se reescribe el
+archivo sin ellos. Los editores suelen ofrecerlo como «guardar sin BOM», y en Windows el
+culpable habitual es `Out-File`, que lo antepone por defecto. El programa principal lo tolera y la siguiente herramienta falla al
 leerlo. Un BOM no rompe nada visible, rompe al próximo programa que lea el archivo.
 
 ## La unidad accionable no siempre es la que reporta la herramienta
@@ -41,8 +47,9 @@ Los detectores de clones reportan **parejas**. La unidad sobre la que uno actúa
 **familia**, o sea todos los sitios que comparten el mismo fragmento. Cuatro copias
 producen seis parejas y se leen como seis problemas distintos.
 
-El informe agrupa las parejas en familias, ordena por `(sitios - 1) x líneas`, que es lo
-que de verdad se ahorra, e **imprime el fragmento compartido**, para no tener que abrir
+El informe agrupa las parejas en familias, ordena por `(sitios - 1) x líneas`. Esa resta
+es lo que de verdad se ahorra: de N copias sobrevive una, la del ayudante, así que
+lo que desaparece son las otras N menos 1, e **imprime el fragmento compartido**, para no tener que abrir
 cuatro archivos y adivinar de qué se trata.
 
 Regla general más allá de los clones: **antes de mostrar la salida de una herramienta,
@@ -74,6 +81,101 @@ El trinquete es agnóstico por construcción: cada métrica es una función que 
 carpeta y devuelve un número donde menos es mejor. Agregar un lenguaje es agregar una
 entrada a esa lista.
 
+## Cómo se escribe una comprobación de clase
+
+Es el paso que encuentra defectos de verdad, así que va con receta y no con consejo.
+
+**Cuándo se escribe.** Justo después de arreglar un defecto, mientras todavía sabes qué
+lo hacía posible. No antes, porque no sabrías qué buscar, y no mucho después, porque se
+te olvida el patrón exacto.
+
+**Los cinco pasos.**
+
+1. **Nombra el patrón en una frase que hable del CÓDIGO, no del síntoma.** «El informe
+   salía incompleto» no sirve. «Se arma el texto a partir de la lista sin paginar»
+   sí sirve, porque se puede buscar.
+2. **Escribe una prueba normal** en la suite del proyecto. No necesita herramienta nueva:
+   lee los archivos fuente con las funciones de archivo del lenguaje, recorre cada línea
+   y busca el patrón.
+3. **Falla con la lista de sitios culpables, y con el remedio adentro del mensaje.** Un
+   fallo que dice «hay 3 problemas» obliga a investigar; uno que dice «estos 3 archivos y
+   líneas, usa X en su lugar» se arregla al toque. **Y prueba que ese remedio pase el
+   guardia**, porque un mensaje que enseña una salida que también se rechaza cuesta
+   varios intentos a quien lo lee.
+4. **Escribe la prueba de que la prueba puede fallar**, en la misma tanda. Corre el
+   detector sobre un caso bueno y uno malo escritos a mano, y verifica que distinga. Tiene
+   que correr sobre **la misma función** que usa la comprobación, no sobre una copia del
+   patrón, o estarás probando una copia sana mientras la real está rota.
+5. **Mete el defecto a propósito en el repo, confirma el rojo, y revierte.** Los pasos 4
+   y 5 no se sustituyen entre sí: el 4 prueba el detector, el 5 prueba que está enchufado.
+
+**Qué esperar.** La primera vez que corre suele encontrar más sitios de los que
+arreglaste, porque el patrón se copió entre archivos sin que nadie lo decidiera. Eso es
+lo que la hace rentable. Si encuentra exactamente uno, revisa que de verdad esté
+recorriendo todos los archivos.
+
+**Su límite, que hay que respetar.** Lee texto, no ejecuta nada, así que no ve lo que solo
+existe en tiempo de ejecución y se puede burlar con una variable intermedia. No es una
+valla contra un adversario, es una red contra la repetición distraída, que es de donde
+sale la mayoría de estos defectos.
+
+## El trinquete y el informe no existen todavía: los escribes tú
+
+Los dos son scripts propios de unas 100 líneas, no herramientas que se instalen. Nadie
+publica un trinquete que sirva, porque las métricas y los comandos cambian con cada
+proyecto. Acá va el núcleo de cada uno, que es la parte que cuesta pensar; el resto es
+imprimir.
+
+### El núcleo del trinquete
+
+Una métrica es un nombre y una función que recibe una carpeta y devuelve un número donde
+menos es mejor. Nada más.
+
+    METRICAS = [
+      { nombre: 'funciones muy complejas', medir: (dir) => contar(...) },
+      { nombre: 'codigo duplicado',        medir: (dir) => porcentaje(...) },
+    ]
+
+El bucle completo es este, y lo único delicado son los dos comentarios.
+
+    base = git merge-base <rama-por-defecto> HEAD
+    dir  = crear un arbol de trabajo temporal en ese commit
+    copiar al dir los archivos de CONFIGURACION del arbol actual
+      // porque si el arbol viejo midiera con su propia configuracion
+      // serian 2 varas distintas, y estrenar una regla se leeria como
+      // que el codigo empeoro
+    para cada metrica:
+      ahora = medir(arbol de trabajo)
+      antes = medir(dir)
+      si ahora > antes -> ROJO
+    borrar el arbol temporal
+      // en un finally, o cada corrida deja basura en el disco
+
+Tres cosas que hay que respetar o el trinquete miente.
+
+- **La configuración sale siempre del árbol actual**, nunca del viejo.
+- **Un fallo de lectura mata el portón**, nunca devuelve cero. Un cero se lee como
+  «limpio» y es la conclusión contraria.
+- **La línea base no se guarda en ningún archivo.** Si existiera un número editable, el
+  mantenedor lo sube en el mismo commit que lo rompe.
+
+### El núcleo del informe de oportunidades
+
+El informe no decide nada, así que puede ser tosco. Corre los instrumentos, agrupa y
+ordena.
+
+    1. correr el detector de clones pidiendo su salida en formato de datos
+    2. agrupar las PAREJAS en FAMILIAS
+         (une A-B y B-C en {A,B,C}; cualquier union-find o un mapa de conjuntos sirve)
+    3. ordenar por (sitios - 1) x lineas, que es lo que de verdad se ahorra
+    4. imprimir, por familia, el ahorro, cada ruta con su linea, y el
+       FRAGMENTO compartido, para no tener que abrir 4 archivos y adivinar
+    5. debajo, la lista de funciones sobre el umbral de complejidad y la de
+       declaraciones sin usar, cada una con ruta y linea
+
+Y cerrar con una frase que diga que es una lista y no una orden. Un informe que se lee
+como mandato se termina apagando.
+
 ## Cómo se instala esto en un repo que no lo tiene, en orden
 
 1. **Inventaria los lenguajes reales**, contando archivos, no leyendo el README.
@@ -81,11 +183,14 @@ entrada a esa lista.
    confirmar que existe y funciona.
 3. **Acota antes de creerle a la primera cifra.** Excluye datos capturados, artefactos y
    dependencias, y declara los puntos de entrada que nadie importa.
-4. **Enciende el trinquete** con esas métricas. No exige limpiar nada, solo no empeorar.
+4. **Escribe y enciende el trinquete** con esas métricas (su núcleo está en la sección
+   anterior; son unas 100 líneas y no hay nada que instalar). No exige limpiar nada, solo
+   no empeorar.
 5. **Escribe la primera comprobación de clase a partir del último fallo real** que tuvo el
    proyecto. Esta es la que va a encontrar algo.
 6. **Prueba cada portón rompiéndolo** y revierte.
-7. **Recién ahí mira el informe de oportunidades** y arregla, de a un commit por hallazgo.
+7. **Recién ahí escribe el informe de oportunidades y míralo** (su núcleo también está
+   arriba), y arregla de a un commit por hallazgo.
 
 El paso 5 es el que se salta todo el mundo, y es el único que atrapa defectos de
 comportamiento.
