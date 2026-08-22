@@ -233,6 +233,73 @@ cuando le pides algo que calza con una, la carga completa y la sigue (ver
 , incluidos los errores que cada skill pagó por separado, vive en
 [`desarrollo-riguroso/reference/esqueleto-de-verificacion.md`](desarrollo-riguroso/reference/esqueleto-de-verificacion.md).
 
+## Los hooks. La mitad que hace cumplir lo que las skills dicen
+
+Una skill es texto, y el texto lo aplica quien se acuerda de leerlo. Este repo trae ademas
+los **disparadores** que convierten 2 de sus reglas en algo que ocurre solo, y sin ellos
+esas 2 reglas quedan a merced de que el modelo decida aplicarlas.
+
+Viven en [`hooks/`](hooks/) y se instalan con un comando.
+
+```bash
+node hooks/instalar.mjs
+```
+
+El instalador mezcla los hooks en tu `~/.claude/settings.json` **sin pisar lo que ya
+tengas**, deja un respaldo antes de tocar nada, y usa las rutas de TU clon para que
+funcione desde donde lo hayas puesto. `--listar` dice que haria sin escribir, y `--quitar`
+los saca.
+
+| Hook | Cuando corre | Que hace |
+|---|---|---|
+| `recordar-estandar.mjs` | al abrir la sesion | Inyecta el contrato de lectura de `desarrollo-riguroso` antes de que el agente toque nada. No bloquea, porque `SessionStart` no puede. |
+| `exigir-higiene.mjs` | antes de cada `git commit` o `git push` | **Niega** la herramienta si el repo no tiene su aparato de higiene instalado. |
+
+### Por que el segundo bloquea, y como se sale de el
+
+La skill `desarrollo-riguroso` dice de si misma que **nada existe hasta que algo lo
+dispara**. Su seccion de higiene son 7 pasos que hay que aplicar en cada repo, y escribirlos
+mas grande no hace que se apliquen. El hook los vuelve obligatorios en el unico momento que
+importa, cuando vas a registrar o publicar un cambio.
+
+Lo que mide es concreto. que el repo tenga una carpeta de hooks **versionada** con un
+`pre-commit` adentro, activada con `git config core.hooksPath <carpeta>`. Si no la tiene, el
+commit no ocurre y el mensaje dice que leer y que hacer.
+
+Un guardia sin salida explicita no protege, bloquea. Hay 2 salidas.
+
+- Un archivo `.kumo-sin-higiene` en la raiz del repo **con la razon escrita adentro**. Vacio
+  no sirve, porque la razon es el punto. Esta es la buena, porque deja la decision en el
+  repo y con nombre.
+- La variable `KUMO_SIN_HIGIENE=1` para una vez, sin dejar rastro.
+
+El hook se prueba solo, en las 2 direcciones, que es lo unico que lo hace valer.
+
+```bash
+node hooks/probar-exigir-higiene.mjs
+```
+
+Son 9 casos. que bloquee el commit y el push en un repo sin higiene, que NO estorbe cuando
+la higiene esta, cuando el comando no es un commit, cuando la herramienta no es Bash, cuando
+la carpeta no es un repo, y que las 2 salidas de emergencia funcionen, incluida la de que
+una excusa vacia no sirve.
+
+### El contrato de lectura
+
+La otra regla que los hooks hacen cumplir es que `desarrollo-riguroso` **se lee completa**.
+
+Su declaracion vive en la `description` del frontmatter, no en el cuerpo, y la razon
+importa. La `description` es lo unico que llega entero y sin truncar antes de que el modelo
+decida nada. Ahi dice que el archivo termina con el marcador `FIN-DESARROLLO-RIGUROSO`, asi
+que si el agente no lo vio, su lectura quedo cortada y tiene que seguir leyendo con `Read`
+antes de actuar.
+
+Media skill es peor que ninguna, porque da la sensacion de haberla consultado.
+
+Y el contrato no es una promesa. `scripts/centinelas.py` comprueba que la declaracion y el
+marcador existan los 2, y corre en el `pre-commit` de este repo. Si alguien borra uno, el
+commit se bloquea.
+
 ## Instalación
 
 Las skills se instalan **distinto en cada superficie de Claude**, y no se sincronizan automáticamente entre ellas. Si usas Claude en varios lugares, hay que instalar en cada uno.

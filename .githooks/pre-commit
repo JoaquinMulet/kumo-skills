@@ -30,6 +30,22 @@ fi
 # se reescribe la redaccion cambia y el parche se va SIN QUE NADIE LO NOTE,
 # porque el resultado sigue leyendose bien. El hueco no deja hueco visible.
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Los hooks de este repo se prueban en cada commit.
+#
+# Son la mitad que HACE CUMPLIR lo que las skills dicen, asi que un hook
+# roto es peor que no tenerlo. La prueba corre en las 2 direcciones, que
+# bloquee cuando debe y que no estorbe cuando no, porque un porton que
+# bloquea de mas se termina apagando y ahi se pierde entero.
+# ---------------------------------------------------------------------------
+if command -v node >/dev/null 2>&1; then
+  node hooks/probar-exigir-higiene.mjs || {
+    echo "" >&2
+    echo "Commit BLOQUEADO. el porton de higiene no se comporta como dice su documentacion." >&2
+    exit 1
+  }
+fi
+
 PYC=$(command -v python3 || command -v python)
 if [ -n "$PYC" ]; then
   "$PYC" scripts/centinelas.py || {

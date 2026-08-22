@@ -1,6 +1,6 @@
 ---
 name: desarrollo-riguroso
-description: El estándar de desarrollo de software de Kumo — la forma rigurosa de escribir, testear y corregir código en CUALQUIER proyecto de la empresa, independiente del stack o el dominio. Aplica TDD, verificación contra datos reales, prevención sistémica de bugs, observabilidad y honestidad. Usa esta skill al partir un proyecto nuevo, al sembrar o revisar su CLAUDE.md, al escribir o corregir código, al diseñar el flujo de testing, o cuando el usuario menciona cómo desarrollar, disciplina o estándar de desarrollo, TDD, test-first, arreglar un bug, calidad de código, o cómo hacer las cosas bien. También aplica en frases como "cómo lo desarrollamos", "cuál es nuestro estándar", "haz esto con rigor", "escribe el test primero", "test-driven", o equivalentes en cualquier idioma.
+description: El estándar de desarrollo de software de Kumo, la forma rigurosa de escribir, testear y corregir código en CUALQUIER proyecto de la empresa, independiente del stack o el dominio. Aplica TDD, verificación contra datos reales, prevención sistémica de bugs, observabilidad y honestidad. Usa esta skill al partir un proyecto nuevo, al sembrar o revisar su CLAUDE.md, al escribir o corregir código, al diseñar el flujo de testing, o cuando el usuario menciona cómo desarrollar, disciplina o estándar de desarrollo, TDD, test-first, arreglar un bug, calidad de código, o cómo hacer las cosas bien. También aplica en frases como "cómo lo desarrollamos", "cuál es nuestro estándar", "haz esto con rigor", "escribe el test primero", "test-driven", o equivalentes en cualquier idioma. USO OBLIGATORIO. Se lee COMPLETA, termina en el marcador FIN-DESARROLLO-RIGUROSO, y si no lo viste sigue leyendo con Read antes de actuar. Su sección «Higiene continua del repo» se aplica siempre.
 ---
 
 # Desarrollo riguroso. El estándar de Kumo
@@ -8,7 +8,6 @@ description: El estándar de desarrollo de software de Kumo — la forma riguros
 Kumo desarrolla proyectos de todo tipo (ERPs, integraciones, herramientas, servicios). Esta skill es lo que **NO cambia entre proyectos**: la forma de desarrollar. Lo que SÍ cambia, stack, comandos, invariantes de dominio, cuál es el "oráculo de verdad", vive en el `CLAUDE.md` de cada proyecto, que se **siembra** desde estos principios y se **endurece** con la skill `retrospectiva-de-sesion` tras cada sesión de código.
 
 Los ejemplos marcados *(ej. …)* vienen de proyectos reales. Son ilustración, no la norma.
-
 ## Principio rector: un test verde puede validar código incorrecto
 
 Un test que pasa NO prueba que el código esté bien, prueba que el código hace lo que el test dice, que puede ser lo incorrecto. El TDD te da correctitud contra los ejemplos que **imaginaste**. Los datos reales te dan correctitud contra los que **no**. Por eso todo lo demás gira alrededor de una postura: **no des nada por bueno hasta confrontarlo con la realidad** (datos reales, la implementación de referencia, el comportamiento observable). *(ej. un detector pasó 2 tests sintéticos y produjo 16 falsos positivos contra datos de producción.)*
@@ -497,3 +496,4 @@ Sin este hook (u otro disparador equivalente), el reflejo 2 corre como **deuda d
 **Señal inequívoca de que la paranoia falló. El usuario encontró el problema, o tuvo que pedir el aprendizaje («¿qué aprendimos?», «¿cómo compoundeamos esto?»). Cada vez que pase, el hallazgo N.º 1 de la cosecha es por qué el reflejo no disparó. *(Caso real: en la MISMA sesión en que se endureció todo este aparato, una corrección del usuario se arregló como bug puntual y el principio quedó sin escribir hasta que el usuario lo exigió, el aparato existía. El reflejo que lo dispara es lo que faltaba.)*
 
 Y "acá" significa **el repo `kumo-skills`**, no la copia instalada en `~/.claude/skills/`: la mecánica completa de editar una skill (diff previo, merge del drift, gate, resync, push) vive en el `CLAUDE.md` de ese repo, sección «Cuando Claude edite una skill INSTALADA». Este archivo que estás leyendo puede SER una copia instalada, edítalo en el repo y re-distribuye.
+<!-- FIN-DESARROLLO-RIGUROSO -->

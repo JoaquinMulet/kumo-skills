@@ -28,6 +28,14 @@ RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # archivo -> { nombre del arreglo: patron de la idea minima }
 CENTINELAS = {
     "desarrollo-riguroso/SKILL.md": {
+        # El contrato de lectura. La declaracion vive en la description,
+        # que es lo unico que llega sin truncar, y el marcador cierra el
+        # archivo. Si falta uno de los 2, el contrato promete algo que no
+        # se puede comprobar, que es peor que no prometerlo.
+        "la description obliga a leerla completa": r"Se lee COMPLETA",
+        "la description nombra el marcador": r"termina en el marcador\s+FIN-DESARROLLO-RIGUROSO",
+        "la description obliga la higiene": r"Higiene continua del repo. se aplica siempre",
+        "el marcador de cierre existe": r"<!-- FIN-DESARROLLO-RIGUROSO -->",
         # De doc-cadena-causal. la analogia del queso no se armaba.
         "que es una lamina": r"La lámina es la capa que revisa",
         "que es un agujero": r"agujeros son los casos que esa capa no mira",
