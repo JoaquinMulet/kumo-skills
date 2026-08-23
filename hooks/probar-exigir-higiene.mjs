@@ -108,6 +108,42 @@ caso('carpeta que no es un repo', 'pasa', (reg) => {
   return correr({ tool_name: 'Bash', cwd: dir, tool_input: { command: 'git commit -m "x"' } })
 })
 
+// --- El repo que se juzga es el del COMANDO, no el de la sesion --------
+//
+// Los 4 casos siguientes vienen de 2 defectos reales del 22 de agosto de
+// 2026. El porton bloqueo un commit en un repositorio que SI tenia el
+// aparato, porque el directorio de la sesion habia quedado dentro de un
+// clon anidado y el comando empezaba con `cd "<el repo bueno>"`. Y al
+// escribir estos casos aparecio el hermano mudo. la expresion que decide
+// si un comando es un commit no reconocia `git -C <ruta> commit`, asi que
+// esa forma nunca disparaba el guardia.
+const conAparato = repoNuevo({ conHooks: true })
+const sinAparato = repoNuevo({ conHooks: false })
+try {
+  // 10. La sesion esta en un repo sin aparato y el comando entra a uno que
+  //     si lo tiene. Este es el falso positivo que me bloqueo a mi.
+  caso('cd hacia el repo equipado', 'pasa', () =>
+    correr({ tool_name: 'Bash', cwd: sinAparato, tool_input: { command: `cd '${conAparato}' && git commit -m "x"` } }))
+
+  // 11. Al reves, y es el lado peligroso porque es mudo. la sesion esta en
+  //     un repo equipado y el comando commitea en otro que no lo esta.
+  caso('cd hacia el repo SIN aparato', 'deny', () =>
+    correr({ tool_name: 'Bash', cwd: conAparato, tool_input: { command: `cd '${sinAparato}' && git commit -m "x"` } }))
+
+  // 12. La forma explicita de git para elegir directorio.
+  caso('git -C hacia el repo sin aparato', 'deny', () =>
+    correr({ tool_name: 'Bash', cwd: conAparato, tool_input: { command: `git -C '${sinAparato}' commit -m "x"` } }))
+
+  // 13. Y la expresion ensanchada no puede meterse donde no la llaman. Si
+  //     esto se pone rojo, el guardia empezo a molestar en comandos de
+  //     lectura, y un guardia que molesta se apaga.
+  caso('git log --grep commit', 'pasa', () =>
+    correr({ tool_name: 'Bash', cwd: sinAparato, tool_input: { command: 'git log --grep commit' } }))
+} finally {
+  rmSync(conAparato, { recursive: true, force: true })
+  rmSync(sinAparato, { recursive: true, force: true })
+}
+
 let fallos = 0
 for (const c of casos) {
   if (!c.ok) fallos++

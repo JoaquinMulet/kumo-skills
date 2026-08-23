@@ -73,13 +73,57 @@ try {
 if (evento.tool_name !== 'Bash') pasar()
 
 const comando = String(evento.tool_input?.command ?? '')
-// Solo los 2 momentos donde la higiene importa. Al registrar el cambio y
-// al publicarlo. Todo lo demas pasa sin ruido.
-if (!/\bgit\s+(commit|push)\b/.test(comando)) pasar()
+
+/**
+ * Los 2 momentos donde la higiene importa. Al registrar el cambio y al
+ * publicarlo. Todo lo demas pasa sin ruido.
+ *
+ * Acepta las banderas GLOBALES que pueden ir entre `git` y su
+ * subcomando, porque la version corta `git\s+(commit|push)` dejaba pasar
+ * `git -C <ruta> commit` sin siquiera mirarlo. Era un paso libre y nadie
+ * lo habia notado, justamente porque un guardia que no se dispara no
+ * hace ruido. Lo encontre el 22 de agosto de 2026 escribiendo la prueba
+ * de los 4 casos.
+ *
+ * No lleva un `.*` suelto a proposito. eso haria que `git log --grep
+ * commit` disparara el guardia, y un guardia que se mete donde no lo
+ * llaman se termina apagando.
+ */
+const ES_COMMIT_O_PUSH = /\bgit\s+(?:(?:-[A-Za-z]\s*|--[a-z-]+[= ])(?:"[^"]*"|'[^']*'|[^\s;&|]+)\s+|--[a-z-]+\s+)*(commit|push)\b/
+if (!ES_COMMIT_O_PUSH.test(comando)) pasar()
 
 if (process.env.KUMO_SIN_HIGIENE === '1') pasar()
 
-const cwd = evento.cwd || process.cwd()
+/**
+ * EL DIRECTORIO QUE SE JUZGA SALE DEL COMANDO, NO DE LA SESION.
+ *
+ * El 22 de agosto de 2026 este porton bloqueo un commit en un repositorio
+ * que SI tenia el aparato instalado. La causa. el directorio de la sesion
+ * habia quedado dentro de un clon de solo lectura anidado, y el comando
+ * empezaba con `cd "<el repo de verdad>" && git commit`. El porton miro
+ * el clon, no vio aparato, y nego.
+ *
+ * El falso positivo es la mitad visible. La otra mitad es peor y es muda.
+ * con la sesion parada en un repo equipado y un comando que commitea
+ * dentro de otro sin equipar, el porton DEJA PASAR. Un guardia que juzga
+ * un objeto distinto del que la accion toca falla en las 2 direcciones, y
+ * solo se nota en una.
+ *
+ * Regla general. lo que un guardia mide tiene que ser el MISMO objeto que
+ * la accion modifica, y se resuelve desde la accion.
+ */
+function directorioDelComando(texto, porDefecto) {
+  // `git -C <ruta>` es la forma explicita de git y manda sobre todo.
+  const conC = /\bgit\s+-C\s+("([^"]+)"|'([^']+)'|(\S+))/.exec(texto)
+  if (conC) return conC[2] ?? conC[3] ?? conC[4]
+  // Un `cd <ruta>` al principio de la cadena. Solo al principio, porque
+  // uno en medio puede estar dentro de un subshell o de otra rama.
+  const conCd = /^\s*cd\s+("([^"]+)"|'([^']+)'|([^\s;&|]+))/.exec(texto)
+  if (conCd) return conCd[2] ?? conCd[3] ?? conCd[4]
+  return porDefecto
+}
+
+const cwd = directorioDelComando(comando, evento.cwd || process.cwd())
 const raiz = git(['rev-parse', '--show-toplevel'], cwd)
 if (!raiz) pasar()
 
