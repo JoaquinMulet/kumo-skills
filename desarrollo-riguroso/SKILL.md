@@ -371,23 +371,22 @@ de cada una es justo el momento en que alguien se equivoca.
 
 ### Verde no significa limpio, y es el error más caro de esta sección
 
-Tres formas distintas del mismo engaño, las tres medidas en un solo día.
+Cuatro formas distintas del mismo engaño, medidas en carne propia.
 
 - **El código de salida de un trabajo dice si la herramienta CORRIÓ, no si encontró algo.**
-  Un análisis de seguridad terminó en verde con 30 alertas abiertas, seis de severidad
-  alta. Reportarlo como «pasó» fue falso en sustancia aunque cierto en estado. Lo que se
-  lee es el **conteo de hallazgos**, no el estado del trabajo.
+  Un análisis de seguridad terminó en verde con 30 alertas abiertas, seis de severidad alta.
+  Reportarlo como «pasó» fue falso en sustancia. Se lee el **conteo de hallazgos**, no el estado.
 - **Un control puede no estar mirando el cambio.** Dos de las cinco comprobaciones verdes
   de cada propuesta apuntaban a la instancia **ya desplegada**, no al código propuesto, así
   que pasaban con cualquier contenido. Antes de contar una capa, verifica **contra qué
   artefacto corre**.
 - **Una función puede estar a medio encender.** El archivo de actualizaciones automáticas
-  generaba propuestas mientras las **alertas** de esa misma función estaban apagadas en la
-  configuración del repositorio. Escribir el archivo no es habilitar la función. Se
-  comprueba **pidiéndole su resultado por su interfaz**, y ahí la API contestó «están
-  deshabilitadas para este repositorio» con el archivo perfecto y versionado.
+  generaba propuestas con las **alertas** de esa función apagadas en el repositorio. Escribir
+  el archivo no es habilitar la función. Se comprueba **pidiéndole su resultado por su interfaz**.
+- **Un push que termina en 0 no es una CI verde.** El push dice que el commit LLEGÓ, no
+  que el remoto lo aprobó. El veredicto se lee en la CI, después. Detalle y caso en el anexo.
 
-Las tres se engloban en una regla. **Prueba el efecto, no la presencia.**
+Las cuatro se engloban en una regla. **Prueba el efecto, no la presencia.**
 
 ### Qué corre en cada etapa, y por qué la duración NO decide
 
@@ -409,7 +408,10 @@ desplegar. Todo lo demás corre lo antes posible y corre COMPLETO.
 - **Antes de cada envío**, todo lo anterior más lo que necesita red. Verificación contra
   los servicios reales y el trinquete. Esta etapa corre **exactamente lo que corre la
   integración continua**, sin recortes. Si tu portón local corre **menos** que ella, tu
-  verde es de otro color. Abre su archivo de configuración y compara comando por comando.
+  verde es de otro color. La paridad se vigila con una **comprobación de clase** que lee la
+  CI con su parser real y falla si un comando de ella no está en un hook (ver el anexo).
+- **Después de empujar y antes de desplegar**, la conclusión de la CI remota del commit,
+  como paso previo del deploy que se niega si está roja. No es un recordatorio (anexo).
 - **Después de desplegar**, lo que solo existe desplegado. Protocolo y cliente real contra
   la instancia viva. Una pieza que ES un borde solo se prueba cruzándolo.
 - **Programado**, lo que depende del mundo y no del código. Vulnerabilidades publicadas
@@ -419,7 +421,6 @@ desplegar. Todo lo demás corre lo antes posible y corre COMPLETO.
 Si un portón se vuelve tan lento que estorba, la respuesta es **hacerlo más rápido**
 (caché, paralelismo, incremental), nunca ejecutar menos. Recortar la cobertura para ganar
 minutos es cambiar una molestia visible por un riesgo invisible.
-
 
 ### Reglas de commit que se siguen de todo esto
 
@@ -443,7 +444,6 @@ Introduce a propósito el defecto que el portón existe para atrapar, confirma q
 rojo y que sale con código distinto de cero, y **después** revierte. Vale para el
 trinquete, para cada comprobación de clase y para cada regla nueva. Una prueba que no puede
 fallar da confianza falsa, y es peor que no tenerla.
-
 
 ### Cuando el portón te bloquea por deuda que no es tuya
 

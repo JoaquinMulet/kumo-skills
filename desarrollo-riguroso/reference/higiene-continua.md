@@ -245,3 +245,41 @@ El criterio para adoptar una de ellas es una pregunta concreta, no el prestigio 
 herramienta: **¿hay hoy alguien que no encuentra el código que necesita?** Si la respuesta
 es no, es infraestructura que hay que mantener sin nadie que la use. El día que sean varios
 repos y varias personas, primero el buscador y mucho después el portal.
+
+## Después de empujar: la CI remota se lee, y el hook corre lo mismo que ella
+
+El código de salida del push dice que el commit LLEGÓ al remoto, no que
+el remoto lo aprobó. El veredicto vive en los flujos de la integración
+continua, que arrancan después del push y ven cosas que el portón local
+no puede ver, como una vulnerabilidad publicada esa misma mañana.
+
+**El caso, 2 de septiembre de 2026, en mcp-cmf-chile.** Se aceptaron 2 PR
+de dependabot, se empujaron 2 commits, se desplegó, y todo se declaró
+terminado. Los 3 flujos de Seguridad estaban en rojo en GitHub porque
+`npm audit` encontró una alerta nueva en una dependencia transitiva. Lo
+vio el dueño en su correo, no el aparato. Y había un segundo hueco
+alineado con el primero: el pre-push corría un comando MENOS que la CI,
+justo `npm audit`. La regla de paridad entre hook y CI ya existía, y se
+había arreglado solo en su caso de origen.
+
+Lo que queda instalado, y que cualquier repo con CI copia.
+
+1. **Un portón antes del deploy que lee la CI del commit exacto.** Un
+   script que comprueba que el commit está en el remoto, espera a que
+   todos sus flujos terminen avisando el progreso por stderr para que la
+   espera no parezca un cuelgue, y falla si alguno terminó distinto de
+   success o si no pudo consultar. Se conecta como `predeploy`, así que
+   `npm run deploy` se niega solo. Se prueba en las 3 direcciones antes
+   de confiarle nada: un commit rojo, uno verde y uno sin empujar.
+2. **La paridad hook contra CI como comprobación de clase en la suite.**
+   Lee los archivos de la CI con el parser YAML real, extrae cada `run`,
+   y falla si alguno no aparece en ningún hook ni en ningún script del
+   `package.json`. La lista de exclusiones es corta y cada exclusión
+   lleva su razón escrita. Con el hook viejo se puso roja por las 2
+   razones exactas antes de aplicar el arreglo, y eso es lo que la
+   acredita.
+3. **La regla de conducta que no se mecaniza.** Después de aceptar un PR
+   o de empujar, el trabajo no está terminado hasta leer la conclusión
+   de esos flujos, con `gh run list --commit <sha>`. El veredicto se lee
+   del campo `conclusion`, nunca del texto ni del código de salida de
+   una tubería.

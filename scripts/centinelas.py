@@ -49,10 +49,12 @@ CENTINELAS = {
         # La regla del dueno del 21 de agosto de 2026.
         "la duracion no decide": r"duración NO decide",
         "hacerlo mas rapido, no mas corto": r"hacerlo más rápido",
-        # Verde no es limpio, las 3 formas.
+        # Verde no es limpio, las 4 formas.
         "el estado no es el veredicto": r"dice si la herramienta CORRIÓ, no si encontró algo",
         "un control que mira otro artefacto": r"verifica \*\*contra qué\s+artefacto corre\*\*",
         "una funcion a medio encender": r"Escribir el archivo no es habilitar la",
+        "un push en 0 no es una CI verde": r"push que termina en 0 no es una CI verde",
+        "la CI remota se lee antes de desplegar": r"Después de empujar y antes de desplegar",
         # El trinquete computado.
         "la linea base se computa": r"no es un\s+trinquete, es un comentario",
         "la misma vara": r"MISMA vara",
@@ -91,7 +93,13 @@ def main():
         if not os.path.exists(ruta):
             faltan.append(f"{rel}: EL ARCHIVO NO EXISTE")
             continue
-        texto = io.open(ruta, encoding="utf-8").read()
+        # Los espacios se normalizan ANTES de buscar. El texto se reajusta
+        # a 90 columnas en cada edicion, asi que una frase puede partirse
+        # en otro lugar sin cambiar de idea. Sin esto, mover un salto de
+        # linea se leia como una idea perdida (paso el 2 de septiembre de
+        # 2026 con «Escribir el archivo no es habilitar la»), y un control
+        # con falsos positivos se termina ignorando entero.
+        texto = " ".join(io.open(ruta, encoding="utf-8").read().split())
         for nombre, patron in mapa.items():
             total += 1
             if re.search(patron, texto) is None:
