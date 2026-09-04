@@ -173,10 +173,15 @@ El bucle completo es este, y lo único delicado son los dos comentarios.
     borrar el arbol temporal
       // en un finally, o cada corrida deja basura en el disco
 
-La rama por defecto del remoto se resuelve sola con
-`git symbolic-ref --short refs/remotes/origin/HEAD`, y si eso falla porque nadie la fijó,
-`git remote set-head origin --auto` la deja apuntando bien. Nunca la escribas a mano, un
-`origin/main` clavado revienta en silencio en un repo cuya rama es `master`.
+La rama base se resuelve sola y nunca se escribe a mano, porque un `origin/main` clavado
+revienta en silencio en un repo cuya rama es `master`. Primero el upstream de la rama
+actual, `git rev-parse --abbrev-ref @{upstream}`, y solo si no existe,
+`git symbolic-ref --short refs/remotes/origin/HEAD`. El orden importa: **el HEAD del
+remoto puede no ser el trunk.** En aerostratus-web, `git ls-remote --symref origin HEAD`
+apunta a una rama `main` vieja mientras el trunk que se despliega es `master`; con
+`origin/HEAD` la base habría sido otra rama, y `git remote set-head origin --auto` falla
+si esa rama nunca se trajo. Cuando pase, déjalo escrito en el `CLAUDE.md`, porque también
+desvía los PR de GitHub.
 
 Tres cosas que hay que respetar o el trinquete miente.
 
@@ -185,6 +190,20 @@ Tres cosas que hay que respetar o el trinquete miente.
   «limpio» y es la conclusión contraria.
 - **La línea base no se guarda en ningún archivo.** Si existiera un número editable, el
   mantenedor lo sube en el mismo commit que lo rompe.
+
+Y dos trampas del árbol temporal, pagadas el 4 de septiembre de 2026 en aerostratus-web.
+
+- **Dentro de un hook, quita las variables `GIT_*` antes de llamar a git.** El hook corre
+  con `GIT_DIR`, `GIT_INDEX_FILE` y `GIT_WORK_TREE` exportadas, el `git worktree add` hijo
+  las hereda, intenta usar el índice del repo padre y muere con «Unable to create
+  .../.git/index.lock». Fuera del hook el mismo script funciona, así que la prueba de
+  romper el portón se hace **commiteando**, no corriendo el script a mano.
+- **El árbol temporal no tiene `node_modules`.** Un `npx herramienta` con ese directorio
+  como cwd devuelve vacío o intenta descargarla por red. Los instrumentos se invocan por
+  su archivo dentro del `node_modules` del repo principal
+  (`node <repo>/node_modules/<paquete>/bin/<binario>`), con el árbol temporal solo como
+  cwd. Y **jamás se enlaza `node_modules` dentro del árbol temporal**: borrar el árbol
+  sigue el enlace y vacía el real (pasó el 2026-08-21).
 
 ### El núcleo del informe de oportunidades
 
