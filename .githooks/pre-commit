@@ -63,10 +63,13 @@ fi
 # encontro un humano mirando, tres veces. La ultima: cinco lecciones sustantivas vivian
 # solo en la copia instalada de desarrollo-riguroso y un commit ciego las habria pisado.
 #
-# La comparacion es contra HEAD, no contra el working tree: si la instalada coincide con
-# el ultimo commit, no tiene ediciones locales y el cambio que estas commiteando es
-# legitimo. Si difiere de HEAD, alguien edito la copia instalada y ese contenido se
-# perderia -> se bloquea. El punto de partida correcto es la UNION de ambos lados.
+# La comparacion es contra HEAD y contra el INDEX, no contra el working tree. Si la
+# instalada coincide con el ultimo commit, no tiene ediciones locales y el cambio que
+# estas commiteando es legitimo. Si coincide con lo que estas commiteando (index), sus
+# ediciones YA estan portadas al repo y tampoco se pierde nada (el caso de editar las
+# 2 copias a la vez; antes acusaba drift falso, 2026-09-04). Solo si difiere de las 2,
+# alguien edito la copia instalada y ese contenido se perderia -> se bloquea. El punto
+# de partida correcto es la UNION de ambos lados.
 #
 # Escape hatch (un guard sin salida explicita no protege, bloquea):
 #   KUMO_SKIP_SYNC_CHECK=1 git commit ...
@@ -84,6 +87,9 @@ if [ -z "$KUMO_SKIP_SYNC_CHECK" ] && [ -d "$HOME/.claude/skills" ]; then
       git show "HEAD:$f" > "$raiz_tmp" 2>/dev/null || continue   # archivo nuevo: nada que comparar
       # --strip-trailing-cr: HEAD guarda LF pero con core.autocrlf=true la copia
       # instalada queda CRLF; sin esto, cada archivo identico acusa drift falso.
+      diff -q --strip-trailing-cr "$raiz_tmp" "$inst" >/dev/null 2>&1 && continue
+      # Difiere de HEAD. Si coincide con el index, el contenido ya viaja en este commit.
+      git show ":$f" > "$raiz_tmp" 2>/dev/null || { sucias="$sucias  $f\n"; continue; }
       diff -q --strip-trailing-cr "$raiz_tmp" "$inst" >/dev/null 2>&1 || sucias="$sucias  $f\n"
     done
   done

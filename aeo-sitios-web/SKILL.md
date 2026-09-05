@@ -48,6 +48,19 @@ Cloudflare): puntaje 0-100 en 5 categorías. Se corre ANTES de tocar nada
 4. **OJO Cloudflare**: jamás activar el robots.txt administrado ni el bloqueo
    de AI crawlers del dashboard: inyectan `Disallow` + 403 que contradicen la
    postura declarada.
+5. **OJO dominios .cl en Cloudflare**: el asistente Add a domain se queda con
+   el spinner para siempre, con o sin archivo de zona (visto el 2026-09-04 con
+   aerostratus.cl). En la red, `registrar/domains/batch_check?id=<dominio>`
+   responde 422 porque Cloudflare Registrar no maneja .cl, y el asistente no
+   tolera ese error. Salida: desde la pestaña del panel con la sesión del
+   dueño, `POST /api/v4/zones` (`{name, account:{id}, type:'full'}`), después
+   `POST /zones/<id>/subscription` con `{rate_plan:{id:'free'}}` (sin esto
+   la zona no sale de `initializing` y sus NS devuelven REFUSED), después
+   `POST /zones/<id>/dns_records/import` con el archivo BIND, y abrir
+   `dash.cloudflare.com/<cuenta>/<dominio>` para terminar el asistente. La
+   zona nace sin los ajustes del asistente: fijar `ssl` en `strict` y
+   `always_use_https` en `on`, y comprobar en `bot_management` que
+   `ai_bots_protection` siga `disabled` e `is_robots_txt_managed` en `false`.
 
 **Verificación (política declarada no es control):**
 ```bash
