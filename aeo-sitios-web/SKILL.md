@@ -82,6 +82,25 @@ for UA in ClaudeBot GPTBot PerplexityBot Googlebot; do curl -s -o /dev/null -w "
 4. **Server card MCP** en `/.well-known/mcp/server-card.json` SOLO si el
    nivel 4 existe o va a existir: anunciar un endpoint que da 404 es peor
    que no anunciarlo.
+5. **Índice de skills** en `/.well-known/agent-skills/index.json` (Agent
+   Skills Discovery RFC 0.2.0: `$schema`
+   `https://schemas.agentskills.io/discovery/0.2.0/schema.json`, lista
+   `skills` con `name` en minúsculas y guiones, `type` `skill-md`, `url`
+   absoluta y `digest` `sha256:<hex del archivo>`) con 1 SKILL.md honesta:
+   qué es el negocio, qué recopilar del usuario, y cómo pedir cotización por
+   el canal real, con confirmación humana antes de enviar. Es de las 2 únicas
+   revisiones del bloque API del escáner que un sitio sin API pasa sin
+   mentir. El digest cambia con cada edición de la SKILL.md: dejar un
+   validador que recalcule y compare (aerostratus.cl: `herramientas/agent-skills.mjs`).
+6. **Manifiesto ARD** en `/.well-known/ai-catalog.json` (`specVersion`,
+   `host` con `identifier` `did:web:<dominio>`, `entries` con `identifier`
+   `urn:air:<dominio>:<espacio>:<nombre>`, `type` media type IANA,
+   exactamente 1 de `url` o `data`, y 2 a 5 `representativeQueries`), con
+   CORS `Access-Control-Allow-Origin: *`. Solo recursos que YA existen:
+   llms.txt, la skill, las páginas clave, el sitemap. Es la otra revisión
+   honesta. Medido en aerostratus.cl el 2026-09-05: 40 → 53 con las 2. Las
+   7 restantes (DNS-AID, api-catalog, OAuth, auth.md, MCP, A2A, WebMCP)
+   exigen API o agente propio y se dejan en rojo hasta que exista uno.
 
 ## Nivel 3: Markdown de origen (sin plan Pro)
 
