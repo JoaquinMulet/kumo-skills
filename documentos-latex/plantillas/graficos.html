@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Gráficos del documento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+<style>
+  /* Terminación 10D elegida por el usuario el 28 de octubre de 2026. Los colores y letras viven en TEMA, más abajo,
+     para cambiarlos cuando se elija la línea gráfica del documento. */
+  :root { --fondo-a: #EEF4FB; --fondo-b: #DCE8F5; --tinta: #1B2430; --gris: #5B6573; --gris-claro: #8A94A3;
+          --serif: "Source Serif 4", Georgia, serif; --sans: Inter, sans-serif; --acento: #08519C; --acento-claro: #C6DBEF; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #fff; font-family: var(--sans); padding: 20px; }
+  /* 774,1 px de alto: a 131,25 mm de ancho la imagen mide 240 pt, o sea 16 líneas de la grilla de 15 pt. */
+  .lamina { width: 1200px; height: 774.1px; position: relative; margin-bottom: 20px; overflow: hidden;
+            background: linear-gradient(160deg, var(--fondo-a), var(--fondo-b)); padding: 40px; }
+  .tarjeta { background: #fff; border-radius: 30px; height: 100%; padding: 40px 48px; position: relative; color: var(--tinta);
+             box-shadow: 0 30px 70px rgba(8,48,107,.16), 0 2px 6px rgba(8,48,107,.06); }
+  .titulo { font-family: var(--serif); font-size: 36px; font-weight: 400; line-height: 1.12; letter-spacing: -0.01em; }
+  .sub { font-size: 17px; margin-top: 10px; color: var(--gris); line-height: 1.35; }
+  .grafico { position: absolute; left: 24px; right: 24px; top: 160px; bottom: 56px; }
+  .fuente { position: absolute; left: 48px; right: 48px; bottom: 22px; font-size: 12.5px; color: var(--gris-claro); }
+
+  /* Barra de parte y todo, dibujada en HTML. */
+  .pyt { position: absolute; left: 48px; right: 48px; top: 290px; }
+  .pyt .llave { position: relative; height: 70px; }
+  .pyt .llave .linea { position: absolute; bottom: 8px; left: 0; height: 18px; border: 2px solid var(--acento); border-bottom: none; border-radius: 8px 8px 0 0; }
+  .pyt .llave .texto { position: absolute; bottom: 34px; left: 0; font-size: 17px; color: var(--tinta); }
+  .pyt .llave .texto b { font-family: var(--sans); font-size: 26px; color: var(--acento); margin-right: 6px; }
+  .pyt .barra { display: flex; gap: 3px; height: 120px; }
+  .pyt .seg { height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #fff; font-size: 15px; font-weight: 600; text-align: center; }
+  .pyt .seg span { font-size: 22px; font-weight: 700; margin-top: 2px; }
+  .pyt .seg.gris { background: #C9D3DF; }
+  .pyt .seg:first-child { border-radius: 14px 0 0 14px; } .pyt .seg:last-child { border-radius: 0 14px 14px 0; }
+  .pyt .bajo { display: flex; gap: 3px; margin-top: 12px; }
+  .pyt .bajo div { font-size: 13.5px; color: var(--gris); text-align: center; line-height: 1.3; }
+  .pyt .bajo b { display: block; color: var(--tinta); font-size: 15px; }
+
+  /* Fichas de indicadores. */
+  .fichas { position: absolute; left: 48px; right: 48px; top: 150px; bottom: 60px; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 18px; }
+  .ficha { background: #F5F8FC; border-radius: 22px; padding: 26px 28px; display: flex; flex-direction: column; justify-content: center; }
+  .ficha .rot { font-size: 15px; color: var(--gris); font-weight: 500; }
+  .ficha .val { font-size: 46px; font-weight: 700; letter-spacing: -0.02em; color: var(--tinta); margin-top: 6px; line-height: 1.05; }
+  .ficha .val small { font-size: 22px; font-weight: 600; margin-left: 4px; }
+  .ficha .nota { font-size: 14px; color: var(--acento); font-weight: 600; margin-top: 10px; }
+  .rotulo { display: none; }
+
+  /* Líneas gráficas candidatas. Se eligen con ?linea= en la dirección de la página. */
+  body.linea-banca, body.linea-consultora, body.linea-investigacion { --sans: var(--sans-linea); }
+  .linea-banca .lamina, .linea-consultora .lamina { background: #fff; padding: 30px 40px; }
+  .linea-banca .tarjeta, .linea-consultora .tarjeta { border-radius: 0; box-shadow: none; padding: 26px 0 0 0; }
+  .linea-banca .tarjeta { border-top: 5px solid #08306B; }
+  .linea-consultora .tarjeta { border-top: 1px solid #1B2430; }
+  .linea-banca .rotulo, .linea-consultora .rotulo, .linea-investigacion .rotulo { display: block; font-family: var(--sans); font-size: 14px;
+    font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #2171B5; margin-bottom: 8px; }
+  .linea-banca .titulo { font-family: var(--sans); font-size: 31px; font-weight: 600; color: #08306B; letter-spacing: -0.005em; }
+  .linea-consultora .titulo { font-family: var(--sans); font-size: 31px; font-weight: 600; color: #1B2430; letter-spacing: -0.01em; }
+  .linea-consultora .sub { text-transform: uppercase; font-size: 14px; letter-spacing: .06em; }
+  .linea-banca .fuente, .linea-consultora .fuente, .linea-banca .pyt, .linea-consultora .pyt,
+  .linea-banca .fichas, .linea-consultora .fichas { left: 0; right: 0; }
+  .linea-banca .grafico, .linea-consultora .grafico { left: -10px; right: -10px; }
+  /* Sin fondo ni tarjeta: el gráfico va sobre el blanco de la hoja (pedido de Joaquín, 29 de octubre de
+     2026). Sin margen lateral, para que el título y el eje queden alineados con el borde del texto. */
+  .linea-investigacion .lamina { background: #fff; padding: 0; }
+  .linea-investigacion .tarjeta { border-radius: 0; box-shadow: none; padding: 6px 0 0 0; }
+  .linea-investigacion .grafico { left: 0; right: 0; }
+  .linea-investigacion .fuente, .linea-investigacion .fichas, .linea-investigacion .pyt { left: 0; right: 0; }
+  .linea-investigacion .ficha { background: #fff; border-radius: 0; border-top: 2px solid #08519C; padding: 18px 4px 0 0; justify-content: flex-start; }
+  .linea-investigacion .rotulo { color: #5B6573; }
+  .linea-investigacion .titulo { font-size: 33px; }
+  .linea-banca .ficha, .linea-consultora .ficha { border-radius: 0; background: #F2F6FB; border-left: 4px solid #2171B5; }
+</style>
+</head>
+<body>
+<div id="laminas"></div>
+<script>
+const TEMA = { acento: "#08519C", acentoOscuro: "#08306B", acentoClaro: "#6BAED6", claro: "#C6DBEF", gris: "#C9D3DF", grisTexto: "#5B6573",
+  grisClaro: "#8A94A3", tinta: "#1B2430", eje: "#C9D6E5", grilla: "#EEF2F7", contraste: "#E6550D", medio: "#4292C6",
+  serif: "'Source Serif 4', Georgia, serif", sans: "Inter" };
+const LINEA = new URLSearchParams(location.search).get("linea") || "base";
+const SANS_LINEA = { banca: "IBM Plex Sans", consultora: "Inter", investigacion: "Inter" }[LINEA];
+if (SANS_LINEA) {
+  TEMA.sans = SANS_LINEA;
+  document.body.classList.add("linea-" + LINEA);
+  document.body.style.setProperty("--sans-linea", "'" + SANS_LINEA + "', sans-serif");
+}
+const coma = (v, d = 1) => v.toFixed(d).replace(".", ",").replace("-", "−");
+const miles = v => Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".").replace("-", "−");
+const grad = (a, b, h) => new echarts.graphic.LinearGradient(0, 0, h ? 1 : 0, h ? 0 : 1, [{ offset: 0, color: a }, { offset: 1, color: b }]);
+const OSCURO = (h) => grad(TEMA.acento, TEMA.acentoOscuro, h);
+const CLARO = (h) => grad(TEMA.acentoClaro, "#9ECAE1", h);
+const base = { animation: false, textStyle: { fontFamily: TEMA.sans, color: TEMA.tinta } };
+const leyenda = (nombres, colores, extra) => Object.assign({ top: 0, left: 10, itemWidth: 22, itemHeight: 10, itemGap: 30,
+  data: nombres.map((n, i) => ({ name: n, itemStyle: { color: colores[i] } })),
+  textStyle: { fontSize: 15, color: TEMA.grisTexto, fontFamily: TEMA.sans, padding: [0, 0, 0, 4] } }, extra || {});
+const ejeY = (fmt, extra) => Object.assign({ type: "value", axisLabel: { color: TEMA.grisClaro, fontSize: 13, formatter: fmt },
+  splitLine: { lineStyle: { color: TEMA.grilla } }, axisLine: { show: false }, axisTick: { show: false } }, extra || {});
+const ejeX = (datos, extra) => Object.assign({ type: "category", data: datos, axisTick: { show: false },
+  axisLine: { lineStyle: { color: TEMA.eje } }, axisLabel: { color: TEMA.grisTexto, fontSize: 14, margin: 14 } }, extra || {});
+
+const LAMINAS = [];
+// tipo "echarts" usa opcion(); tipo "html" usa html().
+function lamina(id, titulo, sub, fuente, cuerpo) { LAMINAS.push({ id, titulo, sub, fuente, cuerpo }); }
+
+// 0. Fichas de indicadores. Pocas cifras clave, sin gráfico.
+lamina("indicadores", "Indicadores financieros de Anthropic",
+  "Segundo trimestre de 2026, comparado con el primer trimestre de 2025 cuando corresponde",
+  "Fuente. Anthropic, PBC (2026), pp. 11, 158, 161, 171 a 172 y F-6.",
+  { html: () => `<div class="fichas">
+    <div class="ficha"><div class="rot">Ingresos del trimestre</div><div class="val">US$11,6<small>mil mill.</small></div><div class="nota">31 veces los del primer trimestre de 2025</div></div>
+    <div class="ficha"><div class="rot">Margen operacional ajustado</div><div class="val">19 %</div><div class="nota">Era −221 % a comienzos de 2025</div></div>
+    <div class="ficha"><div class="rot">Margen operacional</div><div class="val">8 %</div><div class="nota">Era −249 % a comienzos de 2025</div></div>
+    <div class="ficha"><div class="rot">Compromisos de cómputo</div><div class="val">US$637<small>mil mill.</small></div><div class="nota">En 7 contratos con nombre</div></div>
+    <div class="ficha"><div class="rot">Caja y equivalentes</div><div class="val">US$112<small>mil mill.</small></div><div class="nota">Junio de 2026, sin la oferta</div></div>
+    <div class="ficha"><div class="rot">Ingresos por empleado</div><div class="val">US$6,6<small>mill.</small></div><div class="nota">Era 1,4 un año antes</div></div>
+  </div>` });
+
+// 1. Ingresos trimestrales. Totales por período, por eso columnas.
+const TRIM = ["T1 2025", "T2 2025", "T3 2025", "T4 2025", "T1 2026", "T2 2026"];
+const ING = [0.376, 0.787, 1.382, 2.040, 4.731, 11.555];
+const CREC = ING.map((v, i) => i === 0 ? null : Math.round((v / ING[i - 1] - 1) * 100));
+lamina("ingresos_trimestrales", "Ingresos trimestrales de Anthropic, 2025 y 2026",
+  "Miles de millones de US$ y variación porcentual sobre el trimestre anterior",
+  "Fuente. Anthropic, PBC (2026), p. 158.",
+  { opcion: () => ({ grid: { left: 10, right: 10, top: 40, bottom: 70 },
+    xAxis: { type: "category", data: TRIM, axisTick: { show: false }, axisLine: { lineStyle: { color: "#E3EAF2" } },
+      axisLabel: { margin: 14, formatter: (t, i) => "{v|" + coma(ING[i]) + "}\n{t|" + t + "}",
+        rich: { v: { fontSize: 19, fontWeight: 700, color: TEMA.tinta, lineHeight: 28 }, t: { fontSize: 14, color: TEMA.grisClaro, lineHeight: 20 } } } },
+    yAxis: { type: "value", show: false, max: 15 },
+    series: [
+      { type: "bar", barWidth: "54%", z: 3, data: ING.map((v, i) => ({ value: v, itemStyle: { color: i === 5 ? OSCURO() : CLARO(), borderRadius: [12, 12, 0, 0] } })) },
+      { type: "line", z: 2, data: ING.map(v => v * 1.07 + 0.7), smooth: 0.25, symbol: "circle", symbolSize: 9,
+        lineStyle: { color: TEMA.acentoOscuro, width: 1.6, type: [5, 5] }, itemStyle: { color: TEMA.acentoOscuro },
+        label: { show: true, position: "top", distance: 12, formatter: q => CREC[q.dataIndex] === null ? "" : "{p|+" + CREC[q.dataIndex] + " %}",
+          rich: { p: { fontSize: 14.5, fontWeight: 700, color: "#fff", backgroundColor: TEMA.acentoOscuro, borderRadius: 999, padding: [6, 11] } } } }] }) });
+
+// 2. Costo de cómputo y márgenes. Tres tasas en el tiempo, por eso líneas. Paleta validada con la skill dataviz.
+const SERIES_M = [
+  { nombre: "Costo de cómputo", datos: [251.06, 176.62, 148.12, 144.36, 71.59, 48.10], color: TEMA.contraste, dy: -16 },
+  { nombre: "Margen operacional ajustado", datos: [-221, -129, -93, -84, -13, 19], color: TEMA.medio, dy: 4 },
+  { nombre: "Margen operacional", datos: [-248.67, -152.48, -223.52, -139.02, -35.24, 8.43], color: TEMA.acento, dy: 30 }];
+lamina("costos_margenes", "Costo de cómputo y márgenes por trimestre",
+  "Porcentaje de los ingresos de cada trimestre, 2025 y 2026",
+  "Fuente. Anthropic, PBC (2026), pp. 158 y 161. El margen operacional del tercer trimestre de 2025 incluye el acuerdo Bartz.",
+  { opcion: () => ({ grid: { left: 70, right: 330, top: 60, bottom: 40 },
+
+    xAxis: ejeX(TRIM, { boundaryGap: true }),
+    yAxis: ejeY(v => coma(v, 0) + " %", { min: -300, max: 300, interval: 100 }),
+    series: SERIES_M.map(s => ({ name: s.nombre, type: "line", data: s.datos, symbol: "circle", symbolSize: 10,
+      lineStyle: { width: 3.5, color: s.color }, itemStyle: { color: s.color, borderColor: "#fff", borderWidth: 2 },
+      label: { show: true, formatter: q => q.dataIndex === 0 ? coma(q.value, 0) + " %" : "", position: s.nombre === "Margen operacional" ? "bottom" : "top", distance: 10, fontSize: 13, fontWeight: 600, color: TEMA.tinta },
+      endLabel: { show: true, formatter: q => s.nombre + "  " + coma(q.value, 0) + " %", distance: 12, fontSize: 15, fontWeight: 700, color: TEMA.tinta, offset: [0, s.dy] },
+      markLine: s.nombre === "Margen operacional" ? { symbol: "none", silent: true, label: { show: false }, lineStyle: { color: "#9AA7B8", width: 1.2, type: "solid" }, data: [{ yAxis: 0 }] } : undefined })) }) });
+
+// 3. Compromisos por proveedor. Barras alineadas sobre una misma base, porque Talbot y coautores (2014)
+// midieron que una barra apilada se lee peor. La participación va escrita junto a cada valor.
+const PROV = [["Broadcom", 161.2], ["SpaceX", 120.5], ["Google", 114.5], ["Amazon", 110.0], ["Microsoft", 44.9], ["Nscale", 44.6], ["Lambda", 41.3]];
+const TOTAL_P = PROV.reduce((a, p) => a + p[1], 0);
+const TOP4 = PROV.slice(0, 4).reduce((a, p) => a + p[1], 0);
+lamina("compromisos_proveedor", "Compromisos de cómputo de Anthropic por proveedor",
+  "Miles de millones de US$ y participación en el total de los proveedores con nombre",
+  "Fuente. Anthropic, PBC (2026), pp. 171 a 172. Los 7 contratos suman " + coma(TOTAL_P) + ", sin los compromisos variables con Google y AMD.",
+  { opcion: () => ({ grid: { left: 120, right: 170, top: 10, bottom: 10 },
+    yAxis: { type: "category", data: PROV.map(p => p[0]).reverse(), axisTick: { show: false }, axisLine: { show: false },
+      axisLabel: { color: TEMA.tinta, fontSize: 17, fontWeight: 500, margin: 20 } },
+    xAxis: { type: "value", show: false, max: 175 },
+    graphic: [{ type: "text", right: 10, bottom: 40, style: { text: "Los 4 primeros suman " + coma(TOP4) + ",\nel " + Math.round(TOP4 / TOTAL_P * 100) + " % del total con nombre",
+      fill: TEMA.acentoOscuro, font: "600 16px " + TEMA.sans, lineHeight: 24, textAlign: "right" } }],
+    series: [{ type: "bar", barWidth: 30,
+      data: PROV.map((p, i) => ({ value: p[1], itemStyle: { color: i < 4 ? OSCURO(true) : CLARO(true), borderRadius: [0, 8, 8, 0] } })).reverse(),
+      label: { show: true, position: "right", distance: 12, color: TEMA.tinta, fontSize: 16,
+        formatter: q => "{v|" + coma(q.value) + "}  {p|" + Math.round(q.value / TOTAL_P * 100) + " %}",
+        rich: { v: { fontSize: 17, fontWeight: 700, color: TEMA.tinta }, p: { fontSize: 14, color: TEMA.grisTexto, padding: [0, 0, 0, 10] } } } }] }) });
+
+// 4. Compromisos por año. Cómo se arma un total, por eso cascada.
+const ANOS_C = ["Año 1", "Año 2", "Año 3", "Año 4", "Año 5", "Año 6 y más", "Total"];
+const PRESENTE = [59.434, 86.869, 50.669, 45.693, 36.868, 83.486];
+const TOTAL_C = PRESENTE.reduce((a, b) => a + b, 0);
+const BASE_C = PRESENTE.map((v, i) => PRESENTE.slice(0, i).reduce((a, b) => a + b, 0)).concat([0]);
+lamina("compromisos_ano", "Valor presente de los compromisos de cómputo por año",
+  "Miles de millones de US$, descontados al 6,28 %, la tasa de un bono BB+",
+  "Fuente. Estimación de A. Damodaran, octubre de 2026. El S-1 deja en blanco su tabla por año (Anthropic, PBC, 2026, p. 170).",
+  { opcion: () => ({ grid: { left: 10, right: 10, top: 40, bottom: 50 },
+    xAxis: ejeX(ANOS_C, { axisLabel: { color: TEMA.grisTexto, fontSize: 14, margin: 14, fontWeight: 500 } }),
+    yAxis: { type: "value", show: false, max: 400 },
+    series: [
+      { type: "bar", stack: "c", data: BASE_C, itemStyle: { color: "transparent" }, silent: true, barWidth: "56%" },
+      { type: "bar", stack: "c", barWidth: "56%",
+        data: PRESENTE.map(v => ({ value: v, itemStyle: { color: CLARO(), borderRadius: 8 } })).concat([{ value: TOTAL_C, itemStyle: { color: OSCURO(), borderRadius: [12, 12, 0, 0] } }]),
+        label: { show: true, position: "top", distance: 8, fontSize: 16, fontWeight: 700, color: TEMA.tinta, formatter: q => (q.dataIndex < 6 ? "+" : "") + coma(q.value) } }] }) });
+
+// 5. Proyección. Una serie protagonista y el resto como contexto, por eso énfasis.
+const ANOS_P = ["Año 1", "Año 2", "Año 3", "Año 4", "Año 5", "Año 6", "Año 7", "Año 8", "Año 9", "Año 10"];
+const EBIT = [5.152, 20.484, 38.437, 67.858, 115.210, 147.298, 177.446, 200.669, 212.134, 208.620];
+const REINV = [14.426, 20.484, 29.088, 41.305, 48.291, 51.044, 47.175, 35.255, 15.749, 16.521];
+const FCFF = [-9.274, 0, 9.350, 26.553, 66.920, 96.253, 130.270, 165.415, 196.384, 192.099];
+lamina("proyeccion", "Flujo de caja libre proyectado y sus componentes",
+  "Utilidad operacional tras impuestos y reinversión. Valoración base, años 1 a 10, en miles de millones de US$",
+  "Fuente. Planilla de valoración de A. Damodaran, octubre de 2026. Los ingresos de cada año están en la tabla de la proyección.",
+  { opcion: () => ({ grid: { left: 60, right: 250, top: 60, bottom: 40 },
+    legend: leyenda(["Flujo de caja libre", "Utilidad tras impuestos", "Reinversión"], [TEMA.acento, "#9AA7B8", "#C9D3DF"]),
+    xAxis: ejeX(ANOS_P, { boundaryGap: true }),
+    yAxis: ejeY(v => miles(v), { min: -30, max: 250, interval: 50 }),
+    series: [
+      { name: "Utilidad tras impuestos", type: "line", data: EBIT, symbol: "none", lineStyle: { width: 2.5, color: "#9AA7B8" },
+        endLabel: { show: true, formatter: q => "Utilidad tras impuestos  " + miles(q.value), color: TEMA.grisTexto, fontSize: 14, distance: 12, offset: [0, -8] } },
+      { name: "Reinversión", type: "line", data: REINV, symbol: "none", lineStyle: { width: 2.5, color: "#C9D3DF" },
+        endLabel: { show: true, formatter: q => "Reinversión  " + miles(q.value), color: TEMA.grisTexto, fontSize: 14, distance: 12 } },
+      { name: "Flujo de caja libre", type: "line", data: FCFF, symbol: "circle", symbolSize: 10, z: 5,
+        lineStyle: { width: 4, color: TEMA.acento }, itemStyle: { color: TEMA.acento, borderColor: "#fff", borderWidth: 2 },
+        areaStyle: { color: grad("rgba(8,81,156,0.18)", "rgba(8,81,156,0.0)"), origin: 0 },
+        endLabel: { show: true, formatter: q => "Flujo de caja libre  " + miles(q.value), color: TEMA.tinta, fontWeight: 700, fontSize: 15, distance: 12, offset: [0, 8] },
+        label: { show: true, position: "bottom", distance: 10, fontSize: 13, fontWeight: 600, color: TEMA.tinta,
+          formatter: q => q.dataIndex === 0 ? miles(q.value) : "" },
+        markPoint: { symbol: "circle", symbolSize: 1, data: [{ coord: [4, -16] }],
+          label: { show: true, position: "inside", formatter: "Año 3. Primer flujo positivo, 9,4", fontSize: 14, fontWeight: 700,
+            color: "#fff", backgroundColor: TEMA.acentoOscuro, borderRadius: 999, padding: [6, 11] } },
+        markLine: { symbol: "none", silent: true, label: { show: false }, lineStyle: { color: "#9AA7B8", width: 1.2, type: "solid" }, data: [{ yAxis: 0 }] } }] }) });
+
+// 6. Escenarios. Valores contra un rango, por eso puntos sobre una recta con la banda marcada.
+const ESC = [["Peor caso", -0.373], ["Caso base", 1.475], ["Mejor caso", 4.04]];
+lamina("escenarios", "Valor del patrimonio de Anthropic por escenario",
+  "Billones de US$, es decir millones de millones, frente al rango de precio de la oferta",
+  "Fuente. A. Damodaran, octubre de 2026. El rango de precio de la oferta va de 1,5 a 2 billones de US$.",
+  { opcion: () => ({ grid: { left: 150, right: 60, top: 70, bottom: 50 },
+    yAxis: { type: "category", data: ESC.map(e => e[0]).reverse(), axisTick: { show: false }, axisLine: { show: false },
+      axisLabel: { color: TEMA.tinta, fontSize: 18, fontWeight: 600, margin: 24 }, splitLine: { show: true, lineStyle: { color: TEMA.grilla } } },
+    xAxis: { type: "value", min: -1, max: 5, interval: 1, axisLabel: { color: TEMA.grisClaro, fontSize: 14, formatter: v => coma(v, 0) },
+      splitLine: { show: false }, axisLine: { show: true, lineStyle: { color: TEMA.eje } }, axisTick: { show: false } },
+    series: [{ type: "scatter", symbolSize: v => 1, data: [], silent: true,
+        markArea: { silent: true, itemStyle: { color: "rgba(66,146,198,0.13)" },
+          label: { position: "top", distance: 10, fontSize: 14, fontWeight: 600, color: TEMA.acento },
+          data: [[{ xAxis: 1.5, name: "Rango de precio de la oferta" }, { xAxis: 2 }]] },
+        markLine: { symbol: "none", silent: true, label: { show: false }, lineStyle: { color: "#9AA7B8", width: 1.2, type: "solid" }, data: [{ xAxis: 0 }] } },
+      { type: "scatter", z: 5,
+        data: ESC.slice().reverse().map(e => ({ value: [e[1], e[0]], symbolSize: e[0] === "Caso base" ? 30 : 22,
+          itemStyle: { color: e[0] === "Caso base" ? TEMA.acento : TEMA.acentoClaro, borderColor: "#fff", borderWidth: 3, shadowBlur: 8, shadowColor: "rgba(8,48,107,0.25)" } })),
+        label: { show: true, position: "top", distance: 14, fontSize: 20, fontWeight: 700, color: TEMA.tinta, formatter: q => coma(q.value[0], 2) } }] }) });
+
+function dibujar() {
+  const cont = document.getElementById("laminas");
+  for (const [i, l] of LAMINAS.entries()) {
+    const div = document.createElement("div");
+    div.className = "lamina"; div.id = l.id;
+    div.innerHTML = '<div class="tarjeta"><div class="rotulo">Gráfico ' + (i + 1) + '</div><div class="titulo">' + l.titulo + '</div><div class="sub">' + l.sub + '</div>' +
+      (l.cuerpo.html ? l.cuerpo.html() : '<div class="grafico"></div>') + '<div class="fuente">' + l.fuente + '</div></div>';
+    cont.appendChild(div);
+    if (l.cuerpo.opcion) {
+      // El gráfico parte bajo el subtítulo, aunque el título o el subtítulo ocupen 2 líneas.
+      const g = div.querySelector(".grafico"), sub = div.querySelector(".sub"), tarjeta = div.querySelector(".tarjeta");
+      g.style.top = (sub.getBoundingClientRect().bottom - tarjeta.getBoundingClientRect().top + 28) + "px";
+      const ch = echarts.init(g, null, { renderer: "svg" });
+      ch.setOption(Object.assign({}, base, l.cuerpo.opcion()));
+    }
+  }
+  window.listo = true;
+}
+document.fonts.ready.then(() => setTimeout(dibujar, 50));
+</script>
+</body>
+</html>

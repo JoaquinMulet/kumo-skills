@@ -1,0 +1,281 @@
+% Línea gráfica «Informe de investigación», con geometría medida.
+% Plantilla de la skill documentos-latex. Nació en el documento de inversión de Anthropic
+% (octubre de 2026), donde quedó con el cuerpo 100 % en la grilla y 0 elementos fuera de la caja.
+% Uso: \documentclass[11pt,a4paper]{article} y después \input{estilo/estilo-informe}.
+% Los gráficos se buscan en figuras/. Cambia la ruta en \figura si tu proyecto usa otra.
+%
+% Página. Canon de KOMA-Script con DIV 8 sobre A4 (guía de KOMA, tabla 2.2, p. 33).
+%   Módulo horizontal u = 210/8 = 26,25 mm. Módulo vertical v = 297/8 = 37,125 mm.
+%   Una sola columna de 5u = 131,25 mm, centrada, con 1,5u = 39,375 mm a cada lado. Texto,
+%   gráficos y tablas usan el mismo ancho. La versión anterior tenía texto de 105 mm y gráficos de
+%   157,5 mm, y el lector la encontró «extremadamente rara» el 29 de octubre de 2026.
+%   Margen superior 1v = 37,125 mm. Alto de la caja 35 líneas de 15 pt = 525 pt.
+%   El pie de página queda a 1v del borde inferior, igual que el margen superior.
+% Letra. XCharter de 12 pt da 69 caracteres por línea en 131,25 mm (medido), dentro del rango de
+%   60 a 70 de KOMA y de 45 a 75 de Bringhurst.
+% Grilla. Interlineado de 15 pt (125 %), y todo espacio vertical es múltiplo de 15 pt.
+% Escala. Cuarta justa (4/3) con una hebra intermedia: 12 x (4/3)^(k/2).
+% Las reglas y sus fuentes están en reference/geometria.md de la skill.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-nodecimaldot,es-tabla,es-noshorthands]{babel}
+\usepackage[lining]{XCharter}
+\usepackage[lining,semibold]{FiraSans}
+\renewcommand{\familydefault}{\rmdefault}
+\usepackage{textcomp}
+\usepackage[protrusion=true,expansion=false,tracking=true]{microtype}
+\SetTracking{encoding=*,shape=sc}{60}
+\usepackage[
+  a4paper,
+  left=39.375mm, textwidth=131.25mm,
+  top=37.125mm, textheight=525pt,
+  footskip=37.55mm,
+  marginparwidth=30mm, marginparsep=5mm
+]{geometry}
+\usepackage{graphicx,booktabs,tabularx,array,ragged2e,fancyhdr,lastpage,changepage,marginnote,tikz}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{caption}
+\usepackage[hidelinks]{hyperref}
+
+% Paleta. Azules de ColorBrewer, tinta casi negra y fondo cálido para recuadros.
+\definecolor{acento}{HTML}{08519C}
+\definecolor{oscuro}{HTML}{08306B}
+\definecolor{claro}{HTML}{F3F1EC}
+\definecolor{tinta}{HTML}{1B2430}
+\definecolor{gris}{HTML}{5B6573}
+\definecolor{azul2}{HTML}{DEEBF7}   % fila destacada de las tablas, la elección de Damodaran
+\color{tinta}
+
+\makeatletter
+% ------------------------------------------------------------------ Grilla
+\newlength\rejL \setlength\rejL{15pt}
+\newcount\rej@n \newdimen\rej@d \newdimen\rej@h
+% Distancia a la que cuelgan en el margen los números de sección.
+\newlength\anchonotas \setlength\anchonotas{15mm}
+% Los bloques usan el ancho de la columna, sin entrar al margen.
+\newlength\rejextra \setlength\rejextra{0pt}
+
+% Escala 12 x (4/3)^(k/2). Los pies, las tablas y las notas van a 15 pt para quedar en la grilla.
+\newcommand\tamnota   {\fontsize{9}{11.25}\selectfont}
+\newcommand\tampie    {\fontsize{10.39}{15}\selectfont}
+\newcommand\tamtabla  {\fontsize{10.39}{15}\selectfont}
+\newcommand\tamsubsec {\fontsize{13.86}{15}\selectfont}
+\newcommand\tamsec    {\fontsize{16}{22.5}\selectfont}
+\newcommand\tamsubport{\fontsize{21.33}{30}\selectfont}
+\newcommand\tamcap    {\fontsize{28.44}{30}\selectfont}
+\newcommand\tamportada{\fontsize{37.93}{45}\selectfont}
+
+\renewcommand\normalsize{\@setfontsize\normalsize{12}{15}%
+  \abovedisplayskip\rejL \belowdisplayskip\rejL
+  \abovedisplayshortskip\z@ \belowdisplayshortskip\rejL
+  \let\@listi\@listI}
+\renewcommand\small{\tampie}
+\renewcommand\footnotesize{\tamnota}
+\normalsize
+
+\setlength\topskip{\rejL}
+% Fuerza siempre el interlineado de 14 pt. Si no, cuando el fondo de una línea y la altura de la
+% siguiente suman más de 14 pt, TeX agrega 1 pt y la línea sale de la grilla (TeX by Topic, cap. 15).
+\lineskiplimit=-\maxdimen
+\setlength\parskip{\z@}
+\setlength\parindent{1.5em}
+\raggedbottom
+% Ninguna página empieza ni termina con una sola línea de un párrafo.
+\widowpenalty=10000
+\clubpenalty=10000
+\def\@listI{\leftmargin\leftmargini \topsep\z@ \partopsep\z@ \parsep\z@ \itemsep\z@}
+\let\@listi\@listI
+\setlist{nosep,leftmargin=1.5em}
+% Los flotantes van solo al tope de página o a una página propia. Un flotante en medio del texto
+% ([h]) quedó 2,41 pt fuera de la grilla, y compensarlo desalineó las otras 2 ubicaciones
+% (medido el 29 de octubre de 2026).
+\setlength\floatsep{\rejL}
+\setlength\textfloatsep{\rejL}
+\setlength\intextsep{\rejL}
+\renewcommand{\arraystretch}{1}
+\newcolumntype{L}{>{\RaggedRight\arraybackslash}X}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+% Texto justificado con división silábica del español. Con una línea de unas 11 palabras el
+% justificado no tuvo desventaja (Gregory y Poulton 1970), y deja una columna rectangular.
+\hyphenpenalty=200
+\tolerance=1500
+\emergencystretch=1.5em
+
+% techo(#1 / L)
+\def\rej@redondear#1{\rej@d=#1\relax
+  \rej@n=\numexpr\rej@d/\rejL\relax
+  \ifdim\dimexpr\rej@n\rejL\relax<\rej@d \advance\rej@n\@ne\fi}
+
+% Coloca la caja 0 para que la línea base anterior y la siguiente queden a un número entero de L.
+\newcommand\rej@colocar[2]{\par
+  \rej@h=\dimexpr#1+\ht0+\dp0+#2\relax \rej@redondear\rej@h
+  \ifdim\prevdepth>-1000pt \vskip\dimexpr\rejL-\prevdepth\relax \else \vskip\rejL \fi
+  \nointerlineskip\hbox{}\nointerlineskip
+  \kern\dimexpr#1-\rejL\relax
+  \hbox{\vbox to \dimexpr\rej@n\rejL-#1\relax{\box0\vss}}%
+  \prevdepth\z@}
+
+% Títulos. La última línea base del título cae en la grilla.
+% #1 líneas en blanco arriba, #2 líneas en blanco abajo, #3 título.
+\newcommand\rej@titulo[3]{\par
+  \setbox0\vbox{\hsize\linewidth\raggedright\noindent\parindent\z@\hyphenpenalty\@M
+    \clubpenalty\z@\widowpenalty\z@ #3\par}%
+  \rej@h=\ht0 \rej@redondear\rej@h \ifnum\rej@n<\@ne \rej@n\@ne\fi
+  \ifdim\prevdepth>-1000pt \addpenalty{\z@}\vskip\dimexpr-\prevdepth+#1\rejL+\rejL\relax
+  \else \vskip\z@ \fi
+  \nointerlineskip\hbox{}\nointerlineskip
+  \kern\dimexpr\rej@n\rejL-\rejL-\ht0\relax
+  \box0 \nobreak \vskip#2\rejL \@afterheading}
+
+% Número que cuelga en el margen de notas, alineado con la columna de notas.
+\newcommand\numeromargen[1]{\llap{\makebox[\anchonotas][r]{#1\hspace{\marginparsep}}}}
+
+% Capítulo. Página nueva, número grande en el margen y título de 26 pt.
+\newcommand\capitulo[2]{% #1 número o vacío, #2 título
+  \clearpage \suppressfloats[t]%
+  \rej@titulo{0}{2}{\sffamily\bfseries\tamcap\color{tinta}%
+    \ifx\relax#1\relax\else\numeromargen{\color{acento}#1}\fi #2}}
+\renewcommand\section{\@ifstar\rej@seccionestrella\rej@seccion}
+\newcommand\rej@seccion[1]{\refstepcounter{section}%
+  \capitulo{\thesection}{#1}%
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}}
+\newcommand\rej@seccionestrella[1]{\capitulo{}{#1}}
+
+% Sección. Título de 14,67 pt con el número en el margen.
+\renewcommand\subsection[1]{\refstepcounter{subsection}%
+  \rej@titulo{2}{1}{\sffamily\bfseries\tamsec\color{tinta}\numeromargen{\color{acento}\thesubsection}#1}%
+  \addcontentsline{toc}{subsection}{\protect\numberline{\thesubsection}#1}}
+
+% Subsección. Título de 12,7 pt sin número.
+\renewcommand\subsubsection[1]{%
+  \rej@titulo{1}{0}{\sffamily\bfseries\tamsubsec\color{tinta}#1}}
+
+% Índice. Cada entrada ocupa una línea de la grilla.
+\renewcommand\tableofcontents{\section*{\contentsname}\@starttoc{toc}}
+\renewcommand*\l@section[2]{\par
+  {\noindent\sffamily\bfseries\color{tinta}\let\numberline\rej@numtoc #1\hfill #2\par}}
+\renewcommand*\l@subsection[2]{\par
+  {\noindent\hspace*{1.6em}\let\numberline\rej@numtoc #1\nobreak\leaders\hbox{\kern.4em.\kern.4em}\hfill\nobreak #2\par}}
+\def\rej@numtoc#1{\makebox[2.2em][l]{\color{acento}#1}}
+
+% Bloques. Figuras y tablas usan el ancho de la columna, 131,25 mm, igual que el texto.
+% \rejextra permite ensancharlos hacia el margen izquierdo; hoy vale 0.
+% El pie no va dentro del bloque. Se guarda y se compone después como un párrafo de la columna de
+% texto, porque un párrafo del texto principal siempre cae en la grilla.
+\newenvironment{bloqueancho}[1]% #1 tipo, figure o table
+  {\par\def\@captype{#1}\gdef\rej@tipo{#1}\global\let\rej@pie\relax
+   \setbox0\vbox\bgroup\hsize\dimexpr\textwidth+\rejextra\relax
+     \linewidth\hsize\columnwidth\hsize\textwidth\hsize\parindent\z@
+     \def\caption##1{\gdef\rej@pie{##1}}}
+  {\par\egroup\rej@flotante}
+% El bloque flota al tope de la página ([tp]) para que un gráfico que no cabe no deje un hueco: el
+% texto sigue y llena la página. Dentro del flotante todo cae en la grilla. El contenido arranca en el
+% tope, el pie empieza en la primera línea libre bajo el contenido y el flotante entero mide un
+% número entero de líneas. Con \textfloatsep = 2L, el texto que sigue también cae en la grilla.
+\newcommand\rej@flotante{%
+  \setbox0\hbox{\kern-\rejextra\box0}%
+  \rej@h=\dimexpr\ht0+\dp0+.25\rejL\relax \rej@redondear\rej@h
+  \setbox2\vbox{\hsize\textwidth\linewidth\textwidth
+    \hbox{\vbox to \rej@n\rejL{\box0\vss}}\prevdepth\z@
+    \ifx\rej@pie\relax\else\rej@componerpie\fi}%
+  \rej@h=\dimexpr\ht2+\dp2\relax \rej@redondear\rej@h
+  \expandafter\@float\expandafter{\rej@tipo}[tp]%
+    \vbox to \rej@n\rejL{\box2\vss}%
+  \end@float}
+\renewcommand\topfraction{.92}
+\renewcommand\textfraction{.08}
+\renewcommand\floatpagefraction{.75}
+\setcounter{topnumber}{2}
+\setcounter{totalnumber}{3}
+% En una página de solo flotantes, los flotantes parten arriba y se separan por 2 líneas.
+\setlength\@fptop{0pt}
+\setlength\@fpsep{2\rejL}
+\setlength\@fpbot{0pt plus 1fil}
+% Pie compuesto como párrafo común de 9,53 sobre 14 pt. El paquete caption agregaba 4,2 pt.
+\newcommand\rej@componerpie{\refstepcounter{\rej@tipo}%
+  {\noindent\sffamily\small\RaggedRight
+   {\bfseries\color{acento}\csname\rej@tipo name\endcsname~\csname the\rej@tipo\endcsname.}~\rej@pie\par}}
+% Dentro de la tabla vuelve la regla normal de TeX. LaTeX apila las filas con interlineado 0 y las
+% separa con puntales de 14 pt; con el interlineado forzado las filas quedarían encimadas.
+\newenvironment{tablagrilla}{\begin{bloqueancho}{table}\tamtabla\lineskiplimit\z@\lineskip\z@\setlength\tabcolsep{3pt}%
+  \renewcommand\textbf[1]{{\bfseries\fontsize{9.5}{15}\selectfont ##1}}\centering}{\end{bloqueancho}}
+
+% Filetes de las tablas medidos para que cada fila caiga en la grilla.
+% La fila mide 15 pt (0,7 de alto y 0,3 de fondo). Filete superior más su espacio = 4,5 pt, que con
+% los 10,5 pt de alto de la primera fila suman 15. Filete del medio más sus 2 espacios = 15 pt.
+\setlength\heavyrulewidth{0.8pt}
+\setlength\lightrulewidth{0.5pt}
+\setlength\belowrulesep{3.7pt}
+\setlength\aboverulesep{7.25pt}
+\setlength\cmidrulewidth{0.4pt}
+\def\midrule{\noalign{\ifnum0=`}\fi\vskip7.25pt\hrule\@height\lightrulewidth\vskip7.25pt\ifnum0=`{\fi}}
+
+% Gráfico al ancho de la columna, 131,25 mm, y 16 líneas de alto (240 pt). Las láminas se capturan
+% con esa proporción, así que la imagen no se deforma.
+\newcommand{\figura}[2]{\begin{bloqueancho}{figure}\lineskiplimit=-\maxdimen\noindent
+  \includegraphics[width=\linewidth,height=16\rejL]{figuras/#1}\par
+  \caption{#2}\end{bloqueancho}}
+
+\captionsetup{font={small,sf},labelfont={bf,color=acento},labelsep=period,skip=7pt,
+  singlelinecheck=false,justification=RaggedRight}
+\captionsetup{skip=0pt}
+\addto\captionsspanish{\renewcommand\figurename{Gráfico}}
+
+% Notas al margen numeradas. Reemplazan a las notas al pie.
+% marginnote alinea la primera línea base de la nota con la línea base del texto. \marginpar alinea
+% por el borde superior y deja la nota fuera de la grilla.
+% Ajuste vertical de las notas. Con \lineskiplimit forzado, marginnote ya alinea las líneas base.
+\newcommand\rej@ajustenota{0pt}
+\newcommand\notamargen[1]{\marginnote{\RaggedRight\sffamily\tampie\color{gris}#1}[\rej@ajustenota]}
+% Notas de esta edición. Una nota al margen larga chocaba con los gráficos anchos, que también
+% ocupan la columna de notas. Por eso cada nota es un párrafo propio de la columna de texto, a 9,53
+% sobre 14 pt, con su número colgado en el margen y 1 línea en blanco antes y después.
+% \footnote guarda la nota y \notaspendientes la compone al terminar el párrafo.
+% \footnotetext, que sigue a un gráfico o una tabla, la compone de inmediato.
+\newcommand\rej@cajanota[2]{\par\vskip\rejL
+  {\noindent\sffamily\tampie\color{gris}\numeromargen{\color{acento}\bfseries #1}#2\par}\vskip\rejL}
+\gdef\rej@colanotas{}
+\newcommand\notaspendientes{\rej@colanotas\gdef\rej@colanotas{}}
+\AtBeginDocument{%
+  \renewcommand\footnote[1]{\refstepcounter{footnote}\textsuperscript{\sffamily\thefootnote}%
+    \xdef\rej@colanotas{\unexpanded\expandafter{\rej@colanotas}\noexpand\rej@cajanota{\thefootnote}{\unexpanded{#1}}}}%
+  \DeclareRobustCommand\footnotemark{\stepcounter{footnote}\textsuperscript{\sffamily\thefootnote}}%
+  \renewcommand\footnotetext[1]{\rej@cajanota{\thefootnote}{#1}}}
+
+% Recuadro de resumen. Sus líneas interiores también caen en la grilla. Ocupa k + 4 líneas.
+\newtcolorbox{rej@caja}{nobeforeafter,colback=claro,colframe=claro,boxrule=0pt,arc=3pt,
+  boxsep=0pt,left=12pt,right=12pt,top=8pt,bottom=15pt,
+  before upper={\prevdepth\z@{\noindent\sffamily\bfseries\fontsize{9}{15}\selectfont\color{gris}%
+    \textls[100]{EN POCAS PALABRAS}\par}},
+  after upper={\par\kern-\prevdepth}}
+\newenvironment{resumen}
+  {\par\setbox0\vbox\bgroup\hsize\linewidth\noindent\begin{rej@caja}\parindent\z@}
+  {\end{rej@caja}\egroup\rej@colocar{22pt}{15pt}}
+
+% Glosario. El término abre su propia definición, en la letra de los títulos, como en un diccionario.
+% Los términos van seguidos, sin línea en blanco: el término en color ya marca dónde empieza cada uno.
+\newcommand\termino[1]{\par
+  \noindent{\sffamily\bfseries\color{acento}#1.}\enspace\ignorespaces}
+
+% Pie de página. El título parte en la columna de notas y el número cierra la columna de texto.
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot[R]{\sffamily\fontsize{8.25}{10.5}\selectfont\color{gris}\thepage\ de \pageref{LastPage}}
+\fancypagestyle{plain}{}
+
+% Sello de la serie. Un cuadrado con 3 barras que suben.
+\newcommand{\sello}[2]{\begin{tikzpicture}[baseline=(b.base),x=1cm,y=1cm]
+    \node[inner sep=0pt] (b) at (0,0) {};
+    \fill[#1, rounded corners=1.6pt] (0,-0.05) rectangle (0.62,0.57);
+    \fill[#2] (0.12,0.07) rectangle (0.2,0.22);
+    \fill[#2] (0.27,0.07) rectangle (0.35,0.33);
+    \fill[#2] (0.42,0.07) rectangle (0.5,0.45);
+  \end{tikzpicture}}
+\makeatother
+
+\newcommand{\menos}{\textminus}

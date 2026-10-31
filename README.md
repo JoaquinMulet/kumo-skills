@@ -18,6 +18,7 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 | [`doc-narrativa`](doc-narrativa/) | **Pipeline documental, paso 3.** Reestructura un texto denso en un relato claro, sin perder contenido (que se lea bien). |
 | [`doc-prueba-de-uso`](doc-prueba-de-uso/) | **Pipeline documental, paso 4.** Valida que un lector frío débil pueda EJECUTAR la tarea que el texto habilita (que sirva para hacer, no solo para entender). |
 | [`unslop`](unslop/) | **Pipeline documental, paso 5 y último.** Quita las marcas que delatan que un texto lo escribió una IA y le devuelve voz: relleno, vocabulario inflado, puntuación de muleta, voz pasiva y metáforas que tapan la palabra concreta. |
+| [`documentos-latex`](documentos-latex/) | Diseña, compone, verifica y entrega un documento LaTeX con calidad editorial: línea gráfica elegida con evidencia, geometría medida (canon, grilla de línea base, escala), gráficos diseñados con ECharts, cada cifra contrastada con su fuente primaria y citada en APA. Trae plantilla de estilo, medidores y compilador para Windows. |
 | [`auditoria-de-realidad`](auditoria-de-realidad/) | Un agente fresco y escéptico hurga el estado REAL (repo, git, deploy, secretos, código) con pregunta abierta. Caza lo que el propio aparato no está viendo. El complemento abierto de VERIFY-REAL. |
 | [`verificacion-adversarial`](verificacion-adversarial/) | Aduana de hechos para un texto que se publica: buscadores reúnen evidencia y refutadores independientes intentan destruirla. El producto es un veredicto por afirmación, no un informe nuevo. |
 | [`agents-sdk`](agents-sdk/) | Conocimiento técnico versionado del Cloudflare Agents SDK: tabla de retrieval a las docs oficiales (verificada URL por URL), harness Think, MCP, workflows, estado. Sesga a Claude a leer las docs actuales en vez de su pre-entrenamiento. |
@@ -27,10 +28,10 @@ Para detalles de gobernanza interna (cómo agregar una skill, convenciones de na
 
 ### El mapa. Por qué existe cada skill
 
-Las catorce responden seis preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
+Las quince responden seis preguntas distintas. Cada nombre dice su propósito, no su mecanismo.
 
 - **Cómo desarrollamos, y cómo mejora ese cómo.** `desarrollo-riguroso` es la constitución de ingeniería de Kumo, siembra el `CLAUDE.md` de cualquier proyecto nuevo; `retrospectiva-de-sesion` es cómo se enmienda, convierte cada sesión de código en aprendizaje durable (lo específico va al proyecto, lo universal al estándar).
-- **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso` → `unslop`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar. Y el paso 5 existe porque puede además ser útil y sonar a máquina, que es lo primero que un lector nota y lo último que las otras cuatro miran.
+- **Cómo hacemos que un texto sirva.** El pipeline de calidad documental (detalle abajo): `doc-completitud` → `doc-cadena-causal` → `doc-narrativa` → `doc-prueba-de-uso` → `unslop`. Existe porque un documento puede estar completo, leerse bien, y aun así ser inútil para actuar. Y el paso 5 existe porque puede además ser útil y sonar a máquina, que es lo primero que un lector nota y lo último que las otras cuatro miran. Cuando el texto termina en un PDF largo, `documentos-latex` pone la forma: la línea gráfica, la geometría medida, los gráficos y la verificación de cada cifra contra su fuente.
 - **Cómo le hablamos al modelo.** `escritura-de-prompts`, el modelo está fijo. El prompt es la única palanca real, así que el prompting se vuelve método.
 - **Cómo confrontamos la realidad.** `auditoria-de-realidad` (sobre un proyecto: repo, deploy, secretos) y `verificacion-adversarial` (sobre un texto que se publica: cifras, citas, afirmaciones). Existen porque todo nuestro propio aparato de validación comparte nuestros puntos ciegos. Solo un contexto sin nuestro contexto encuentra lo que no sabíamos buscar.
 - **Cómo analizamos una empresa.** `gobernanza-primero` corre primero y es una PUERTA, no un capítulo. Si los incentivos están mal, la historia de asignación de capital es la mejor predicción del futuro y el resto del análisis sobra. Recién después entra `checklist-lehman`, las 70 preguntas que se le hacen a los estados financieros. Existen en ese orden porque leer bien unos números malos no sirve de nada.
@@ -73,10 +74,10 @@ del stack, reglas del dominio, y una sección de lecciones que arranca casi vac�
 le pides cerrar la sesión y Claude carga `retrospectiva-de-sesion`, que es la que reparte. Tú
 apruebas y corriges. El trabajo mecánico no es tuyo.
 
-### Las otras diez. Herramientas para momentos concretos del paso 3
+### Las otras once. Herramientas para momentos concretos del paso 3
 
 No son parte del ciclo. Son las que se invocan **mientras trabajas**, cuando aparece una de
-estas diez situaciones.
+estas once situaciones.
 
 | Cuando te pasa esto… | …se usa esta skill |
 |---|---|
@@ -90,6 +91,7 @@ estas diez situaciones.
 | Vas a empezar a analizar una empresa y quieres saber si vale la pena | [`gobernanza-primero`](gobernanza-primero/) |
 | Tienes al frente unos estados financieros y no sabes qué preguntarles | [`checklist-lehman`](checklist-lehman/) |
 | Un texto está correcto y aun así suena a IA | [`unslop`](unslop/) |
+| Tienes que entregar un informe o documento en PDF que se vea profesional y con cifras exactas | [`documentos-latex`](documentos-latex/) |
 
 ### Pipeline de calidad documental. Los textos también se testean
 
@@ -148,7 +150,7 @@ pipeline. Si nadie tuvo que adivinar, el texto sale por la derecha y no hay loop
 
 ## Cómo funcionan por dentro. Las seis hacen lo mismo
 
-Seis de las diez skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
+Seis de las once skills no le piden a Claude que revise algo él solo: **lanzan varios agentes
 en paralelo**, cada uno mirando el mismo material desde un ángulo distinto, y después alguien
 junta los resultados. Las seis siguen exactamente la misma secuencia de cinco pasos.
 
