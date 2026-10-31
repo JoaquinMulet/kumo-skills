@@ -1,6 +1,6 @@
 ---
 name: documentos-latex
-description: "Diseña, compone, verifica y entrega documentos LaTeX que comunican con calidad editorial: informes, documentos de inversión, reportes de análisis, síntesis de un texto ajeno y cualquier PDF largo para leer o compartir. Cubre la línea gráfica elegida con evidencia, la geometría medida (canon de página, grilla de línea base, escala tipográfica), los gráficos diseñados y capturados desde ECharts, la verificación de cada cifra contra su fuente con citas APA, y la compilación en Windows con MiKTeX. Usar cuando el usuario pide un documento, informe o PDF en LaTeX, traducir o sintetizar un artículo a un documento, rehacer los gráficos de un documento, darle una línea gráfica o un sello, dejar la geometría perfecta, o verificar las cifras de un documento contra un prospecto, estado financiero u otra fuente primaria."
+description: "Diseña, compone, verifica y entrega documentos LaTeX que comunican con calidad editorial: informes, documentos de inversión, reportes de análisis, síntesis de un texto ajeno y cualquier PDF largo para leer o compartir. Cubre la línea gráfica elegida con evidencia, la geometría medida (canon de página, grilla de línea base, escala tipográfica), los gráficos diseñados y capturados desde ECharts, las tablas y la evidencia sobre cómo leen los inversionistas, la verificación de cada cifra contra su fuente con citas APA, y la compilación en Windows con MiKTeX. Usar cuando el usuario pide un documento, informe o PDF en LaTeX, traducir o sintetizar un artículo a un documento, rehacer los gráficos de un documento, darle una línea gráfica o un sello, dejar la geometría perfecta, o verificar las cifras de un documento contra un prospecto, estado financiero u otra fuente primaria."
 ---
 
 # Documentos LaTeX que comunican
@@ -14,7 +14,7 @@ El orden importa. Un documento bien medido con cifras falsas no sirve, y uno con
 | 1. Contenido | Qué dice el documento y en qué orden | Esquema aprobado, citas resueltas |
 | 2. Línea gráfica | Cómo se ve, elegido por el lector entre 3 o 4 propuestas | El lector eligió una |
 | 3. Geometría | Canon, grilla, escala | Cuerpo 100 % en la grilla, 0 fuera de la caja |
-| 4. Gráficos | Tipo, diseño y datos de cada gráfico | Cada PNG mirado, sin textos montados |
+| 4. Gráficos y tablas | Formato, diseño y datos de cada gráfico y tabla | Cada PNG mirado, sin textos montados |
 | 5. Cifras | Cada número contra su fuente primaria | Informe de verificación cifra por cifra |
 | 6. Entrega | PDF abierto, carpeta ordenada | El lector lo tiene abierto |
 
@@ -34,6 +34,10 @@ El orden importa. Un documento bien medido con cifras falsas no sirve, y uno con
 **Cada capítulo abre con un recuadro de resumen**, justo bajo el título. El entorno `resumen` de la plantilla ya cae en la grilla.
 
 **Las palabras difíciles van en un glosario al inicio**, con el macro `\termino`. Una palabra que aparece antes de explicarse es un defecto de orden. Para auditarlo usa `doc-cadena-causal`.
+
+**El resumen tiene el mismo equilibrio que el texto.** Los resúmenes cambian el juicio del lector, y los escritos por quien tiene interés salen más positivos que el documento (Cardinaels y coautores, 2019). Cada recuadro de resumen nombra también el riesgo principal.
+
+**Un texto claro pesa más en la decisión.** Con un texto más legible, los inversionistas confían más en el documento y reaccionan más fuerte (Rennekamp, 2012). Por eso la lectura optimista y la pesimista van con el mismo cuidado.
 
 **Lo que se calla también es un dato.** Si el documento sabe algo que le importa al lector, lo dice. La incertidumbre va junto al dato, nunca en su lugar.
 
@@ -73,7 +77,7 @@ uv run --with pymupdf python -I -X utf8 scripts/medir_geometria.py documento.pdf
 
 Medir no reemplaza mirar. Renderiza las páginas a PNG con PyMuPDF y míralas como las mira el lector.
 
-## Etapa 4. Gráficos
+## Etapa 4. Gráficos y tablas
 
 El proceso completo, con el código de la página de ECharts y el capturador, está en [reference/graficos.md](reference/graficos.md).
 
@@ -86,7 +90,19 @@ Las reglas que el lector impuso:
 5. **Dentro de la página, el gráfico va sobre el fondo de la hoja**, sin tarjeta ni marco de otro color.
 6. **Cada línea lleva su nombre al final** en vez de una leyenda.
 7. **Antes de entregar, mira cada PNG.** Ningún texto puede montarse sobre otro, sobre una barra o sobre un eje. En el documento de Anthropic la leyenda y las etiquetas finales chocaron después de cambiar los datos, y solo se vio al mirar la imagen.
-8. **La fuente de cada gráfico cita la página.** Si los datos salen de una fuente primaria, la línea de fuente dice «Fuente. Anthropic, PBC (2026), p. 158.». Si son estimaciones de un autor, lo dice.
+8. **Las barras parten en cero y su largo es proporcional al valor.** Una distorsión mayor de 10 % cambia lo que percibe el lector (Beattie y Jones, 2002). Si el eje no parte en cero, va un gráfico de líneas o de puntos.
+9. **Toda cifra ajustada va junto a la cifra contable.** Una conciliación con la cifra contable reduce el peso del énfasis en la ajustada (Elliott, 2006).
+10. **La fuente de cada gráfico cita la página.** Si los datos salen de una fuente primaria, la línea de fuente dice «Fuente. Anthropic, PBC (2026), p. 158.». Si son estimaciones de un autor, lo dice.
+
+### Tablas
+
+El detalle y las fuentes están en [reference/tablas-y-lectores.md](reference/tablas-y-lectores.md).
+
+1. **Tabla para valores exactos, gráfico para tendencias, texto para 1 o 2 cifras** (Vessey, 1991). Una serie de más de 3 cifras no va escrita en un párrafo.
+2. **La comparación central del documento va en una tabla corta.** Una tabla simple se entendió mejor que el mismo contenido en texto en un ensayo con 2.305 personas (Brick y coautores, 2020).
+3. **Una tabla para comparar se redondea a 2 o 3 dígitos efectivos**, con las cifras que se comparan en columnas, un total o promedio, y las filas ordenadas por tamaño si su orden no significa nada (Ehrenberg, 1977).
+4. **Una tabla que reproduce la fuente lleva las cifras exactas**, para que el lector las cuadre con la página citada.
+5. **Sin franjas de color alternadas.** No aceleraron la lectura en un experimento con 590 personas (Tensmeyer y coautores, 2023).
 
 ## Etapa 5. Cifras
 
@@ -129,4 +145,4 @@ Al entregar:
 - `plantillas/estilo-informe.tex` es la línea «Informe de investigación» con toda la geometría resuelta.
 - `plantillas/graficos.html` es la página de ECharts del documento de Anthropic, con sus 7 láminas de ejemplo.
 - `scripts/compilar.sh`, `scripts/medir_grilla.py`, `scripts/medir_geometria.py`, `scripts/capturar.py` y `scripts/buscar_fuente.py` son los programas de las etapas 3 a 6.
-- `reference/` guarda el detalle de geometría, gráficos, cifras y evidencia.
+- `reference/` guarda el detalle de geometría, gráficos, tablas y lectores, cifras y evidencia.
