@@ -98,6 +98,9 @@
 \renewcommand{\arraystretch}{1}
 \newcolumntype{L}{>{\RaggedRight\arraybackslash}X}
 \newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+% Columna de ancho fijo alineada a la izquierda y sin partir palabras. Una p{} común sale justificada
+% y en un ancho angosto deja huecos grandes entre palabras (pasó el 3 de noviembre de 2026).
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash\hyphenpenalty=10000\exhyphenpenalty=10000}p{#1}}
 
 % Texto justificado con división silábica del español. Con una línea de unas 11 palabras el
 % justificado no tuvo desventaja (Gregory y Poulton 1970), y deja una columna rectangular.

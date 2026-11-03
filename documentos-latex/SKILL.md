@@ -137,6 +137,7 @@ Al entregar:
 - **Letras que pdfLaTeX no tiene.** Lora, Source Serif y Source Sans necesitan fontspec y XeLaTeX. Con pdfLaTeX funcionan XCharter, Fira Sans, Libertinus e IBM Plex.
 - **El paquete caption agrega 4,2 pt** sobre el pie. La plantilla compone el pie como un párrafo propio.
 - **ragged2e estira el espacio hasta 2em** y un título largo no se parte. Los títulos usan `\raggedright` con penalidades de viuda y huérfana en 0.
+- **Una columna `p{}` sale justificada** y en un ancho angosto deja huecos grandes entre palabras, o parte una palabra con guion. La plantilla trae la columna `P{ancho}`, alineada a la izquierda y sin partir palabras.
 - **Una tabla ancha se sale de la columna** sin aviso visible. Encabezados en 9,5 pt, `\tabcolsep` de 3 pt y primera columna con ancho fijo.
 - **Un texto de 2 a 3 palabras de un URL largo se sale de la caja** sin Overfull en el log. Usa `\raggedright` en la lista de referencias.
 

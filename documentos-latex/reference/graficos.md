@@ -68,6 +68,11 @@ El capturador usa `channel="msedge"`, así que no descarga navegadores. Captura 
 
 También mide los textos superpuestos. Con el renderer SVG de ECharts cada etiqueta es un `<text>`, y si 2 textos visibles se cruzan más de 1,5 px por lado, el capturador imprime «TEXTO SUPERPUESTO» con los 2 textos y sale con código 1. Por cada lámina dice cuántos textos midió. Una lámina con 0 textos medidos, como las fichas de indicadores hechas en HTML, no se midió, y esa hay que mirarla en el PNG.
 
+El detector compara solo textos con textos. No ve un texto que pisa un ícono de la leyenda ni una línea de referencia que cruza una cifra. El 3 de noviembre de 2026 pasó con las 2 cosas en el mismo capítulo, con el detector en 0 choques. Una leyenda con 4 nombres largos montó «Letras del Tesoro a 3 meses» sobre el ícono siguiente, y una línea punteada vertical (`markLine`) cruzó la cifra 9,35 de otra fila.
+
+- Con 3 o más series, los nombres de la leyenda van cortos, y el detalle pasa a la línea de fuente.
+- En ECharts una `markLine` se dibuja encima de las etiquetas de todas las series, aunque cambies su `z` o la pongas en la serie de abajo. Si la línea cruza filas con cifras, cambia el diseño. En el gráfico por sector, Anthropic pasó a ser una fila propia con un punto, en vez de una línea que cruzaba todas las filas.
+
 ## 7. Mirar cada PNG
 
 Lee cada imagen con la herramienta de lectura antes de entregarla. Busca:
@@ -76,6 +81,7 @@ Lee cada imagen con la herramienta de lectura antes de entregarla. Busca:
 - Una leyenda que se monta sobre sí misma o sobre los datos. Si cada línea lleva su nombre al final, la leyenda sobra y se quita (Franconeri y coautores, 2021).
 - Etiquetas finales cortadas por el borde. Dales margen derecho en `grid.right`.
 - Números redondeados que ya no cuadran con el texto del documento.
+- Una línea de referencia o un ícono de leyenda bajo un texto. El detector no los ve.
 
 Después de cambiar datos, vuelve a mirar todos los PNG. Un cambio de valores mueve las etiquetas.
 
