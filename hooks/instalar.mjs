@@ -46,6 +46,18 @@ const NUESTROS = [
     que: 'inyecta el contrato de lectura al abrir la sesion',
   },
   {
+    evento: 'PreToolUse',
+    matcher: 'Bash',
+    script: 'proteger-repo.mjs',
+    que: 'niega tuberias que tapan errores, stash con arboles, commits sin stat',
+  },
+  {
+    evento: 'PostToolUse',
+    matcher: 'Write|Edit|MultiEdit',
+    script: 'revisar-archivo.mjs',
+    que: 'avisa BOM en config, CRLF en .sh y BOM escondido en codigo',
+  },
+  {
     evento: 'Stop',
     script: 'revisar-respuesta.mjs',
     que: 'devuelve la respuesta con &&, huecos, voseo o rayas',

@@ -83,6 +83,8 @@ los saca.
 |---|---|---|
 | `recordar-estandar.mjs` | al abrir la sesion | Inyecta el contrato de lectura de `desarrollo-riguroso` antes de que el agente toque nada. No bloquea, porque `SessionStart` no puede. |
 | `exigir-higiene.mjs` | antes de cada `git commit` o `git push` | **Niega** la herramienta si el repo no tiene su aparato de higiene instalado. |
+| `proteger-repo.mjs` | antes de cada comando de Bash | **Niega** una tubería que tapa el código de salida de un verificador, un `&` en un comando en segundo plano, `git stash` o `reset --hard` con árboles de trabajo hermanos, un árbol de trabajo dentro de OneDrive, un commit sin `git diff --cached --stat` antes, y un `.sh` sin 100755 o sin LF. Se prueba con `node hooks/probar-proteger-repo.mjs`. |
+| `revisar-archivo.mjs` | después de cada Write o Edit | Le avisa al agente si el archivo quedó con BOM (configuración), con CRLF (`.sh`) o con un BOM escondido (código). Se prueba con `node hooks/probar-revisar-archivo.mjs`. |
 | `revisar-respuesta.mjs` | al terminar cada respuesta | Devuelve la respuesta al agente si un bloque de shell trae `&&`, un hueco como `<id>`, un `Read-Host` u `Out-File -Encoding utf8`, o si la prosa trae voseo o raya. Se prueba con `node hooks/probar-revisar-respuesta.mjs`. |
 
 ### Por que el segundo bloquea, y como se sale de el
