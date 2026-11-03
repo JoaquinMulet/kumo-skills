@@ -3,7 +3,8 @@
 #
 # Uso: bash scripts/compilar.sh documento.tex [carpeta-de-compilacion]
 #
-# Hace 4 cosas:
+# Hace 5 cosas:
+# 0. Se niega a compilar si algún .tex de la carpeta trae los bytes de control 7, 8 o 12.
 # 1. Quita del PATH, solo para este comando, toda entrada que termine en un archivo cl.exe.
 #    En la máquina de Kumo el PATH tiene esa entrada rota y MiKTeX se atora con ella.
 # 2. Corre pdflatex 3 veces, porque el índice y «página X de Y» necesitan 2 pasadas extra.
@@ -27,6 +28,22 @@ if [ -z "${PDFLATEX:-}" ]; then
 fi
 
 cd "$DIR" || exit 2
+# Los bytes 7, 8 y 12 (campana, retroceso y salto de página) aparecen cuando un script escribe
+# una barra invertida seguida de a, b o f. LaTeX compila igual y el comando queda roto sin aviso
+# (regla del 30 oct 2026). Se cuentan en bytes, en todos los .tex de la carpeta.
+CONTROL="$(uv run python -I -c "
+import glob
+for f in sorted(glob.glob('*.tex')):
+    b = open(f, 'rb').read()
+    n = sum(b.count(bytes([c])) for c in (7, 8, 12))
+    if n:
+        print(f, n)
+")"
+if [ -n "$CONTROL" ]; then
+  echo "Hay bytes de control (7, 8 o 12) en el .tex. Repara el texto antes de compilar:" >&2
+  echo "$CONTROL" >&2
+  exit 1
+fi
 for i in 1 2 3; do
   echo "Pasada $i de 3 de pdflatex. Cada una tarda de 5 a 40 segundos." >&2
   "$PDFLATEX" -interaction=nonstopmode -halt-on-error -output-directory="$SALIDA" "$NOMBRE.tex" \
