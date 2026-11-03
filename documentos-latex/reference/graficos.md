@@ -66,6 +66,8 @@ uv run --with playwright python scripts/capturar.py plantillas/graficos.html fig
 
 El capturador usa `channel="msedge"`, así que no descarga navegadores. Captura a escala 2 para que el PNG se vea nítido impreso. Si la página escribe errores en la consola, el capturador los imprime y sale con código 1.
 
+También mide los textos superpuestos. Con el renderer SVG de ECharts cada etiqueta es un `<text>`, y si 2 textos visibles se cruzan más de 1,5 px por lado, el capturador imprime «TEXTO SUPERPUESTO» con los 2 textos y sale con código 1. Por cada lámina dice cuántos textos midió. Una lámina con 0 textos medidos, como las fichas de indicadores hechas en HTML, no se midió, y esa hay que mirarla en el PNG.
+
 ## 7. Mirar cada PNG
 
 Lee cada imagen con la herramienta de lectura antes de entregarla. Busca:

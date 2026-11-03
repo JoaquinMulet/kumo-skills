@@ -20,6 +20,28 @@ from playwright.sync_api import sync_playwright
 # ocupada sin dejar colgado un error de la página.
 ESPERA_MS = 60000
 
+# Un gráfico no se entrega con textos montados (regla del CLAUDE.md global, desde el 14 ago 2026).
+# Con el renderer SVG de ECharts cada etiqueta es un <text> del DOM, así que el choque se mide en
+# vez de mirarse. Se ignoran los textos invisibles y los cruces de menos de 1,5 px por lado, que
+# son el borde de la caja de la letra y no se ven.
+CHOQUES_JS = """lamina => {
+  const visibles = [...lamina.querySelectorAll('text')].filter(t => {
+    const r = t.getBoundingClientRect()
+    const s = getComputedStyle(t)
+    const opaco = Number(t.getAttribute('fill-opacity') ?? 1) * Number(t.getAttribute('opacity') ?? 1) * Number(s.opacity)
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && opaco > 0.05 && t.textContent.trim()
+  }).map(t => ({ texto: t.textContent.trim(), r: t.getBoundingClientRect() }))
+  const pares = []
+  for (let i = 0; i < visibles.length; i++)
+    for (let j = i + 1; j < visibles.length; j++) {
+      const a = visibles[i].r, b = visibles[j].r
+      const ancho = Math.min(a.right, b.right) - Math.max(a.left, b.left)
+      const alto = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)
+      if (ancho > 1.5 && alto > 1.5) pares.push([visibles[i].texto, visibles[j].texto])
+    }
+  return { pares, medidos: visibles.length }
+}"""
+
 if len(sys.argv) < 3:
     print(__doc__, file=sys.stderr)
     sys.exit(2)
@@ -42,10 +64,18 @@ with sync_playwright() as p:
     pag.goto(PAGINA.as_uri() + (f"?linea={LINEA}" if LINEA else ""))
     pag.wait_for_function("window.listo === true", timeout=ESPERA_MS)
     pag.wait_for_timeout(500)  # deja terminar las animaciones de entrada
+    choques = []
     for ident in pag.eval_on_selector_all(".lamina", "els => els.map(e => e.id)"):
         pag.locator(f"#{ident}").screenshot(path=str(SAL / f"{ident}.png"))
-        print("Escrita", ident, file=sys.stderr)
+        medida = pag.eval_on_selector(f"#{ident}", CHOQUES_JS)
+        # El conteo es la prueba de que se midió algo. 0 textos en una lámina con gráfico
+        # significa que el gráfico no usa el renderer SVG y el choque no se pudo medir.
+        print(f"Escrita {ident}, {medida['medidos']} textos medidos", file=sys.stderr)
+        for a, b in medida["pares"]:
+            choques.append(f"{ident}: «{a}» se monta con «{b}»")
     nav.close()
 for e in errores:
     print("ERROR EN LA PÁGINA:", e, file=sys.stderr)
-sys.exit(1 if errores else 0)
+for c in choques:
+    print("TEXTO SUPERPUESTO:", c, file=sys.stderr)
+sys.exit(1 if errores or choques else 0)
