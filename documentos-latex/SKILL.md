@@ -33,7 +33,7 @@ El orden importa. Un documento bien medido con cifras falsas no sirve, y uno con
 
 **Cada capítulo abre con un recuadro de resumen**, justo bajo el título. El entorno `resumen` de la plantilla ya cae en la grilla.
 
-**Las palabras difíciles van en un glosario al inicio**, con el macro `\termino`. Una palabra que aparece antes de explicarse es un defecto de orden. Para auditarlo usa `doc-cadena-causal`.
+**Las palabras difíciles van en un glosario al inicio**, con el macro `\termino`. Una palabra que aparece antes de explicarse es un defecto de orden. Para medirlo usa el script `verificar_orden.py` de `doc-prueba-de-uso`, que lee los `\section` del `.tex`.
 
 **El resumen tiene el mismo equilibrio que el texto.** Los resúmenes cambian el juicio del lector, y los escritos por quien tiene interés salen más positivos que el documento (Cardinaels y coautores, 2019). Cada recuadro de resumen nombra también el riesgo principal.
 
