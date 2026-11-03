@@ -36,6 +36,14 @@ CENTINELAS = {
         "la description nombra el marcador": r"termina en el marcador\s+FIN-DESARROLLO-RIGUROSO",
         "la description obliga la higiene": r"Higiene continua del repo. se aplica siempre",
         "el marcador de cierre existe": r"<!-- FIN-DESARROLLO-RIGUROSO -->",
+        # El puntero al anexo tiene que decir QUE lleva.
+        "el puntero nombra la receta": r"receta de 5 pasos para\s+escribir una comprobación de",
+        # La portada (3 nov 2026). sin la tabla, ninguna skill de pstack se carga.
+        "la portada nombra las skills de pstack": r"Qué leer en cada situación",
+        "subagentes en primer plano": r"Un subagente corre sus comandos en primer plano",
+    },
+    # La seccion de higiene se movio tal cual a este anexo el 3 nov 2026.
+    "desarrollo-riguroso/reference/higiene-principios.md": {
         # De doc-cadena-causal. la analogia del queso no se armaba.
         "que es una lamina": r"La lámina es la capa que revisa",
         "que es un agujero": r"agujeros son los casos que esa capa no mira",
@@ -60,8 +68,6 @@ CENTINELAS = {
         "la misma vara": r"MISMA vara",
         # La leccion que ordena la eleccion de herramientas.
         "catalogo mide forma, lo tuyo mide verdad": r"miden la forma[.;]\s+[Ss]olo las que nacen de un fallo tuyo",
-        # El puntero al anexo tiene que decir QUE lleva.
-        "el puntero nombra la receta": r"receta de 5 pasos para escribir una\s+comprobación de",
     },
     "desarrollo-riguroso/reference/higiene-continua.md": {
         # De doc-completitud. el vacio mas grande.
