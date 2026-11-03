@@ -1,226 +1,71 @@
 ---
 name: doc-prueba-de-uso
 description: >-
-  Valida un documento con la PRUEBA DE USO: un lector frío (modelo débil, sin
-  contexto, leyendo SOLO la sección) debe poder EJECUTAR la tarea que esa
-  sección existe para habilitar — construir la base de datos desde el anexo de
-  esquema, reconstruir el modelo financiero desde el capítulo financiero,
-  escribir el backlog desde el capítulo de producto — y su artefacto se
-  califica contra un rubric escrito ANTES. Úsala cuando un documento "completo"
-  y "bien escrito" igual no le sirve a quien debe actuar con él, cuando el
-  usuario diga "no se entiende nada", "con esto no se puede construir",
-  "pruébalo con la tarea real", "pásaselo a haiku y que lo haga", o después de
-  correr doc-completitud y doc-narrativa (esta es la
-  prueba más exigente de las tres: explicar ≠ poder hacer). Orquesta lectores
-  débiles con el tool Workflow; el rubric, la verificación de fantasmas y el
-  parchado son SIEMPRE del orquestador.
+  Valida un documento con la PRUEBA DE USO. Un lector frío (un modelo débil, sin contexto, que lee
+  SOLO la sección) tiene que EJECUTAR la tarea que esa sección existe para habilitar (armar la base
+  de datos desde el anexo de esquema, rehacer el modelo financiero desde el capítulo financiero), y
+  su resultado se califica contra una pauta escrita ANTES. Trae además un script que falla si un
+  término se usa antes de la sección que lo explica. Úsala antes de entregar un documento a quien
+  debe actuar con él, cuando el usuario diga "no se entiende nada", "con esto no se puede construir",
+  "pruébalo con la tarea real", "pásaselo a haiku y que lo haga", "está desordenado", o cuando un
+  documento completo y bien escrito igual no le sirve a nadie.
 ---
 
-# Doc Prueba de Uso. El documento se prueba HACIENDO, no explicando
+# Prueba de uso. Un documento se prueba haciendo la tarea
 
-## La lección que originó esta skill (el error del Anexo D, Aero360, 07-2026)
+Un informe de Aero360 pasó 2 revisiones con lectores que debían explicar cada sección, y Joaquín
+abrió el anexo de datos y dijo «no se entiende nada». Nombraba 28 tablas sin un solo atributo. La
+prueba que sirvió fue la que él propuso: «pásale el anexo a Haiku y pídele que te arme la base de
+datos». Resumir exige lo que está. Ejecutar exige lo que falta.
 
-Un informe estratégico pasó **dos** controles de calidad con lectores débiles:
-un loop de completitud ("¿puedes explicar cada sección sin vacíos?" → sí) y una
-reestructura de storytelling ("¿se lee como un relato?" → sí). Aun así, cuando
-el usuario abrió el anexo del esquema de datos, su veredicto fue *"no se
-entiende nada"*, y tenía razón. El anexo nombraba 28 tablas sin un solo
-atributo, sin llaves, sin política de IDs. Un diseñador no podía construir la
-base de datos desde él.
+## El procedimiento
 
-**El error no fue de escritura. Fue de criterio de validación.** Los lectores
-verificaban que el contenido *se pudiera explicar*. Nadie verificaba que
-*sirviera para ejecutar su propósito*. Un lector puede resumir perfectamente un
-anexo que es inservible como referencia de diseño, porque resumir solo exige
-lo que está, y ejecutar exige lo que falta.
+1. Por cada sección, completa la frase «después de leer solo esto, el lector debe poder ___». Eso
+   define el rol del lector (DBA, CFO, abogado) y su tarea. Una sección sin tarea queda fuera.
+2. Escribe la pauta ANTES de lanzar al lector, con los criterios críticos y los importantes. Para
+   un esquema, las llaves y las restricciones. Para un método, inventa casos con números que no estén
+   en el documento y calcula tú las respuestas.
+3. Copia la sección sola a un archivo de la carpeta de borradores. El lector recibe solo ese archivo.
+4. Lanza el lector con `Agent`, modelo `haiku`, comandos en primer plano. Su encargo tiene 4 partes.
+   - El rol y la tarea, con la ruta exacta del archivo.
+   - 2 o 3 preguntas que exigen haber leído (citar una línea, nombrar un elemento). Un lector que
+     no leyó inventa, y esto lo delata.
+   - El resultado completo, no un resumen.
+   - Todo lo que tuvo que adivinar, y dónde lo buscó. Un dato que la sección manda a otra («ver
+     §5.3») no es un vacío.
+5. Califica el resultado contra la pauta. Busca con `grep` cada vacío que el lector reclama antes
+   de creerle. En el caso del anexo, 10 de 12 hallazgos de una ronda eran falsos. Revisa también tu
+   propio enunciado del caso, porque una duda puede nacer ahí y no en el documento.
+6. Corrige tú, con el parche más chico que desbloquea la tarea. Nunca le pides al lector que arregle
+   el documento.
+7. Repite con un lector nuevo hasta que pase los criterios críticos y no reporte vacíos reales.
+   Suelen bastar 2 o 3 rondas, y a veces 1.
 
-La prueba correcta apareció con el arreglo (propuesta por el usuario): *"pásale
-el anexo a Haiku y pídele que te arme la base de datos. Analiza su respuesta e
-itera el anexo hasta que el resultado sea el esperado"*. Tres rondas después el
-anexo era una referencia real: esquema relacional con llaves subrayadas,
-diagramas E-R con cardinalidades y un diccionario de ~30 entidades.
+Un modelo débil mide si la información alcanza. Un modelo fuerte mide si el texto admite una sola
+lectura, y cuando entiende mal, el defecto es del documento. Usa el fuerte en la última ronda de un
+documento que otro va a ejecutar al pie de la letra.
 
-**Regla madre. A cada sección de un documento se le exige lo mismo que a un
-plano, que alguien que no estuvo en la conversación pueda construir con él.**
+## El orden de los términos, con un script
 
-## Cuándo usarla
+Un término que se usa antes de explicarse no lo marca ningún lector, porque al final del documento
+sí está explicado. Escribe un contrato con cada término y la sección que lo explica, y córrelo.
 
-- El usuario dice que un documento "no se entiende", "está muy condensado" o
-  "con esto no se puede trabajar", aunque haya pasado revisiones previas.
-- Antes de entregar un documento a quien debe ACTUAR con él (un desarrollador,
-  un CFO, un abogado, un socio que decide).
-- Como última etapa del pipeline de calidad documental:
-  `doc-completitud` (que no falte nada) → `doc-cadena-causal` (que cada cosa se
-  sostenga sola) → `doc-narrativa` (que se lea bien) →
-  **`doc-prueba-de-uso` (que sirva para hacer)**.
-
-> Ojo con un punto ciego propio. Esta skill mide si el lector puede **ejecutar la
-> tarea**, y un concepto puede estar sin fundamento sin bloquear ninguna tarea,
-> el lector calcula, registra y responde bien, y aun así no sabe por qué existe
-> la pieza que está usando. Por eso `doc-cadena-causal` va antes y no la
-> reemplaza esta.
-
-## El método, paso a paso
-
-1. **Inventario de propósitos.** Para cada capítulo/sección del documento,
-   completa la frase: *"después de leer SOLO esto, el lector debe poder
-   \_\_\_"*. Si no puedes completarla, esa sección no tiene propósito operativo
-   (o es puramente narrativa, está bien, se excluye de la prueba). El
-   propósito define el **rol** del lector de prueba (DBA, CFO, PM, abogado…) y
-   su **tarea** ("arma el DDL", "reconstruye el modelo en una tabla", "escribe
-   el backlog").
-
-2. **Rubric ANTES de la prueba.** El orquestador escribe, por sección, los
-   criterios verificables del artefacto esperado (para un esquema: PKs, FKs,
-   constraints exactos. Para finanzas: los supuestos y cifras que deben poder
-   reconstruirse). Sin rubric previo, la calificación se contamina con lo que
-   el lector haya producido. Separa CRÍTICOS (si falla uno, iterar) de
-   IMPORTANTES. Para documentos que enseñan un MÉTODO (una fórmula, un
-   protocolo): inventa casos con números que **NO estén en el documento**,
-   obliga a aplicar, no a copiar, y **precalcula tú las respuestas correctas**
-   en el rubric antes de lanzar al lector.
-
-3. **Extracción aislada.** Cada sección se copia a un archivo propio en el
-   scratchpad. El lector recibe SOLO ese archivo, si lee el documento entero,
-   la prueba no mide la autosuficiencia de la sección.
-
-   **Las dos calibraciones del lector, y por qué hacen falta las dos.** El modelo
-   **débil** (haiku) mide si la información *alcanza*. Lo que no está, no lo puede
-   suplir, así que sus vacíos son huecos reales de contenido. El modelo **fuerte**
-   mide algo distinto y más peligroso: especificar si el documento es **interpretable de una sola
-   manera**. Un lector capaz rellena los huecos sin darse cuenta, por eso no sirve
-   para medir completitud, pero cuando *malinterpreta*, no está fallando. Está
-   mostrando que el texto admite dos lecturas y la equivocada era razonable. Esos son
-   los bugs que sobreviven toda revisión, porque nadie los ve como vacíos.
-   Regla. **Débil para completitud, fuerte para ambigüedad**, y las
-   malinterpretaciones del fuerte se tratan como defecto del documento, nunca del
-   lector. *(Caso real: un lector produjo un guard que reventaba justo cuando el
-   script estaba bien configurado, generalizando mal un ejemplo del documento que a
-   su autor le parecía obvio. El arreglo fue el ejemplo, no el lector.)*
-
-4. **Lector con tarea + prueba de lectura + vacíos.** El prompt del
-   lector (modelo barato, p. ej. haiku) tiene cuatro partes obligatorias:
-   - *Rol y tarea*: "Eres el [rol] recién llegado. Tu ÚNICA fuente es este
-     archivo. [Haz la tarea]."
-   - *Prueba de lectura*: 2-3 preguntas cuya respuesta exige haber leído de
-     verdad (citar una línea textual, nombrar elementos específicos). Detecta
-     lectores que inventan sin leer, pasó en producción.
-   - *El artefacto completo* (no resumido).
-   - *AMBIGÜEDADES/VACÍOS*: todo lo que tuvo que adivinar, indicando dónde
-     buscó. Con la **regla de referencias canónicas**: si el dato está
-     explícitamente referenciado a otra sección ("ver §5.3"), NO es un vacío,
-     es la arquitectura del documento (cada número vive en un solo lugar);
-     se anota aparte como referencia externa.
-
-5. **Calificación + disciplina de fantasmas.** El orquestador compara el
-   artefacto contra el rubric y **verifica cada vacío reclamado contra el
-   documento antes de parchar** (grep/lectura directa). Los lectores débiles
-   producen fantasmas en cantidad, en el caso origen, ~10 de 12 hallazgos de
-   una ronda eran falsos (el lector no vio una entidad que SÍ estaba en el
-   diagrama, ignoró convenciones declaradas en la leyenda). Señales de lector
-   degradado: responde en otro idioma, inventa valores que el documento niega,
-   demasiadas herramientas usadas. Un hallazgo sin verificación no se parcha.
-   Y una clase de fantasma descubierta en producción: **el vacío puede ser del
-   ENUNCIADO del caso, no del documento**. Cuando el orquestador inventa el caso
-   de prueba, una ambigüedad del enunciado ("¿el 9 % es crecimiento total o
-   per-share?") llega reportada como vacío del documento. Verifica cada vacío
-   contra AMBOS, el documento y tu propio enunciado: si la duda nace del
-   enunciado y el documento contiene la convención que la resuelve (y el lector
-   la aplicó bien), no se parcha nada.
-
-6. **Parche mínimo, del orquestador.** Se corrige SOLO lo real, con la
-   aclaración más pequeña que desbloquea la tarea (una frase, una fila, una
-   convención explicitada). Nunca se le pide al lector que "arregle" el
-   documento. No tiene el contexto.
-
-7. **Iterar hasta convergencia.** Ronda nueva con lector fresco (nunca el
-   mismo, ya está contaminado). Convergencia = artefacto pasa los CRÍTICOS del
-   rubric **y** el lector declara explícitamente que no encontró ambigüedades
-   reales. Típico: 2-3 rondas. En la última ronda conviene variar la prueba de
-   lectura hacia lo recién agregado, para confirmar que las correcciones se
-   captan en frío. Si el documento ya pasó `doc-completitud` y `doc-narrativa`,
-   la prueba de uso puede converger en UNA ronda (caso real: rubric 6/6 críticos
-   al primer intento), el criterio de parada es el rubric, no un número de
-   rondas ritual. Una ronda perfecta no se repite por ceremonia.
-
-## Reglas de oro
-
-- **Probar haciendo, no explicando.** "¿Se entiende?" mide prosa. "hazlo" mide
-  utilidad. Solo la segunda encuentra los atributos que faltan.
-- **El rubric se escribe antes de ver respuestas.**
-- **Fantasma no verificado = no se toca el documento.**
-- **Referencia canónica ≠ vacío.** No degradar la arquitectura del documento
-  duplicando números para complacer al lector aislado.
-- **Cada sección, su rol y su tarea.** Un solo "¿puedes explicarlo?" genérico
-  es exactamente el error que esta skill corrige.
-- **El artefacto del lector es descartable.** No es código para producción. Es
-  el instrumento de medición del documento.
-
-## Script para el tool Workflow (fan-out por secciones)
-
-```js
-export const meta = {
-  name: 'doc-prueba-de-uso',
-  description: 'Prueba de uso por seccion: lectores frios ejecutan la tarea de cada seccion',
-  phases: [{ title: 'Prueba de uso' }],
-}
-// SECCIONES INCRUSTADAS con guard por el orquestador (contrato del caller del esqueleto
-// compartido: una lista vacía hace que la prueba corra sobre NADA y devuelva un veredicto
-// schema-válido. El porqué y los demás modos de fallo del andamiaje, en
-// desarrollo-riguroso/reference/esqueleto-de-verificacion.md. Léelo antes de tocar esto):
-const SECCIONES = [ /* { id, file, rol, tarea, pruebaLectura }, ... — literales */ ]
-if (!SECCIONES.length) throw new Error('Incrusta las secciones en el script antes de correrlo')
-const SCHEMA = {
-  type: 'object',
-  properties: {
-    prueba_lectura: { type: 'string' },
-    artefacto: { type: 'string' },
-    vacios_bloqueantes: { type: 'array', items: { type: 'object', properties: {
-      descripcion: { type: 'string' }, donde_busco: { type: 'string' } },
-      required: ['descripcion', 'donde_busco'] } },
-    vacios_menores: { type: 'array', items: { type: 'string' } },
-    referencias_externas: { type: 'array', items: { type: 'string' } },
-  },
-  required: ['prueba_lectura', 'artefacto', 'vacios_bloqueantes', 'vacios_menores', 'referencias_externas'],
-}
-const res = await parallel(SECCIONES.map(s => () =>
-  agent(
-    `Eres ${s.rol}, recién llegado al proyecto. Tu ÚNICA fuente es este archivo ` +
-    `(no tienes acceso a nada más; léelo COMPLETO, por partes si es largo): ${s.file}\n\n` +
-    `PRUEBA DE LECTURA (responde primero): ${s.pruebaLectura}\n\n` +
-    `TU TAREA: ${s.tarea}\n\n` +
-    `Al final, lista VACÍOS BLOQUEANTES (lo que tuviste que adivinar para poder ejecutar ` +
-    `la tarea, indicando dónde lo buscaste) y VACÍOS MENORES. REGLA: si el documento ` +
-    `remite explícitamente un dato a otra sección o capítulo ("ver §X"), NO es un vacío — ` +
-    `regístralo en referencias_externas. Si no hay vacíos reales, dilo con listas vacías.`,
-    { label: `uso:${s.id}`, model: 'haiku', schema: SCHEMA }
-  ).then(r => ({ id: s.id, ...r }))
-))
-return res.filter(Boolean)
-// La calificación contra el rubric, la verificación de fantasmas y los parches
-// son del ORQUESTADOR, en el turno siguiente — nunca de un agente.
+```
+uv run python -I scripts/verificar_orden.py documento.md contrato.json
 ```
 
-## Tus hallazgos deben sobrevivir a la próxima reescritura
+El contrato es un JSON con esta forma.
 
-Los parches que produce esta skill viven en una redacción concreta y **no
-sobreviven a una reescritura del documento**: la redacción cambia, el arreglo
-desaparece y el resultado sigue leyéndose bien, así que nadie lo nota.
+```json
+{"swap": {"patron": "(?i)\\bswap\\b", "seccion": "Qué es un swap"}}
+```
 
-Antes de cerrar, convierte cada arreglo en un **centinela**, una frase textual,
-corta y distintiva, dentro de un test de regresión que falle si desaparece. La
-doctrina completa, con el caso real que la originó, está en
-[`doc-narrativa`](../doc-narrativa/SKILL.md), sección «Antes de reescribir».
+Sale con 1 si algún término se adelanta, si una sección del contrato no existe o si un término
+desapareció. Lee títulos `#` de Markdown, `<section id>` de HTML y `\section` de LaTeX.
 
-## Variantes
+## Que los arreglos sobrevivan
 
-- **Sección única** (el caso origen): sin Workflow, un solo `Agent` con model
-  haiku por ronda, iterando 2-3 veces. Más simple y suficiente.
-- **Prueba de consistencia**: cuando una sección presenta la misma información
-  en varias representaciones (texto + diagrama + tabla), pide además "reporta
-  toda contradicción entre las representaciones". Ojo: produce más fantasmas
-  (leer diagramas SVG degrada a los lectores débiles), la disciplina del paso
-  5 se vuelve crítica.
-- **Rubric implícito**: para secciones narrativas (una tesis, un cierre), la
-  "tarea" es reproducir la decisión y sus porqués ante un tercero exigente. El
-  rubric es la lista de decisiones/argumentos que deben sobrevivir.
+Cada arreglo vive en una redacción, y la próxima reescritura lo borra sin que se note. Antes de
+cerrar, convierte cada arreglo en un centinela. Es una frase corta y distintiva dentro de una prueba
+que falla si la frase desaparece, como `scripts/centinelas.py` del repo kumo-skills. El contrato de
+orden también se queda junto al documento y se vuelve a correr después de cada edición.
