@@ -1,0 +1,5 @@
+# Los scripts que corre sh o bash van siempre con LF. Con core.autocrlf=true, git los
+# pasaba a CRLF al tocarlos, y un pre-commit con CRLF deja de correr.
+*.sh text eol=lf
+.githooks/* text eol=lf
+statechart/scripts/statechart text eol=lf
