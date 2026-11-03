@@ -39,7 +39,8 @@ fi
 # bloquea de mas se termina apagando y ahi se pierde entero.
 # ---------------------------------------------------------------------------
 if command -v node >/dev/null 2>&1; then
-  for prueba in hooks/probar-revisar-respuesta.mjs hooks/probar-proteger-repo.mjs hooks/probar-revisar-archivo.mjs; do
+  for prueba in hooks/probar-revisar-respuesta.mjs hooks/probar-proteger-repo.mjs hooks/probar-revisar-archivo.mjs \
+                hooks/probar-revisar-encargo.mjs hooks/probar-preguntar-envio.mjs; do
     node "$prueba" >/dev/null || {
       echo "" >&2
       echo "Commit BLOQUEADO. $prueba fallo. Correlo solo para ver que caso." >&2

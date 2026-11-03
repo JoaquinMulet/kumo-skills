@@ -58,6 +58,18 @@ const NUESTROS = [
     que: 'avisa BOM en config, CRLF en .sh y BOM escondido en codigo',
   },
   {
+    evento: 'PreToolUse',
+    matcher: 'Agent|Task',
+    script: 'revisar-encargo.mjs',
+    que: 'niega un encargo sin primer plano, robots.txt o la regla del stash',
+  },
+  {
+    evento: 'PreToolUse',
+    matcher: 'mcp__.*',
+    script: 'preguntar-envio.mjs',
+    que: 'pide confirmacion antes de enviar o publicar por un conector',
+  },
+  {
     evento: 'Stop',
     script: 'revisar-respuesta.mjs',
     que: 'devuelve la respuesta con &&, huecos, voseo o rayas',

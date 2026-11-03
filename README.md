@@ -85,6 +85,8 @@ los saca.
 | `exigir-higiene.mjs` | antes de cada `git commit` o `git push` | **Niega** la herramienta si el repo no tiene su aparato de higiene instalado. |
 | `proteger-repo.mjs` | antes de cada comando de Bash | **Niega** una tubería que tapa el código de salida de un verificador, un `&` en un comando en segundo plano, `git stash` o `reset --hard` con árboles de trabajo hermanos, un árbol de trabajo dentro de OneDrive, un commit sin `git diff --cached --stat` antes, y un `.sh` sin 100755 o sin LF. Se prueba con `node hooks/probar-proteger-repo.mjs`. |
 | `revisar-archivo.mjs` | después de cada Write o Edit | Le avisa al agente si el archivo quedó con BOM (configuración), con CRLF (`.sh`) o con un BOM escondido (código). Se prueba con `node hooks/probar-revisar-archivo.mjs`. |
+| `revisar-encargo.mjs` | antes de lanzar un subagente | **Niega** el encargo si no dice que corra en primer plano, si lee la web sin decir robots.txt, o si trabaja en árboles de trabajo sin prohibir `git stash`. Lee también los archivos `.md` que el encargo nombra. Se prueba con `node hooks/probar-revisar-encargo.mjs`. |
+| `preguntar-envio.mjs` | antes de una herramienta de conector que envía o publica | **Pregunta** al usuario, aunque la sesión esté en modo automático. Un borrador no pregunta. Se prueba con `node hooks/probar-preguntar-envio.mjs`. |
 | `revisar-respuesta.mjs` | al terminar cada respuesta | Devuelve la respuesta al agente si un bloque de shell trae `&&`, un hueco como `<id>`, un `Read-Host` u `Out-File -Encoding utf8`, o si la prosa trae voseo o raya. Se prueba con `node hooks/probar-revisar-respuesta.mjs`. |
 
 ### Por que el segundo bloquea, y como se sale de el
