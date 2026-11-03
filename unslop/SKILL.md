@@ -24,6 +24,15 @@ vez.
    uv run python -I scripts/unslop_puntuacion.py --listar archivo.md
    ```
 
+   Si el texto es un entregable (un plan, un informe, un correo), corre también el lint de las reglas
+   de Joaquín. Marca horas o jornadas por tarea, una instrucción de no contarle algo a alguien,
+   «pagado por» sin destinatario y una duda narrada en vez de resuelta. Las 2 últimas son de revisión,
+   porque a veces son correctas.
+
+   ```
+   uv run python -I scripts/lint_entregable.py informe.md
+   ```
+
 2. Busca a mano los patrones de abajo y reescribe conservando el significado.
 3. Pregúntate qué hace que el texto todavía se vea escrito por una IA, y arregla eso.
 
