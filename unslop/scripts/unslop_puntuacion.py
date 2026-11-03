@@ -14,16 +14,17 @@ Que NO toca, y esto manda sobre todo lo demas.
   - Las flechas ->, que a veces se escriben con guion largo pegado.
 
 Uso.
-  python scripts/unslop_puntuacion.py --listar          cuenta, no escribe
-  python scripts/unslop_puntuacion.py archivo.md        escribe ese archivo
-  python scripts/unslop_puntuacion.py --todos           escribe todos
+  uv run python -I scripts/unslop_puntuacion.py --listar archivo.md   cuenta, no escribe
+  uv run python -I scripts/unslop_puntuacion.py archivo.md            escribe ese archivo
+  uv run python -I scripts/unslop_puntuacion.py --todos               todos los SKILL.md y el
+                                                                      README.md bajo la carpeta actual
 """
 import io
 import os
 import re
 import sys
 
-RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RAIZ = os.getcwd()  # --todos recorre la carpeta desde donde se corre
 
 # --- Las reglas -------------------------------------------------------
 
@@ -131,8 +132,10 @@ def archivos():
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
     solo_listar = '--listar' in sys.argv
-    objetivo = archivos() if ('--todos' in sys.argv or solo_listar) else [
-        os.path.join(RAIZ, a) for a in args]
+    if '--todos' in sys.argv or (solo_listar and not args):
+        objetivo = archivos()
+    else:
+        objetivo = [os.path.abspath(a) for a in args]
     if not objetivo:
         print(__doc__)
         return 2
