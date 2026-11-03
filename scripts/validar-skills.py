@@ -33,8 +33,10 @@ import glob
 import os
 
 VOSEO = re.compile(
-    r"\b(revisá|avisá|poné|andá|tenés|querés|elegí|quitá|guardá|mirá|hacé|podés|"
-    r"entendés|usá|escribí|corré|vení|salí|sabés|dejá|mandá|probá|decime|fijate|"
+    # Sin «escribí», «elegí» ni «salí», que también son el pretérito normal («escribí el
+    # archivo»). Daban falsos positivos (medido el 3 nov 2026 sobre respuestas reales).
+    r"\b(revisá|avisá|poné|andá|tenés|querés|quitá|guardá|mirá|hacé|podés|"
+    r"entendés|usá|corré|vení|sabés|dejá|mandá|probá|decime|fijate|"
     r"acordate|quedate|llevate|ponete|hacete)\b",
     re.I,
 )
