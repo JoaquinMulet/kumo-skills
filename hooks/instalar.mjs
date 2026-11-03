@@ -45,6 +45,11 @@ const NUESTROS = [
     script: 'recordar-estandar.mjs',
     que: 'inyecta el contrato de lectura al abrir la sesion',
   },
+  {
+    evento: 'Stop',
+    script: 'revisar-respuesta.mjs',
+    que: 'devuelve la respuesta con &&, huecos, voseo o rayas',
+  },
 ]
 
 function leerAjustes() {
@@ -64,12 +69,18 @@ ajustes.hooks ??= {}
 
 // Sacar SIEMPRE los nuestros primero. Asi reinstalar no duplica, y
 // --quitar es el mismo camino sin el paso de agregar.
+// Se quita hook por hook, no la entrada entera. Una entrada puede mezclar un hook nuestro con
+// uno ajeno (pasó el 3 nov 2026 con heredoc-barras.py junto a exigir-higiene.mjs), y borrar la
+// entrada completa se llevaba el ajeno sin avisar.
+const esNuestro = (h) => String(h.command ?? '').includes(MARCA)
 let quitados = 0
 for (const evento of Object.keys(ajustes.hooks)) {
-  const antes = ajustes.hooks[evento].length
-  ajustes.hooks[evento] = ajustes.hooks[evento].filter((entrada) =>
-    !(entrada.hooks ?? []).some((h) => String(h.command ?? '').includes(MARCA)))
-  quitados += antes - ajustes.hooks[evento].length
+  for (const entrada of ajustes.hooks[evento]) {
+    const antes = (entrada.hooks ?? []).length
+    entrada.hooks = (entrada.hooks ?? []).filter((h) => !esNuestro(h))
+    quitados += antes - entrada.hooks.length
+  }
+  ajustes.hooks[evento] = ajustes.hooks[evento].filter((entrada) => entrada.hooks.length > 0)
   if (ajustes.hooks[evento].length === 0) delete ajustes.hooks[evento]
 }
 
@@ -97,7 +108,7 @@ if (QUITAR) {
   }
 }
 const otros = Object.entries(ajustes.hooks)
-  .flatMap(([e, xs]) => xs.filter((x) => !(x.hooks ?? []).some((h) => String(h.command ?? '').includes(MARCA))).map(() => e))
+  .flatMap(([e, xs]) => xs.flatMap((x) => (x.hooks ?? []).filter((h) => !esNuestro(h)).map(() => e)))
 process.stdout.write(`  hooks de otros que se conservan: ${otros.length}${otros.length ? ' (' + [...new Set(otros)].join(', ') + ')' : ''}\n`)
 
 if (SOLO_LISTAR) {

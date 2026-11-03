@@ -83,6 +83,7 @@ los saca.
 |---|---|---|
 | `recordar-estandar.mjs` | al abrir la sesion | Inyecta el contrato de lectura de `desarrollo-riguroso` antes de que el agente toque nada. No bloquea, porque `SessionStart` no puede. |
 | `exigir-higiene.mjs` | antes de cada `git commit` o `git push` | **Niega** la herramienta si el repo no tiene su aparato de higiene instalado. |
+| `revisar-respuesta.mjs` | al terminar cada respuesta | Devuelve la respuesta al agente si un bloque de shell trae `&&`, un hueco como `<id>`, un `Read-Host` u `Out-File -Encoding utf8`, o si la prosa trae voseo o raya. Se prueba con `node hooks/probar-revisar-respuesta.mjs`. |
 
 ### Por que el segundo bloquea, y como se sale de el
 
