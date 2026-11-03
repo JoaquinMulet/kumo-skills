@@ -195,7 +195,16 @@ Detalles oficiales y limitaciones: ver el bloque "Where Skills work" del overvie
 
 ## Skills de terceros — auditar antes de instalar
 
-Una skill externa se instala con el mismo rigor que software en producción: leer TODO su contenido (SKILL.md, `reference/`, scripts), buscar instrucciones adversariales (directivas de ignorar reglas, ocultar acciones, alterar comportamiento condicionalmente), llamadas de red, credenciales hardcodeadas, y listar qué comandos y herramientas ordena invocar. El mecanismo de la casa: apuntarle **`auditoria-de-realidad`** a la carpeta ANTES de copiarla a `~/.claude/skills/`. Checklist detallado de riesgo: guía «Skills for enterprise» de Anthropic.
+Una skill externa se instala con el mismo rigor que software en producción: leer TODO su contenido (SKILL.md, `reference/`, scripts), buscar instrucciones adversariales (directivas de ignorar reglas, ocultar acciones, alterar comportamiento condicionalmente), llamadas de red, credenciales hardcodeadas, y listar qué comandos y herramientas ordena invocar. El mecanismo de la casa es un `grep` de red, ejecución y secretos sobre la carpeta (`fetch`, `curl`, `http`, `spawn`, `exec`, `token`, `secret`, `ignore`) y la lectura de cada coincidencia, ANTES de copiarla. Checklist detallado de riesgo: guía «Skills for enterprise» de Anthropic.
+
+### Las skills copiadas de pstack
+
+El 3 de noviembre de 2026 se copiaron 24 skills de pstack (Lauren Tan, MIT, `github.com/cursor/plugins`, commit c742dd6). Se auditaron con ese `grep`. Solo `statechart` usa la red, para bajar Java y TLC con mise desde GitHub con la suma de comprobación fija. Reglas para ellas:
+
+- Van en inglés, como su original. Cada carpeta lleva su `LICENSE`.
+- No se editan en el repo. Una mejora va a pstack, o a la portada `desarrollo-riguroso` como ajuste de Kumo. Así se pueden actualizar copiando de nuevo.
+- La `unslop` de pstack no se copió. La de Kumo es su versión en español, con la misma numeración.
+- `statechart/scripts/test` no se copió, para no meter 376 archivos de prueba.
 
 ## Cuando Claude trabaje en este repo
 
@@ -221,4 +230,4 @@ El ciclo, en orden — saltarse un paso crea **drift bidireccional silencioso** 
 
 *(Caso real que originó esta sección, 12-jul-2026: la copia instalada de `desarrollo-riguroso` acumuló cinco lecciones de retros que nunca llegaron al repo, mientras el repo recibió una mejora que nunca llegó a la copia — lo descubrió el usuario preguntando, no el sistema.)*
 
-Las skills que instruyen editar skills (`retrospectiva-de-sesion`, `desarrollo-riguroso`) **referencian esta sección** en lugar de duplicar el procedimiento: el procedimiento vive en un solo lugar, que es este.
+Las skills que instruyen editar skills (`desarrollo-riguroso`) **referencian esta sección** en lugar de duplicar el procedimiento: el procedimiento vive en un solo lugar, que es este.
