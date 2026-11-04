@@ -22,7 +22,10 @@ Para la gobernanza interna (cómo agregar una skill, convenciones, checklist ant
 | [`verificacion-adversarial`](verificacion-adversarial/) | Comprueba cada cifra y cita de un texto que se publica, con un script que busca la frase en el archivo de la fuente primaria. |
 | [`doc-prueba-de-uso`](doc-prueba-de-uso/) | Prueba un documento haciendo la tarea. Un lector frío ejecuta lo que la sección habilita y se califica contra una pauta previa. Trae un script que falla si un término se usa antes de explicarse. |
 | [`unslop`](unslop/) | Quita las marcas de texto de IA, en español de Chile y con las reglas de prosa de Joaquín. |
-| [`analisis-de-empresas`](analisis-de-empresas/) | La puerta de gobernanza y las 70 preguntas a los estados financieros, con un validador del anexo. |
+| [`analisis-de-empresas`](analisis-de-empresas/) | El análisis de una empresa para invertir en 8 pasos, de la puerta de gobernanza y las 70 preguntas a la auditoría forense, el owner earnings, la valoración, el riesgo y el veredicto. Trae un validador del anexo y un buscador de citas. |
+| [`aws-deploy`](aws-deploy/) | Despliega aplicaciones Python sin servidor en AWS con SAM, con los errores que ya costaron en producción (DynamoDB, SQS, Bedrock). |
+| [`structured-reasoning`](structured-reasoning/) | Plantillas de razonamiento para depurar un error que cruza varios archivos, entender código ajeno o comparar 2 soluciones. |
+| [`windows-powershell`](windows-powershell/) | Los patrones de comandos de PowerShell 5.1 y 7 que funcionan en Windows, y los que fallan en silencio. |
 | [`documentos-latex`](documentos-latex/) | Documentos LaTeX con calidad editorial, con geometría medida, gráficos de ECharts y cada cifra contra su fuente. |
 | [`aeo-sitios-web`](aeo-sitios-web/) | Deja un sitio listo para agentes y búsqueda por IA, verificado con curl y con el puntaje de isitagentready. |
 
