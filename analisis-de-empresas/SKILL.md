@@ -1,13 +1,18 @@
 ---
 name: analisis-de-empresas
-description: Analiza una empresa en 2 pasos obligatorios y en orden. Primero la puerta de gobernanza e incentivos, que decide si vale la pena seguir (si los incentivos están mal, la historia de asignación de capital ya predice el futuro). Después las 70 preguntas para leer los estados financieros, derivadas del 10-K de Lehman 2007 anotado por Buffett, con un anexo que lleva evidencia y página o la marca [SIN DATO], y un script que valida ese anexo. Usa esta skill al partir el análisis de CUALQUIER empresa, al leer una memoria anual, un 10-K, un proxy o estados financieros completos, al cerrar un informe de análisis de empresa, o cuando el usuario menciona gobernanza, incentivos, asignación de capital, compensación de ejecutivos, calidad de la gestión, "vale la pena analizarla", checklist de estados, Lehman, o "qué preguntas hacerle a estos números".
+description: Analiza una empresa para invertir, en pasos obligatorios y en orden. Primero la puerta de gobernanza e incentivos, que decide si vale la pena seguir. Después las 70 preguntas a los estados financieros (Lehman 2007 anotado por Buffett) con un anexo validado por script, la auditoría forense de manipulaciones contables (Schilit), el owner earnings con su capex de mantenimiento ajustado por inflación (Greenwald y Buffett), la valoración por DCF y comparables, el riesgo (Taleb y Marks) y el veredicto. Usa esta skill al partir el análisis de CUALQUIER empresa, al leer una memoria anual, un 10-K, un proxy o estados financieros, al calcular owner earnings o capex de mantenimiento, al valorar una acción, o cuando el usuario menciona gobernanza, incentivos, asignación de capital, calidad de las utilidades, contabilidad forense, valor intrínseco, DCF, margen de seguridad, tesis de inversión, Lehman, o "qué preguntas hacerle a estos números".
 ---
 
 # Análisis de empresas
 
-Son 2 pasos, en este orden. La puerta decide si el análisis parte. El checklist decide si el
-análisis está completo. Las 2 skills que se juntaron aquí el 3 de noviembre de 2026 eran
-`gobernanza-primero` y `checklist-lehman`.
+Son 8 pasos, en este orden. La puerta decide si el análisis parte. El checklist decide si el
+análisis está completo. Los pasos 4 a 8 dicen cuánto vale y qué puede salir mal. Aquí se juntaron
+`gobernanza-primero` y `checklist-lehman` el 3 de noviembre de 2026, y `deep-financial-analysis` y
+`owner-earnings` el 4 de noviembre de 2026.
+
+Las 4 revisiones forenses que antes corrían como agentes en paralelo ahora se hacen una tras otra, y
+cada hallazgo se prueba con la cita de la nota en el archivo de la fuente. Es el criterio de Joaquín
+del 3 de noviembre de 2026. Un trabajo queda bien hecho cuando una comprobación lo demuestra.
 
 ## Paso 1. La puerta de gobernanza
 
@@ -234,9 +239,8 @@ Las 2 lecciones del mapa:
 
 Lee [`reference/checklist-lehman.md`](reference/checklist-lehman.md) completo y responde las 70
 preguntas en un anexo del informe. Cada respuesta empieza con su número («23.») y lleva su evidencia
-con página («p. 45»), nota o módulo del modelo, o la marca [SIN DATO] con lo que falta conseguir.
-
-## Paso 3. Validar el anexo y las búsquedas
+(una cifra, un documento con su página, una nota o un módulo del modelo), o la marca [SIN DATO] con lo
+que falta conseguir.
 
 El anexo se valida con un script, que falla si falta una pregunta o si una respuesta no trae ni
 evidencia ni [SIN DATO].
@@ -252,3 +256,125 @@ formulación.
 ```
 uv run --with pymupdf python -I scripts/buscar_en_fuente.py memoria.pdf --contar ROIC --contar "costo de capital" --sin-acentos
 ```
+
+## Paso 3. Preparar los datos
+
+Lee [`reference/fase1-preparacion.md`](reference/fase1-preparacion.md). Junta la memoria o el 10-K,
+el análisis de la gerencia y todas las notas, convierte los PDF a texto, y ubica las notas de
+reconocimiento de ingresos, propiedades y depreciación, impuestos diferidos, partes relacionadas y
+segmentos. Saca los ingresos por país y la inflación de cada país, porque el paso 5 los necesita. Dónde
+está cada dato en un 10-K y en unos estados chilenos lo dice
+[`reference/datos-donde-encontrarlos.md`](reference/datos-donde-encontrarlos.md).
+
+La carpeta de trabajo va en `C:/dev/`, fuera de OneDrive, con `fuente/`, `analisis/` y `salida/`.
+
+## Paso 4. Auditoría forense de manipulaciones contables
+
+Lee [`reference/fase2-revision-forense.md`](reference/fase2-revision-forense.md) y aplica sus 4
+revisiones una tras otra, sin agentes en paralelo.
+
+| Revisión | Técnicas | Dónde mirar |
+|---|---|---|
+| Manipulación de utilidades | EM-1 a EM-7 | Reconocimiento de ingresos, impuestos diferidos, partes relacionadas |
+| Flujo de caja | CF-1 a CF-3 | Estado de flujo completo, notas de cuentas por cobrar y por pagar |
+| Métricas clave | KM-1 a KM-2 | Segmentos, cifras fuera de norma, definición de cada indicador |
+| Contabilidad de adquisiciones | AA-1 a AA-3 | Combinaciones de negocios, plusvalía, intangibles |
+
+Cada hallazgo lleva su severidad (`CLEAN`, `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`) y la cita de la nota.
+La cita se prueba con `scripts/buscar_en_fuente.py --cita` sobre el archivo de la fuente. Un hallazgo
+cuya cita no aparece no entra al informe. El detalle de cada técnica está en la skill
+`financial-shenanigans`, que es el resumen del libro de Schilit.
+
+El puntaje de manipulaciones va de 0 a 100, ponderando la severidad de las 4 revisiones.
+
+| Puntaje | Lectura | Efecto en la tasa de descuento |
+|---|---|---|
+| 0 a 20 | Limpio | Ninguno |
+| 21 a 40 | Dudas menores | Suma 1 a 2 puntos |
+| 41 a 60 | Dudas importantes | Suma 3 a 5 puntos |
+| 61 a 80 | Manipulación seria | Suma 6 a 8 puntos, y se considera pasar |
+| 81 a 100 | Probable fraude | No se invierte |
+
+Con los hallazgos se arma la matriz de cruce (cuánto mueve cada uno la utilidad, el flujo y el
+patrimonio) y las preguntas para el gerente de finanzas, según
+[`reference/fase3-sintesis.md`](reference/fase3-sintesis.md).
+
+## Paso 5. Owner earnings
+
+Lee [`reference/owner-earnings.md`](reference/owner-earnings.md) completo y sigue sus pasos 1 a 9.
+Sus anexos son [`reference/oe-ajustes-sin-caja.md`](reference/oe-ajustes-sin-caja.md),
+[`reference/oe-factor-de-eficiencia.md`](reference/oe-factor-de-eficiencia.md),
+[`reference/oe-negocios-en-declive.md`](reference/oe-negocios-en-declive.md),
+[`reference/oe-plantilla-python.md`](reference/oe-plantilla-python.md) y el caso trabajado
+[`reference/oe-ejemplo-pool-corp.md`](reference/oe-ejemplo-pool-corp.md).
+
+Los hallazgos del paso 4 entran aquí. Las utilidades que no se repiten salen, los impuestos
+diferidos que no se van a recuperar se castigan, y las reclasificaciones del flujo se anotan.
+
+```
+Edad de los activos = Depreciación acumulada / Depreciación anual
+Piso de inflación   = Depreciación x (1 + inflación ponderada)^edad x uso de capacidad
+Capex de mantenimiento = MAX(método alfa, piso de inflación)
+Owner earnings      = Utilidad ajustada + Depreciación + Partidas sin caja - Capex de mantenimiento
+```
+
+Siempre van 3 escenarios. El pesimista no aplica el factor de eficiencia, el base usa el factor
+calculado, y el optimista usa el capex real.
+
+## Paso 6. Valoración
+
+Lee [`reference/fase4-dcf.md`](reference/fase4-dcf.md) y
+[`reference/fase5-comparables.md`](reference/fase5-comparables.md).
+
+El DCF descuenta el owner earnings y no el flujo de caja libre estándar, porque separa el capex de
+mantenimiento del de crecimiento. Un flujo que crece lleva restada su inversión en el mismo flujo.
+
+```
+Valor intrínseco = Suma(OE_t / (1+r)^t) + Valor terminal / (1+r)^n
+Valor terminal   = OE_n x (1+g) / (r-g), con g de largo plazo nunca mayor a 3 por ciento
+```
+
+La tasa mínima depende de la calidad. Es 15 por ciento para una empresa con foso amplio, 20 para una
+con foso angosto y 25 o más sin foso, y se le suman 3 a 8 puntos si el puntaje del paso 4 pasa de 40.
+Se muestra una matriz de 5 por 5 de crecimiento contra tasa, con el precio actual marcado.
+
+Los comparables se eligen por modelo de negocio, entre 5 y 10, y se usa EV sobre owner earnings además
+de los múltiplos de siempre. El resultado va en un rango que junta el DCF, los comparables y el
+múltiplo de owner earnings contra el precio actual.
+
+Antes de comparar con el precio, el valor de los negocios pasa por el puente a la acción. Se resta la
+deuda neta, se resta la parte de otros accionistas y se suma lo que no opera, y cada obligación se
+resta una sola vez.
+
+## Paso 7. Riesgo
+
+Lee [`reference/fase6-riesgo.md`](reference/fase6-riesgo.md). Son 4 revisiones.
+- La fragilidad (Taleb), de 1 a 5 en ingresos, balance, operación, competencia y gerencia, sobre 25.
+- Las 5 fuentes de pérdida permanente de capital (Marks).
+- El mapa de cisnes negros por categoría.
+- El pensamiento de segundo nivel contra la opinión del consenso.
+
+## Paso 8. Veredicto
+
+Lee [`reference/filosofia-berkshire.md`](reference/filosofia-berkshire.md). Las 10 preguntas del
+veredicto van con su evidencia.
+
+| N.º | Pregunta |
+|---|---|
+| 1 | ¿Entiendo este negocio? |
+| 2 | ¿Tiene un foso competitivo durable? |
+| 3 | ¿La gerencia es honesta y capaz? (el paso 1) |
+| 4 | ¿Los estados están limpios? (puntaje del paso 4 menor a 40) |
+| 5 | ¿El owner earnings es positivo y crece? |
+| 6 | ¿El ROIC supera al WACC de forma consistente? |
+| 7 | ¿El balance es fuerte? (fragilidad mayor a 15 de 25) |
+| 8 | ¿El precio está bajo el valor intrínseco, con margen de seguridad mayor a 25 por ciento? |
+| 9 | ¿Se puede mantener 10 años o más? |
+| 10 | ¿Estaría tranquilo si la bolsa cerrara 5 años? |
+
+Con las 10 aprobadas es compra fuerte, con 8 o 9 es compra chica, con 6 o 7 va a la lista de
+seguimiento, y con menos de 6 no se compra, por barata que esté. El margen de seguridad se calcula
+desde el valor intrínseco ponderado de los 3 métodos del paso 6.
+
+Los informes de salida tienen el formato de
+[`reference/plantillas-de-informe.md`](reference/plantillas-de-informe.md).
