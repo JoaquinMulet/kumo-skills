@@ -8,7 +8,7 @@
  * Sale con 0 si todos los casos dan lo esperado, y con 1 si alguno falla.
  */
 import { execFileSync } from 'node:child_process'
-import { mkdtempSync, writeFileSync, rmSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -49,8 +49,23 @@ g(['worktree', 'add', '-q', join(tmp, 'hermano'), '-b', 'hermano'], conArboles)
 writeFileSync(join(solo, 'sin-permiso.sh'), '#!/bin/sh' + SALTO + 'echo hola' + SALTO)
 g(['add', 'sin-permiso.sh'], solo)
 
+// La carpeta del árbol sale de TODOS los cd que corren antes del `git worktree add`, no solo del
+// primero ni de la carpeta de la sesión. Caso real del 8 nov 2026: la sesión estaba en un clon de
+// OneDrive, el comando entraba por una variable a una carpeta temporal, y el gancho negó un árbol que
+// iba fuera de OneDrive.
+const fuera = join(tmp, 'fuera')
+const enOneDrive = join(tmp, 'OneDrive', 'Proyectos', 'clon')
+mkdirSync(fuera)
+mkdirSync(enOneDrive, { recursive: true })
+
 const ST = 'git diff --cached --stat; '
 const casos = [
+  ['cd por variable y worktree relativo (8 nov 2026)', `S="${fuera}"; cd "$S" && git init -q r && cd r && git worktree add -q ../wt1 -b r1`, { cwd: enOneDrive }, 'pasa'],
+  ['2 cd, el ultimo hacia OneDrive', `cd "${fuera}" && cd "${enOneDrive}" && git worktree add -q ../w -b w`, { cwd: fuera }, 'niega'],
+  ['2 cd, el ultimo fuera de OneDrive', `cd "${enOneDrive}" && cd "${fuera}" && git worktree add -q w -b w`, { cwd: enOneDrive }, 'pasa'],
+  ['cd relativo hacia OneDrive', `cd "${tmp}" && cd OneDrive/Proyectos && git worktree add -q w -b w`, { cwd: fuera }, 'niega'],
+  ['cd en un subshell no cuenta afuera', `(cd "${enOneDrive}") && git worktree add -q w -b w`, { cwd: fuera }, 'pasa'],
+  ['ruta absoluta en OneDrive con cd por variable', `cd "$S" && git worktree add -q "${enOneDrive}/w" -b w`, { cwd: fuera }, 'niega'],
   ['pytest | tail sin pipefail', 'uv run pytest tests/ | tail -5', {}, 'niega'],
   ['gh run watch | tail', 'gh run watch 123 --exit-status | tail', {}, 'niega'],
   ['pytest | tail con PIPESTATUS', 'uv run pytest | tail -5; echo ${PIPESTATUS[0]}', {}, 'pasa'],

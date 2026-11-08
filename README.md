@@ -93,6 +93,11 @@ los saca.
 | `raiz-limpia.mjs` | antes de cada Write o Edit, y antes y después de cada comando de Bash o PowerShell | **Niega** crear un archivo suelto en la raíz de `C:/dev` (o en las carpetas de `KUMO_RAICES_LIMPIAS`, separadas por punto y coma). En un comando compara los archivos de la raíz antes y después, y le devuelve al agente el que apareció para que lo mueva. Plan de higiene del 8 nov 2026. Se prueba con `node hooks/probar-raiz-limpia.mjs`. |
 | `revisar-respuesta.mjs` | al terminar cada respuesta | Devuelve la respuesta al agente si un bloque de shell trae `&&`, un hueco como `<id>`, un `Read-Host` u `Out-File -Encoding utf8`, o si la prosa trae voseo o raya. Se prueba con `node hooks/probar-revisar-respuesta.mjs`. |
 
+`proteger-repo.mjs` y `exigir-higiene.mjs` juzgan la carpeta del comando, no la de la sesión. La sacan
+de `hooks/carpeta-del-comando.mjs`, que sigue en orden cada `cd` que corre antes del `git` juzgado y su
+`-C`. Si la carpeta no se puede saber sin ejecutar (un `cd` con variable, después de `||`, dentro de un
+subshell o de un `if`), la regla no juzga. Se prueba con `node hooks/probar-carpeta-del-comando.mjs`.
+
 La revisión semanal del disco no es un hook. `node hooks/revisar-disco.mjs` lista los
 archivos sueltos de `C:/dev`, las carpetas sin cambios en 14 días (con su estado de git), los
 árboles de trabajo viejos y los enlaces que hacen peligroso un borrado. Solo lee. La corre una

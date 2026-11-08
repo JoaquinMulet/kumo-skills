@@ -41,7 +41,7 @@ fi
 if command -v node >/dev/null 2>&1; then
   for prueba in hooks/probar-revisar-respuesta.mjs hooks/probar-proteger-repo.mjs hooks/probar-revisar-archivo.mjs \
                 hooks/probar-revisar-encargo.mjs hooks/probar-preguntar-envio.mjs hooks/probar-post-commit.mjs \
-                hooks/probar-raiz-limpia.mjs hooks/probar-revisar-disco.mjs; do
+                hooks/probar-raiz-limpia.mjs hooks/probar-revisar-disco.mjs hooks/probar-carpeta-del-comando.mjs; do
     node "$prueba" >/dev/null || {
       echo "" >&2
       echo "Commit BLOQUEADO. $prueba fallo. Correlo solo para ver que caso." >&2

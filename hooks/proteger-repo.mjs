@@ -28,8 +28,9 @@
  */
 import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
+import { resolve, isAbsolute } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { carpetaDeGit, msys, tapar } from './carpeta-del-comando.mjs'
 
 // El verificador tiene que ser el comando que corre, al inicio de un tramo, no un argumento.
 // Un `grep validar-skills.py | head` solo nombra el archivo (falso positivo medido el 3 nov 2026).
@@ -73,14 +74,6 @@ function git(args, cwd) {
   }
 }
 
-function directorioDelComando(texto, porDefecto) {
-  const conC = /\bgit\s+-C\s+("([^"]+)"|'([^']+)'|(\S+))/.exec(texto)
-  if (conC) return conC[2] ?? conC[3] ?? conC[4]
-  const conCd = /^\s*cd\s+("([^"]+)"|'([^']+)'|([^\s;&|]+))/.exec(texto)
-  if (conCd) return conCd[2] ?? conCd[3] ?? conCd[4]
-  return porDefecto
-}
-
 /** Quita lo que va entre comillas y los heredocs, para no juzgar texto que no se ejecuta. */
 function sinHeredocs(texto) {
   return texto.replace(/<<-?\s*'?(\w+)'?[\s\S]*?\n\1\b/g, ' ')
@@ -107,10 +100,19 @@ export function revisar(comando, { enSegundoPlano = false, cwd = process.cwd() }
       + 'Saca el `&`, y si son 2 trabajos lanzalos en 2 llamadas.'
   }
 
-  const dir = directorioDelComando(comando, cwd)
+  // La carpeta de cada git sale de los cd que corren ANTES de ese git (carpeta-del-comando.mjs). Si no
+  // se puede saber sin ejecutar, es null y esa regla no juzga. Las posiciones se buscan con las
+  // comillas tapadas, para que un texto entre comillas no cuente como comando.
+  const texto = sinHeredocs(comando)
+  const tapado = tapar(texto)
+  const carpetaDe = (re) => {
+    const m = re.exec(tapado)
+    return m ? carpetaDeGit(texto, m.index, cwd) : null
+  }
 
-  if (DESTRUCTIVO.test(codigo)) {
-    const arboles = git(['worktree', 'list', '--porcelain'], dir).split('\n').filter((l) => l.startsWith('worktree ')).length
+  const dirDestructivo = DESTRUCTIVO.test(codigo) ? carpetaDe(DESTRUCTIVO) : null
+  if (dirDestructivo) {
+    const arboles = git(['worktree', 'list', '--porcelain'], dirDestructivo).split('\n').filter((l) => l.startsWith('worktree ')).length
     if (arboles > 1) {
       return `Este repo tiene ${arboles} arboles de trabajo. git stash, git checkout -- . y git reset --hard `
         + 'tocan estado compartido entre ellos. Revierte a mano, o prueba en un `git worktree add` desechable.'
@@ -119,10 +121,12 @@ export function revisar(comando, { enSegundoPlano = false, cwd = process.cwd() }
 
   // Sin heredocs, porque un mensaje de commit puede nombrar el comando (pasó el 3 nov 2026).
   // Las comillas se quedan, porque la ruta del árbol suele ir entre ellas.
-  const wt = WORKTREE_ADD.exec(sinHeredocs(comando))
+  const wt = WORKTREE_ADD.exec(texto)
   const ruta = wt ? destinoDelArbol(wt[1]) : ''
   if (ruta) {
-    const destino = resolve(dir.replace(/^\/([a-zA-Z])\//, '$1:/'), ruta)
+    // Una ruta absoluta se juzga siempre. Una relativa, solo si se sabe desde qué carpeta corre.
+    const base = isAbsolute(msys(ruta)) ? '' : carpetaDeGit(texto, wt.index, cwd)
+    const destino = base === null ? '' : resolve(base || '', msys(ruta))
     if (/onedrive/i.test(destino)) {
       return `El arbol de trabajo iria dentro de OneDrive (${destino}). OneDrive sincroniza cada archivo que `
         + 'escriben los procesos y traba la maquina. Crealo en C:/dev/.'
@@ -136,7 +140,8 @@ export function revisar(comando, { enSegundoPlano = false, cwd = process.cwd() }
       return 'Antes del commit, en el mismo comando, corre `git diff --cached --stat` y confirma que la lista '
         + 'es la que el mensaje describe. Un indice que venia cargado se lleva todo.'
     }
-    const raiz = git(['rev-parse', '--show-toplevel'], dir)
+    const dirCommit = carpetaDe(ES_COMMIT)
+    const raiz = dirCommit ? git(['rev-parse', '--show-toplevel'], dirCommit) : ''
     if (raiz) {
       const scripts = git(['diff', '--cached', '--name-only', '--diff-filter=AM'], raiz)
         .split('\n').filter((f) => f.endsWith('.sh'))

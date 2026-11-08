@@ -134,6 +134,18 @@ try {
   caso('git -C hacia el repo sin aparato', 'deny', () =>
     correr({ tool_name: 'Bash', cwd: conAparato, tool_input: { command: `git -C '${sinAparato}' commit -m "x"` } }))
 
+  // 12b. El repo es el del ULTIMO cd antes del commit, no el del primero
+  //      (8 nov 2026). Con 2 cd, el guardia miraba el primero y fallaba en
+  //      las 2 direcciones.
+  caso('2 cd, el ultimo hacia el repo sin aparato', 'deny', () =>
+    correr({ tool_name: 'Bash', cwd: conAparato, tool_input: { command: `cd '${conAparato}' && cd '${sinAparato}' && git commit -m "x"` } }))
+  caso('2 cd, el ultimo hacia el repo equipado', 'pasa', () =>
+    correr({ tool_name: 'Bash', cwd: sinAparato, tool_input: { command: `cd '${sinAparato}' && cd '${conAparato}' && git commit -m "x"` } }))
+  // 12c. Un cd por variable no se puede resolver sin ejecutar. El guardia
+  //      no juzga lo que no ve: antes miraba la sesion y negaba de mas.
+  caso('cd por variable no se juzga', 'pasa', () =>
+    correr({ tool_name: 'Bash', cwd: sinAparato, tool_input: { command: `D='${conAparato}'; cd "$D" && git commit -m "x"` } }))
+
   // 13. Y la expresion ensanchada no puede meterse donde no la llaman. Si
   //     esto se pone rojo, el guardia empezo a molestar en comandos de
   //     lectura, y un guardia que molesta se apaga.

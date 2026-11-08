@@ -36,6 +36,7 @@
 import { execFileSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { carpetaDeGit, tapar } from './carpeta-del-comando.mjs'
 
 /** Deja pasar. Un hook que no opina no imprime nada. */
 function pasar() {
@@ -111,19 +112,16 @@ if (process.env.KUMO_SIN_HIGIENE === '1') pasar()
  *
  * Regla general. lo que un guardia mide tiene que ser el MISMO objeto que
  * la accion modifica, y se resuelve desde la accion.
+ *
+ * Hasta el 8 nov 2026 solo se miraba un `cd` al principio del comando. Con 2
+ * `cd` seguidos se juzgaba el primero, y con un `cd` por variable se juzgaba
+ * la sesion. Ahora la carpeta sale de todos los `cd` que corren antes del
+ * commit (carpeta-del-comando.mjs), y si no se puede saber sin ejecutar, el
+ * guardia no juzga.
  */
-function directorioDelComando(texto, porDefecto) {
-  // `git -C <ruta>` es la forma explicita de git y manda sobre todo.
-  const conC = /\bgit\s+-C\s+("([^"]+)"|'([^']+)'|(\S+))/.exec(texto)
-  if (conC) return conC[2] ?? conC[3] ?? conC[4]
-  // Un `cd <ruta>` al principio de la cadena. Solo al principio, porque
-  // uno en medio puede estar dentro de un subshell o de otra rama.
-  const conCd = /^\s*cd\s+("([^"]+)"|'([^']+)'|([^\s;&|]+))/.exec(texto)
-  if (conCd) return conCd[2] ?? conCd[3] ?? conCd[4]
-  return porDefecto
-}
-
-const cwd = directorioDelComando(comando, evento.cwd || process.cwd())
+const enComando = ES_COMMIT_O_PUSH.exec(tapar(comando)) ?? ES_COMMIT_O_PUSH.exec(comando)
+const cwd = carpetaDeGit(comando, enComando.index, evento.cwd || process.cwd())
+if (cwd === null) pasar()
 const raiz = git(['rev-parse', '--show-toplevel'], cwd)
 if (!raiz) pasar()
 
