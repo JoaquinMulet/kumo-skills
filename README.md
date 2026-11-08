@@ -90,7 +90,13 @@ los saca.
 | `revisar-archivo.mjs` | después de cada Write o Edit | Le avisa al agente si el archivo quedó con BOM (configuración), con CRLF (`.sh`) o con un BOM escondido (código). Se prueba con `node hooks/probar-revisar-archivo.mjs`. |
 | `revisar-encargo.mjs` | antes de lanzar un subagente | **Niega** el encargo si no dice que corra en primer plano, si lee la web sin decir robots.txt, o si trabaja en árboles de trabajo sin prohibir `git stash`. Lee también los archivos `.md` que el encargo nombra. Se prueba con `node hooks/probar-revisar-encargo.mjs`. |
 | `preguntar-envio.mjs` | antes de una herramienta de conector que envía o publica | **Pregunta** al usuario, aunque la sesión esté en modo automático. Un borrador no pregunta. Se prueba con `node hooks/probar-preguntar-envio.mjs`. |
+| `raiz-limpia.mjs` | antes de cada Write o Edit, y antes y después de cada comando de Bash o PowerShell | **Niega** crear un archivo suelto en la raíz de `C:/dev` (o en las carpetas de `KUMO_RAICES_LIMPIAS`, separadas por punto y coma). En un comando compara los archivos de la raíz antes y después, y le devuelve al agente el que apareció para que lo mueva. Plan de higiene del 8 nov 2026. Se prueba con `node hooks/probar-raiz-limpia.mjs`. |
 | `revisar-respuesta.mjs` | al terminar cada respuesta | Devuelve la respuesta al agente si un bloque de shell trae `&&`, un hueco como `<id>`, un `Read-Host` u `Out-File -Encoding utf8`, o si la prosa trae voseo o raya. Se prueba con `node hooks/probar-revisar-respuesta.mjs`. |
+
+La revisión semanal del disco no es un hook. `node hooks/revisar-disco.mjs` lista los
+archivos sueltos de `C:/dev`, las carpetas sin cambios en 14 días (con su estado de git), los
+árboles de trabajo viejos y los enlaces que hacen peligroso un borrado. Solo lee. La corre una
+tarea programada cada lunes. Se prueba con `node hooks/probar-revisar-disco.mjs`.
 
 ### Por que el segundo bloquea, y como se sale de el
 

@@ -70,6 +70,18 @@ const NUESTROS = [
     que: 'pide confirmacion antes de enviar o publicar por un conector',
   },
   {
+    evento: 'PreToolUse',
+    matcher: 'Write|Edit|MultiEdit|NotebookEdit|Bash|PowerShell',
+    script: 'raiz-limpia.mjs',
+    que: 'niega crear archivos sueltos en C:/dev; foto antes de cada comando',
+  },
+  {
+    evento: 'PostToolUse',
+    matcher: 'Bash|PowerShell',
+    script: 'raiz-limpia.mjs',
+    que: 'devuelve el comando que dejo un archivo suelto en C:/dev',
+  },
+  {
     evento: 'Stop',
     script: 'revisar-respuesta.mjs',
     que: 'devuelve la respuesta con &&, huecos, voseo o rayas',
