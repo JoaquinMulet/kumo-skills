@@ -57,6 +57,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 
 ## Lo que hace bien un párrafo
 
+- Tiene a lo más 3 ideas. Si tiene más, se separa en 2 párrafos, aunque el plan aprobado tuviera uno. Joaquín lo pidió por legibilidad.
 - Abstrae la fuente para hoy. Un autor clásico entra como una historia corta con 1 o 2 citas, y el texto parte y termina en el presente.
 - Atribuye a cada autor solo lo que dijo, con sus palabras y su cita. Una pregunta «de Ricardo» va con la frase de Ricardo.
 - Explica la idea de un autor con el mecanismo concreto que describe, no con su frase más abstracta.
