@@ -2,7 +2,9 @@
 
 Hace 2 cosas.
 1. Busca cada cita entre comillas angulares («...») de las notas al pie del borrador en el texto de
-   las fuentes. Una cita con «[...]» se parte en trozos y se busca cada trozo. Los espacios, los
+   las fuentes. Las comillas que siguen a una coma son el título de una obra en estilo Chicago
+   («Kwa, «Clarifying Limitations…», 3») y no se buscan. Con notas Chicago sin citas, el script se
+   corre sobre el archivo de comprobación del borrador, que guarda las frases originales por nota. Una cita con «[...]» se parte en trozos y se busca cada trozo. Los espacios, los
    saltos de línea y los apóstrofos curvos se normalizan antes de buscar.
 2. Revisa la prosa (todo lo que no es nota al pie, título ni referencia) contra las reglas de la casa.
    Marca los dos puntos usados como conector, las rayas, las frases que abren negando («No es…») y
@@ -91,7 +93,7 @@ def separar(borrador: str) -> tuple[list[str], list[str]]:
     for linea in borrador.splitlines():
         if linea.startswith("#"):
             en_referencias = (
-                linea.lower().lstrip("# ").startswith(("referencias", "fuentes"))
+                linea.lower().lstrip("# ").startswith(("referencias", "fuentes", "bibliograf"))
             )
             continue
         nota = NOTA.match(linea)
@@ -114,7 +116,10 @@ def main() -> int:
     contrastes = []
 
     for nota in notas:
-        for cita in CITA.findall(nota):
+        for m_cita in CITA.finditer(nota):
+            if nota[max(0, m_cita.start() - 2) : m_cita.start()] == ", ":
+                continue
+            cita = m_cita.group(1)
             for trozo in (t.strip() for t in cita.split("[...]")):
                 if not trozo:
                     continue

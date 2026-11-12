@@ -85,7 +85,10 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 Toda fuente va en una nota al pie numerada, nunca entre paréntesis dentro del texto. Joaquín lo pidió así para un trabajo formal («soy piloto, soy cuadrado»), y la regla vale para todo el documento.
 
 - La llamada va antes del signo de puntuación, como pide la RAE: «inteligentes[^1].».
-- Cada nota dice autor, año y página, y si hay cita textual, la frase original después: `Ricardo, 1821, cap. 31, párr. 3. «the substitution of machinery…».`
+- Las notas siguen el estilo Chicago de notas y bibliografía, en su forma corta, porque el texto lleva bibliografía completa al final. Cada nota dice autor, título corto y página: `Barbaste y otros, «Harness Engineering», 6.` Los títulos de libros e informes van en cursiva y los de artículos y páginas web entre comillas angulares. Joaquín eligió Chicago el 12 de noviembre de 2026, al preguntar cuál era el formato más formal.
+- La frase original va en la nota solo cuando el texto traduce una cita textual: `Ricardo, *On the Principles…*, cap. 31, párr. 3. «the substitution of machinery…».`
+- Las frases que respaldan cada dato viven en un archivo de comprobación aparte, con el mismo número de nota, que no se publica. En la ACTI está en `6_informe/fuentes/sobre_los_agentes_comprobacion_<etapa>.md`. El script de la fase D se corre sobre ese archivo para comprobar las citas, y sobre el borrador para las reglas de la prosa.
+- Al final del texto va la sección «Bibliografía», en estilo Chicago, ordenada por autor.
 - La numeración sigue el orden de aparición en todo el texto, sin saltos.
 - El script de la fase D marca las citas entre paréntesis que queden en la prosa.
 
