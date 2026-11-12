@@ -62,6 +62,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - Abstrae la fuente para hoy. Un autor clásico entra como una historia corta con 1 o 2 citas, y el texto parte y termina en el presente.
 - Atribuye a cada autor solo lo que dijo, con sus palabras y su cita. Una pregunta «de Ricardo» va con la frase de Ricardo.
 - Explica la idea de un autor con el mecanismo concreto que describe, no con su frase más abstracta.
+- Un ejemplo que respalda una tesis sale de la evidencia más seria que hay a mano, un paper, un informe técnico del laboratorio o un estudio con método, y cuenta qué se hizo y qué pasó. Una anécdota suelta o un detalle pintoresco (el editor de video de un programador, una regla que bloquea un borrado) no basta. Joaquín, el 12 de noviembre de 2026: «no me gustan tus ejemplos… son banales, simplistas, coloquiales. Seamos serios, tenemos papers e información de primera».
 - Contrasta el supuesto de un clásico con lo que se sabe hoy, antes de usarlo como argumento.
 - No repite lo que queda entre líneas ni lo que dijo un párrafo anterior. Un concepto ya explicado se nombra y nada más, sin aposición que lo vuelva a definir («los agentes, sus modelos con sus arneses»).
 - Un párrafo de mediciones parte por el objetivo que se mide y por quién lo mide, y recién después da las cifras con su evolución. Tres cifras en fila, sin ese marco, no cuentan una historia. Joaquín lo pidió así para el párrafo de capacidades.
