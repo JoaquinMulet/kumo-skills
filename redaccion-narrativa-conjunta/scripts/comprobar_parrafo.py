@@ -29,6 +29,9 @@ FRASES_DE_INDICE = (
     "se ocupa de ellas en el orden",
     "como se explicará",
 )
+CITA_ENTRE_PARENTESIS = re.compile(
+    r"\((?:[^()]*\b(?:1[5-9]|20)\d{2}\b[^()]*|pp?\. \d[^()]*)\)"
+)
 DOS_PUNTOS_CONECTOR = re.compile(r"[a-záéíóúñ»\)]: [a-záéíóúñ«]")
 NOTA = re.compile(r"^\[\^[^\]]+\]:\s*(.*)$")
 CITA = re.compile(r"«([^»]+)»")
@@ -100,6 +103,9 @@ def main() -> int:
             print(
                 f"FALLA   dos puntos como conector cerca de «{linea[max(0, m.start() - 30) : m.end() + 10]}»"
             )
+            fallas += 1
+        for m in CITA_ENTRE_PARENTESIS.finditer(linea):
+            print(f"FALLA   cita entre paréntesis {m.group(0)}, va en nota al pie")
             fallas += 1
         if "—" in linea or "–" in linea:
             print(f"FALLA   raya en «{corta}»")

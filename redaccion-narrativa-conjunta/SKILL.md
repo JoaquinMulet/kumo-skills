@@ -65,6 +65,16 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - Termina con la intención o la consecuencia, nunca con un índice de lo que viene.
 - Una tesis propia va con «creemos» o «probablemente». Un dato va con su fuente.
 - Usa las palabras que eligió el usuario para su mensaje, aunque haya sinónimos.
+- Nombra una obra por su título exacto, entre comillas, la primera vez, nunca con una descripción propia.
+
+## Citas y notas
+
+Toda fuente va en una nota al pie numerada, nunca entre paréntesis dentro del texto. Joaquín lo pidió así para un trabajo formal («soy piloto, soy cuadrado»), y la regla vale para todo el documento.
+
+- La llamada va antes del signo de puntuación, como pide la RAE: «inteligentes[^1].».
+- Cada nota dice autor, año y página, y si hay cita textual, la frase original después: `Ricardo, 1821, cap. 31, párr. 3. «the substitution of machinery…».`
+- La numeración sigue el orden de aparición en todo el texto, sin saltos.
+- El script de la fase D marca las citas entre paréntesis que queden en la prosa.
 
 ## Errores que ya ocurrieron
 
