@@ -64,6 +64,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - Contrasta el supuesto de un clásico con lo que se sabe hoy, antes de usarlo como argumento.
 - No repite lo que queda entre líneas ni lo que dijo un párrafo anterior.
 - Termina con la intención o la consecuencia, nunca con un índice de lo que viene.
+- No abre con un demostrativo suelto («Esa experiencia», «Esto», «Ese cambio»). La primera frase de un párrafo nombra de qué habla, porque el lector puede haber olvidado el párrafo anterior. Joaquín preguntó «¿cuál experiencia?».
 - No anuncia cómo va a nombrar algo («de aquí en adelante, los llamamos…»). Lo nombra y sigue.
 - Una tesis propia va con «creemos» o «probablemente». Un dato va con su fuente.
 - Usa las palabras que eligió el usuario para su mensaje, aunque haya sinónimos.
