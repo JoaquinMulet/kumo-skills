@@ -14,9 +14,6 @@ Hace 2 cosas.
 4. Lista las frases con una negación que puede ser el contraste retórico prohibido («X no es Y, sino Z»,
    «y no el…», «distinto de…», «no da lo mismo»). Tampoco cambia el código de salida, porque una
    negación de un hecho («ninguno usa un marco general») sí vale.
-5. Compara cada frase del último párrafo de la prosa con todas las frases anteriores y marca con
-   «REPITE?» la que comparte 4 o más palabras largas con una frase ya escrita. Sirve para ver si el
-   párrafo nuevo vuelve a explicar algo que el texto ya explicó. Tampoco cambia el código de salida.
 
 Uso:
     uv run --with pymupdf python scripts/comprobar_parrafo.py BORRADOR.md FUENTE [FUENTE ...]
@@ -63,31 +60,6 @@ def puede_ser_bisagra(frase: str) -> bool:
     if any(p[:1].isupper() for p in palabras[1:]):
         return False
     return bool(ABRE_REFIRIENDO.match(frase))
-
-
-def palabras_de_contenido(frase: str) -> set[str]:
-    sin_notas = re.sub(r"\[\^\d+\]", " ", frase.lower())
-    return {p[:5] for p in re.findall(r"[a-záéíóúñü]{5,}", sin_notas) if p not in VACIAS}
-
-
-VACIAS = {"entre", "sobre", "desde", "hasta", "donde", "cuando", "porque", "aunque", "también", "además", "cada", "todos", "todas", "otros", "otras", "puede", "pueden", "parte"}
-
-
-def repeticiones(prosa: list[str], minimo: int = 4) -> list[tuple[str, str, list[str]]]:
-    parrafos = [p for p in prosa if not re.match(r"^\d+\. |^Borrador|^- ", p)]
-    if len(parrafos) < 2:
-        return []
-    anteriores = [
-        f for p in parrafos[:-1] for f in re.split(r"(?<=[.?!])\s+", p) if f.strip()
-    ]
-    hallazgos = []
-    for frase in re.split(r"(?<=[.?!])\s+", parrafos[-1]):
-        propias = palabras_de_contenido(frase)
-        mejor = max(anteriores, key=lambda a: len(propias & palabras_de_contenido(a)))
-        comunes = sorted(propias & palabras_de_contenido(mejor))
-        if len(comunes) >= minimo:
-            hallazgos.append((frase, mejor, comunes))
-    return hallazgos
 
 
 def normalizar(texto: str) -> str:
@@ -191,8 +163,6 @@ def main() -> int:
         print(
             f"\n{len(bisagras)} frase(s) para la prueba de borrar. Si al borrarla no se pierde ningún hecho, se elimina."
         )
-    for frase, anterior, comunes in repeticiones(prosa):
-        print(f"REPITE? «{frase[:70]}»\n        se parece a «{anterior[:70]}» ({', '.join(comunes[:6])})")
     print(f"\n{fallas} problema(s)." if fallas else "\nTodo pasa.")
     return 1 if fallas else 0
 
