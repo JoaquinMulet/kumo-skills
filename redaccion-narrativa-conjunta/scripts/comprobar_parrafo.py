@@ -11,6 +11,9 @@ Hace 2 cosas.
    demostrativo o un colectivo («Esa…», «Las dos…», «Cada una de esas…») y no traen nota, cifra ni
    nombre propio. A cada una se le aplica la prueba de borrar. Si al borrarla no se pierde ningún
    hecho, se elimina. Esta lista no cambia el código de salida, porque el juicio es del que escribe.
+4. Lista las frases con una negación que puede ser el contraste retórico prohibido («X no es Y, sino Z»,
+   «y no el…», «distinto de…», «no da lo mismo»). Tampoco cambia el código de salida, porque una
+   negación de un hecho («ninguno usa un marco general») sí vale.
 
 Uso:
     uv run --with pymupdf python scripts/comprobar_parrafo.py BORRADOR.md FUENTE [FUENTE ...]
@@ -40,6 +43,10 @@ DOS_PUNTOS_CONECTOR = re.compile(r"[a-záéíóúñ»\)]: [a-záéíóúñ«]")
 ABRE_REFIRIENDO = re.compile(
     r"^(?:Por eso, |Así, |Entonces, |Además, |Pero )?(?:Cada (?:una|uno) de )?"
     r"(?:esa|ese|esas|esos|esta|este|estas|estos|esto|eso|ambas|ambos|las dos|los dos|las tres|los tres|todo ello)\b",
+    re.I,
+)
+CONTRASTE = re.compile(
+    r"\b(?:no es|no son|sino|no da lo mismo|no basta|y no (?:el|la|los|las)|distint[oa]s? del?|no significa|tampoco|no duplica)\b",
     re.I,
 )
 NOTA = re.compile(r"^\[\^[^\]]+\]:\s*(.*)$")
@@ -104,6 +111,7 @@ def main() -> int:
     notas, prosa = separar(borrador)
     fallas = 0
     bisagras = []
+    contrastes = []
 
     for nota in notas:
         for cita in CITA.findall(nota):
@@ -132,6 +140,8 @@ def main() -> int:
         for frase in re.split(r"(?<=[.?!])\s+", linea):
             if puede_ser_bisagra(frase):
                 bisagras.append(frase)
+            if CONTRASTE.search(frase):
+                contrastes.append(frase)
             if frase.startswith("No es "):
                 print(f"REVISA  frase que abre negando «{frase[:70]}»")
                 fallas += 1
@@ -141,6 +151,12 @@ def main() -> int:
                 print(f"FALLA   frase de índice «{frase}» en «{corta}»")
                 fallas += 1
 
+    for frase in contrastes:
+        print(f"CONTRASTE? frase que puede negar para corregir «{frase[:80]}»")
+    if contrastes:
+        print(
+            f"\n{len(contrastes)} frase(s) con negación. Si niega una idea para afirmar otra, se reescribe diciendo solo lo que es."
+        )
     for frase in bisagras:
         print(f"BORRAR? frase que puede no tener contenido «{frase[:80]}»")
     if bisagras:
