@@ -72,7 +72,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - No abre con un demostrativo suelto («Esa experiencia», «Esto», «Ese cambio»). La primera frase de un párrafo nombra de qué habla, porque el lector puede haber olvidado el párrafo anterior. Joaquín preguntó «¿cuál experiencia?».
 - Una enumeración sigue el orden que anuncia la frase que la presenta, y todos sus elementos tienen la misma forma. Si dice «cada laboratorio ofrece su arnés para sus modelos», cada elemento va laboratorio, arnés y modelos, en ese orden.
 - No anuncia cómo va a nombrar algo («de aquí en adelante, los llamamos…»). Lo nombra y sigue.
-- Una tesis propia va con «creemos» o «probablemente». Un dato va con su fuente.
+- Una tesis propia va con «creemos» o «probablemente». Un dato va con su fuente. Pero el capítulo no da opiniones donde la evidencia muestra lo que hacen los actores. Ahí se dice el hecho («por eso la industria ha puesto sus fichas también en el arnés y en el entorno»), y el «creemos» queda para las pocas tesis de los autores que no tienen otra fuente. Joaquín: «aquí no estamos dando opiniones».
 - Usa las palabras que eligió el usuario para su mensaje, aunque haya sinónimos.
 - Nombra una obra por su título exacto, entre comillas, la primera vez, nunca con una descripción propia.
 
