@@ -95,5 +95,6 @@ Toda fuente va en una nota al pie numerada, nunca entre paréntesis dentro del t
 | Escena interna en un texto público | El texto abría con «en la mesa de la ACTI» | Un escenario general que incluya a todos los lectores |
 | Un clásico como prueba de hoy | Ricardo «ya anticipó» que la IA se abarata, sin los fosos defensivos | Presentarlo como su supuesto y contrastarlo |
 | Una subordinada metida entre el verbo y su complemento | «define la inteligencia artificial general que busca como «…»», que se lee «busca como» | Separar en 2 verbos con su complemento al lado, «dice que busca desarrollar una inteligencia artificial general, y la define como «…»» |
+| «Los distintos X» sin dueño | «medir esas dos capacidades en los distintos agentes» se leyó como si los agentes fueran los laboratorios | Decir de quién son, «de sus agentes» |
 | Frase catafórica sin contenido | «Cada una de esas dos direcciones tiene hoy quien la mida», que Joaquín llamó relleno | Borrarla, o cambiarla por una frase que narre un hecho con alguien que actúa |
 | Un párrafo con varias ideas sin hilo | El cierre mezclaba empleo, fotos con fecha, Ricardo y Acemoglu | Que cada frase salga de la anterior |
