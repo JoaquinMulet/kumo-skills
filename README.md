@@ -26,6 +26,7 @@ Para la gobernanza interna (cómo agregar una skill, convenciones, checklist ant
 | [`aws-deploy`](aws-deploy/) | Despliega aplicaciones Python sin servidor en AWS con SAM, con los errores que ya costaron en producción (DynamoDB, SQS, Bedrock). |
 | [`structured-reasoning`](structured-reasoning/) | Plantillas de razonamiento para depurar un error que cruza varios archivos, entender código ajeno o comparar 2 soluciones. |
 | [`windows-powershell`](windows-powershell/) | Los patrones de comandos de PowerShell 5.1 y 7 que funcionan en Windows, y los que fallan en silencio. |
+| [`redaccion-narrativa-conjunta`](redaccion-narrativa-conjunta/) | Redacta con el usuario un texto narrativo largo, párrafo por párrafo, con mensaje central, plan aprobado y cada cita comprobada por un script. |
 | [`documentos-latex`](documentos-latex/) | Documentos LaTeX con calidad editorial, con geometría medida, gráficos de ECharts y cada cifra contra su fuente. |
 | [`aeo-sitios-web`](aeo-sitios-web/) | Deja un sitio listo para agentes y búsqueda por IA, verificado con curl y con el puntaje de isitagentready. |
 
