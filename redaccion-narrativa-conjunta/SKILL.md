@@ -49,6 +49,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 13. Muestra el párrafo entero en el chat, en prosa, y después explica en pocas líneas qué cambió y por qué, qué hace el párrafo y cómo enlaza con el siguiente. Termina con una sola pregunta, qué cambiaría el usuario.
 14. El usuario corrige la voz, las palabras, el foco o el mensaje. Aplica sus correcciones con sus palabras. Si una idea suya choca con una fuente o la precisa, explica qué dice de verdad la fuente, con su mecanismo concreto, y propone cómo unir las 2 cosas.
 15. Cuando el usuario aprueba el párrafo, guárdalo en git y pasa al siguiente.
+16. Si un párrafo crece en varios, cambia de lugar o se suma uno que el plan no tenía, se detiene la escritura y se rehace el plan del bloque, con sus mensajes de fondo y la pregunta de cada párrafo, antes del párrafo siguiente. El 12 de noviembre de 2026 la parte de mediciones pasó de 1 párrafo a 8 sin rehacer el plan, y los párrafos siguientes repitieron definiciones, cerraron a mitad de etapa y afirmaron que un estudio de 2026 era de los primeros. Joaquín: «perdimos totalmente el hilo narrativo».
 
 ## Fase E. Cerrar la etapa
 
