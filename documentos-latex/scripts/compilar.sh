@@ -56,6 +56,15 @@ if ! grep -q "Output written" "$LOG"; then
   grep -n "^!" "$LOG" | head -5 >&2
   exit 1
 fi
+# Un error de TeX con -halt-on-error corta el documento a la mitad y el log igual dice «Output
+# written» con las páginas que alcanzó a escribir. Pasó el 10 de noviembre de 2026: un
+# «Missing number» dejó la cotización de Aura en 1 página de 2 y el script dijo «PDF listo».
+ERRORES="$(grep -c '^!' "$LOG")"
+if [ "$ERRORES" -gt 0 ]; then
+  echo "El log trae $ERRORES errores de TeX. El PDF quedó cortado. Primeros errores:" >&2
+  grep -n -A3 "^!" "$LOG" | head -12 >&2
+  exit 1
+fi
 PAGINAS="$(uv run --with pymupdf python -I -c "import pymupdf,sys; print(pymupdf.open(sys.argv[1]).page_count)" "$SALIDA/$NOMBRE.pdf")"
 if [ "${PAGINAS:-0}" -lt 1 ]; then
   echo "PyMuPDF no cuenta páginas en el PDF. Está cortado." >&2
