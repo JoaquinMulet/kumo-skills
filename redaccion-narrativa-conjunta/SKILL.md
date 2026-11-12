@@ -65,6 +65,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - No repite lo que queda entre líneas ni lo que dijo un párrafo anterior.
 - Termina con la intención o la consecuencia, nunca con un índice de lo que viene.
 - No abre con un demostrativo suelto («Esa experiencia», «Esto», «Ese cambio»). La primera frase de un párrafo nombra de qué habla, porque el lector puede haber olvidado el párrafo anterior. Joaquín preguntó «¿cuál experiencia?».
+- Una enumeración sigue el orden que anuncia la frase que la presenta, y todos sus elementos tienen la misma forma. Si dice «cada laboratorio ofrece su arnés para sus modelos», cada elemento va laboratorio, arnés y modelos, en ese orden.
 - No anuncia cómo va a nombrar algo («de aquí en adelante, los llamamos…»). Lo nombra y sigue.
 - Una tesis propia va con «creemos» o «probablemente». Un dato va con su fuente.
 - Usa las palabras que eligió el usuario para su mensaje, aunque haya sinónimos.
