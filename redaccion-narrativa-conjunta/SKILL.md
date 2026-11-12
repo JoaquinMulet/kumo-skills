@@ -45,7 +45,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
     uv run --with pymupdf python scripts/comprobar_parrafo.py BORRADOR.md FUENTE [FUENTE ...]
     ```
 
-    El script busca cada cita de las notas al pie en el texto de las fuentes, y marca los dos puntos como conector, las rayas, las frases que abren negando y las frases de índice. Si falla, se arregla antes de mostrar. Una cifra o un hecho sin cita también se busca en su fuente antes de escribirlo.
+    El script busca cada cita de las notas al pie en el texto de las fuentes, y marca los dos puntos como conector, las rayas, las frases que abren negando y las frases de índice. Si falla, se arregla antes de mostrar. Una cifra o un hecho sin cita también se busca en su fuente antes de escribirlo. Cada frase marcada con «REPITE?» se compara con la frase anterior que el script nombra, y si ya dice lo mismo, se borra o se reduce a lo nuevo. El 12 de noviembre de 2026 Joaquín encontró 3 veces seguidas en el mismo párrafo algo que el texto ya había explicado (qué es el modelo, qué es el arnés, el valor económico), y la regla escrita no bastó.
 13. Muestra el párrafo entero en el chat, en prosa, y después explica en pocas líneas qué cambió y por qué, qué hace el párrafo y cómo enlaza con el siguiente. Termina con una sola pregunta, qué cambiaría el usuario.
 14. El usuario corrige la voz, las palabras, el foco o el mensaje. Aplica sus correcciones con sus palabras. Si una idea suya choca con una fuente o la precisa, explica qué dice de verdad la fuente, con su mecanismo concreto, y propone cómo unir las 2 cosas.
 15. Cuando el usuario aprueba el párrafo, guárdalo en git y pasa al siguiente.
