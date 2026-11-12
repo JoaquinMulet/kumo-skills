@@ -7,6 +7,10 @@ Hace 2 cosas.
 2. Revisa la prosa (todo lo que no es nota al pie, título ni referencia) contra las reglas de la casa.
    Marca los dos puntos usados como conector, las rayas, las frases que abren negando («No es…») y
    las frases de índice que mandan al lector a otra parte del texto.
+3. Lista las frases que pueden ser bisagra o catafóricas, es decir, frases cortas que abren con un
+   demostrativo o un colectivo («Esa…», «Las dos…», «Cada una de esas…») y no traen nota, cifra ni
+   nombre propio. A cada una se le aplica la prueba de borrar. Si al borrarla no se pierde ningún
+   hecho, se elimina. Esta lista no cambia el código de salida, porque el juicio es del que escribe.
 
 Uso:
     uv run --with pymupdf python scripts/comprobar_parrafo.py BORRADOR.md FUENTE [FUENTE ...]
@@ -33,8 +37,22 @@ CITA_ENTRE_PARENTESIS = re.compile(
     r"\((?:[^()]*\b(?:1[5-9]|20)\d{2}\b[^()]*|pp?\. \d[^()]*)\)"
 )
 DOS_PUNTOS_CONECTOR = re.compile(r"[a-záéíóúñ»\)]: [a-záéíóúñ«]")
+ABRE_REFIRIENDO = re.compile(
+    r"^(?:Por eso, |Así, |Entonces, |Además, |Pero )?(?:Cada (?:una|uno) de )?"
+    r"(?:esa|ese|esas|esos|esta|este|estas|estos|esto|eso|ambas|ambos|las dos|los dos|las tres|los tres|todo ello)\b",
+    re.I,
+)
 NOTA = re.compile(r"^\[\^[^\]]+\]:\s*(.*)$")
 CITA = re.compile(r"«([^»]+)»")
+
+
+def puede_ser_bisagra(frase: str) -> bool:
+    palabras = frase.split()
+    if len(palabras) > 18 or "[^" in frase or re.search(r"\d", frase):
+        return False
+    if any(p[:1].isupper() for p in palabras[1:]):
+        return False
+    return bool(ABRE_REFIRIENDO.match(frase))
 
 
 def normalizar(texto: str) -> str:
@@ -85,6 +103,7 @@ def main() -> int:
     fuentes = " ".join(normalizar(leer_fuente(Path(r))) for r in sys.argv[2:])
     notas, prosa = separar(borrador)
     fallas = 0
+    bisagras = []
 
     for nota in notas:
         for cita in CITA.findall(nota):
@@ -111,6 +130,8 @@ def main() -> int:
             print(f"FALLA   raya en «{corta}»")
             fallas += 1
         for frase in re.split(r"(?<=[.?!])\s+", linea):
+            if puede_ser_bisagra(frase):
+                bisagras.append(frase)
             if frase.startswith("No es "):
                 print(f"REVISA  frase que abre negando «{frase[:70]}»")
                 fallas += 1
@@ -120,6 +141,12 @@ def main() -> int:
                 print(f"FALLA   frase de índice «{frase}» en «{corta}»")
                 fallas += 1
 
+    for frase in bisagras:
+        print(f"BORRAR? frase que puede no tener contenido «{frase[:80]}»")
+    if bisagras:
+        print(
+            f"\n{len(bisagras)} frase(s) para la prueba de borrar. Si al borrarla no se pierde ningún hecho, se elimina."
+        )
     print(f"\n{fallas} problema(s)." if fallas else "\nTodo pasa.")
     return 1 if fallas else 0
 
