@@ -63,6 +63,7 @@ Que Claude redacte solo no significa que redacte de una vez. Aunque el usuario d
 - Explica la idea de un autor con el mecanismo concreto que describe, no con su frase más abstracta.
 - Contrasta el supuesto de un clásico con lo que se sabe hoy, antes de usarlo como argumento.
 - No repite lo que queda entre líneas ni lo que dijo un párrafo anterior. Un concepto ya explicado se nombra y nada más, sin aposición que lo vuelva a definir («los agentes, sus modelos con sus arneses»).
+- Un párrafo de mediciones parte por el objetivo que se mide y por quién lo mide, y recién después da las cifras con su evolución. Tres cifras en fila, sin ese marco, no cuentan una historia. Joaquín lo pidió así para el párrafo de capacidades.
 - Termina con la intención o la consecuencia, nunca con un índice de lo que viene.
 - No abre con un demostrativo suelto («Esa experiencia», «Esto», «Ese cambio»). La primera frase de un párrafo nombra de qué habla, porque el lector puede haber olvidado el párrafo anterior. Joaquín preguntó «¿cuál experiencia?».
 - Una enumeración sigue el orden que anuncia la frase que la presenta, y todos sus elementos tienen la misma forma. Si dice «cada laboratorio ofrece su arnés para sus modelos», cada elemento va laboratorio, arnés y modelos, en ese orden.
