@@ -131,6 +131,9 @@ Joaquín como posible error del código. Joaquín lo aprueba. Cada enmienda qued
 | 11 nov 2026 | El modelo de la subida dejaba que el agente leyera si la cámara había terminado, un dato que el router no ve. El aviso de término salía falso | 11 |
 | 13 nov 2026 | La regla que se demostró con Kani se copió del código. Demostraba que el código cumple consigo mismo | 9 |
 | 13 nov 2026 | El modelo de la subida calcula los bytes con la generación del contador, otro dato que el código no ve | 11 y 22 |
+| 13 nov 2026 | Joaquín decidió qué hacer con una baja del contador sobre un supuesto sin medir. Al medir, el Teltonika bajaba su contador cada 12 horas por diseño, y la decisión se tuvo que plantear de nuevo | 2. Un supuesto que una decisión necesita se mide antes de plantear la decisión |
+| 13 nov 2026 | Un hecho de la ficha decía que `nlbw` sale con código 0 cuando falla. La medición pasaba la salida por `head`, y el código leído era el de `head`. El real era 195 | 2. Un código de salida se mide sin tubería, con el programa solo |
+| 13 nov 2026 | 2 pruebas nuevas pasaban también con el código viejo, porque el guardado del Teltonika ocurría justo después de una lectura. Se notó al correrlas con la versión anterior | Paso 4 del flujo formal. Cada prueba nueva se corre contra la versión anterior, y tiene que fallar |
 
 ## Fuentes
 
