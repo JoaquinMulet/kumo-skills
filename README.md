@@ -19,6 +19,7 @@ Para la gobernanza interna (cómo agregar una skill, convenciones, checklist ant
 | Skill | Qué hace |
 |---|---|
 | [`desarrollo-riguroso`](desarrollo-riguroso/) | La portada del estándar de desarrollo. Dice qué skill de pstack leer en cada situación de código y agrega las reglas propias de Kumo. Un hook obliga a leerla al abrir cada sesión. |
+| [`especificar-antes-de-construir`](especificar-antes-de-construir/) | La lista de chequeo de 8 fases y 23 preguntas que se responde antes de especificar algo que no es trivial, con las 4 reglas de Descartes y la inversión. Produce la ficha que Joaquín aprueba como contrato, y de ella parte el flujo formal. |
 | [`verificacion-adversarial`](verificacion-adversarial/) | Comprueba cada cifra y cita de un texto que se publica, con un script que busca la frase en el archivo de la fuente primaria. |
 | [`doc-prueba-de-uso`](doc-prueba-de-uso/) | Prueba un documento haciendo la tarea. Un lector frío ejecuta lo que la sección habilita y se califica contra una pauta previa. Trae un script que falla si un término se usa antes de explicarse. |
 | [`unslop`](unslop/) | Quita las marcas de texto de IA, en español de Chile y con las reglas de prosa de Joaquín. |
