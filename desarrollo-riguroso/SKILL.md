@@ -23,6 +23,7 @@ que traduce cada nombre a Claude Code.
 
 | Situación | Lee antes de actuar |
 |---|---|
+| Vas a diseñar o construir algo que no es solo apariencia o texto | `especificar-antes-de-construir`, que se carga con la herramienta Skill y va antes que cualquier otra fila. Su ficha aprobada es el contrato del cambio |
 | Vas a escribir código con estado, o el código ramifica mucho | `principle-model-the-domain`, `principle-type-system-discipline` |
 | Validas datos que entran, manejas errores o adaptas un framework | `principle-boundary-discipline` |
 | Un comando o un proceso puede correr 2 veces o cortarse a la mitad | `principle-make-operations-idempotent` |
@@ -53,6 +54,11 @@ Mandan sobre lo que diga la skill de pstack.
 - Un mensaje a un tercero sale solo con el texto visado por Joaquín. pstack lo dice también.
 - No se usa `poteto-mode`. Cuando una skill de pstack nombra su sección Subagents, aplica esta tabla y
   estos ajustes.
+- En `create-formal-verification-skill`, cada dato que usa el sistema dentro del modelo lleva una fila con el archivo y
+  la línea del código que lo lee. Un dato sin fila es un dato del mundo, y el modelo no puede dárselo al sistema. El
+  11 y el 13 de noviembre de 2026 el modelo de la subida de AeroStratus le dio al agente 2 datos que el router no ve.
+- Las reglas que se verifican sobre el código salen del modelo o de la ficha aprobada, nunca del código. El 13 de
+  noviembre de 2026 una regla de Kani copiada del código demostró solo que el código cumple consigo mismo.
 
 ## Reglas de Kumo que pstack no trae
 
