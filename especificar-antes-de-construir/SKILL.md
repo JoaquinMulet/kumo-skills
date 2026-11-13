@@ -27,7 +27,10 @@ pruebas se escriben desde la ficha, nunca al revés.
    código, mide, abre la fuente. No responde de memoria.
 2. Cada respuesta lleva 1 de 3 marcas. HECHO, con su fuente. SUPUESTO, con quién lo garantiza. DECISIÓN, cuando le toca a
    Joaquín.
-3. Las decisiones se le plantean a Joaquín de a 1 por mensaje, con lo encontrado y una recomendación.
+3. Las decisiones se le plantean a Joaquín de a 1 por mensaje, con lo encontrado y una recomendación. Cada opción parte
+   con un ejemplo concreto en palabras de su trabajo, como una misión que cruza la medianoche del día 1, y recién
+   después dice el mecanismo. El 13 de noviembre de 2026, en el primer uso de esta skill, las 2 opciones se escribieron
+   con nombres técnicos y Joaquín tuvo que preguntar cuáles eran.
 4. La ficha aprobada se guarda en el repo del proyecto, en `docs/fichas/AAAA-MM-DD-tema.md`. Su commit es la línea base
    del contrato.
 
