@@ -37,10 +37,7 @@ FRASES_DE_INDICE = (
     "la sección siguiente",
     "se ocupa de ellas en el orden",
     "como se explicará",
-    "conviene distinguir",
-    "conviene separar",
-    "conviene no confundir",
-    "conviene aclarar",
+    "conviene distinguirlas antes",
     "antes de decidir por dónde",
     "antes de ver por dónde",
 )
