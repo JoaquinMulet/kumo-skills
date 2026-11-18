@@ -37,6 +37,13 @@ FRASES_DE_INDICE = (
     "la sección siguiente",
     "se ocupa de ellas en el orden",
     "como se explicará",
+    "conviene distinguir",
+    "conviene separar",
+    "conviene no confundir",
+    "conviene aclarar",
+    "antes de decidir por dónde",
+    "antes de ver por dónde",
+    "tiene un consejo sobre",
 )
 CITA_ENTRE_PARENTESIS = re.compile(
     r"\((?:[^()]*\b(?:1[5-9]|20)\d{2}\b[^()]*|pp?\. \d[^()]*)\)"
