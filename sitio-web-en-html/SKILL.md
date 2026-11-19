@@ -182,8 +182,17 @@ Kumo corre los mismos revisores al recibir. Si una revisión falla, la entrega v
 
 - **Formulario.** Kumo escribe el programa que recibe `/api/contacto` en el servidor de Cloudflare.
   El programa comprueba que escribe una persona, revisa los campos, guarda el mensaje, envía el
-  correo al cliente y muestra `gracias.html`. Lleva 8 defensas contra ataques, cada una con su prueba
-  automática.
+  correo al cliente y muestra `gracias.html`. La dirección `/api/contacto` es pública en cualquier
+  sitio con formulario, también en Astro o Next.js. Por eso el programa lleva 8 defensas, cada una
+  con su prueba automática que envía el ataque y comprueba el rechazo.
+  1. Comprueba en el servidor el token de Turnstile, el filtro contra robots de Cloudflare.
+  2. Limita los envíos por minuto y por día de cada dirección de internet, y el total del sitio.
+  3. Envía siempre al correo fijo del cliente. Ningún dato del visitante cambia el destinatario.
+  4. Convierte en texto simple todo lo que escribe el visitante antes de ponerlo en el correo.
+  5. Rechaza un envío de más de 10 KB, y cada campo tiene un largo máximo.
+  6. Acepta solo envíos que vienen del dominio del cliente.
+  7. Muestra al visitante solo `gracias.html` o `error.html`, nunca el detalle de un error.
+  8. Guarda las llaves en los secretos de Cloudflare, nunca en el código.
 - **Pago.** El link de pago sale de la pasarela del cliente, como el Link de Pago de webpay.cl, Flow
   o Mercado Pago. La cuenta va a nombre del cliente, porque el dinero le llega a él. Con un link de
   pago el sitio no sabe si el visitante pagó, y el cliente confirma cada reserva en su panel. El pago
