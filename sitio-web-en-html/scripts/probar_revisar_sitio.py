@@ -49,13 +49,18 @@ CUERPO_ES = f"""<body>
 <img src="/assets/portada.png" alt="Lago al amanecer" width="40" height="20">
 <a id="whatsapp" href="https://wa.me/56912345678">Escríbenos por WhatsApp</a>
 <a href="#pago-pendiente">Pagar</a>
+<a href="tel:+56912345678">Llámanos</a>
 <form action="/api/contacto" method="POST">
-<input name="nombre" required>
-<input name="correo" type="email" required>
-<textarea name="mensaje"></textarea>
+<label for="nombre">Nombre</label>
+<input id="nombre" name="nombre" required>
+<label for="correo">Correo</label>
+<input id="correo" name="correo" type="email" required>
+<label>Mensaje <textarea name="mensaje"></textarea></label>
+<label><input type="checkbox" name="consentimiento" required> Acepto el <a href="/privacidad.html">aviso de privacidad</a></label>
 <div id="kumo-verificacion"></div>
 <button type="submit">Enviar</button>
 </form>
+<footer><div id="kumo-huella"></div></footer>
 </body></html>
 """
 
@@ -64,12 +69,21 @@ CUERPO_EN = f"""<body>
 <p>{TEXTO}</p>
 <a href="/">ES</a>
 <img src="/assets/portada.png" alt="Lake at dawn" width="40" height="20">
+<a href="tel:+56912345678">Call us</a>
+<footer><div id="kumo-huella"></div></footer>
 </body></html>
 """
 
 RESPUESTA = """<!doctype html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>Gracias</title>
-<link rel="icon" href="/assets/icono.png"></head><body><p>Listo.</p></body></html>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/icono.png"></head><body><p>Listo.</p>
+<a href="https://wa.me/56912345678">Escríbenos por WhatsApp</a></body></html>
+"""
+
+PRIVACIDAD = """<!doctype html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Aviso de privacidad</title>
+<link rel="icon" href="/assets/icono.png"></head><body><h1>Aviso de privacidad</h1><p>Texto del aviso.</p></body></html>
 """
 
 
@@ -80,8 +94,9 @@ def armar_sitio_bueno(raiz):
     (raiz / "en" / "index.html").write_bytes((cabeza("en", "/en/", "Adventure") + CUERPO_EN).encode("utf-8"))
     (raiz / "gracias.html").write_bytes(RESPUESTA.encode("utf-8"))
     (raiz / "error.html").write_bytes(RESPUESTA.encode("utf-8"))
+    (raiz / "privacidad.html").write_bytes(PRIVACIDAD.encode("utf-8"))
     (raiz / "CAMBIOS.txt").write_bytes("19 de noviembre de 2026. Primera entrega.\n".encode("utf-8"))
-    (raiz / "assets" / "estilos.css").write_bytes(b"body{font-family:sans-serif}\n")
+    (raiz / "assets" / "estilos.css").write_bytes(b"body{font-family:sans-serif}\na,button,input,textarea{display:inline-block;min-height:44px;min-width:44px}\ninput[type=checkbox]{width:24px;height:24px}\n")
     (raiz / "assets" / "portada.png").write_bytes(png(40, 20))
     (raiz / "assets" / "og-portada.png").write_bytes(png(40, 20))
     (raiz / "assets" / "icono.png").write_bytes(png(16, 16))
@@ -105,6 +120,15 @@ def reemplazar(ruta, viejo, nuevo):
 CASOS = [
     ("formulario con mailto", "R10-formulario", lambda r: reemplazar(r / "index.html", 'action="/api/contacto"', 'action="mailto:hola@ejemplo.cl"')),
     ("campo sin name", "R10-formulario", lambda r: reemplazar(r / "index.html", '<textarea name="mensaje">', "<textarea>")),
+    ("campo sin etiqueta", "R29-etiquetas", lambda r: reemplazar(r / "index.html", '<label for="nombre">Nombre</label>', "")),
+    ("casilla premarcada", "R28-privacidad", lambda r: reemplazar(r / "index.html", 'name="consentimiento" required', 'name="consentimiento" required checked')),
+    ("falta aviso de privacidad", "R28-privacidad", lambda r: (r / "privacidad.html").unlink()),
+    ("falta sello de huella", "R27-huella", lambda r: reemplazar(r / "index.html", '<div id="kumo-huella"></div>', "")),
+    ("gracias indexable", "R32-no-indexar", lambda r: reemplazar(r / "gracias.html", '<meta name="robots" content="noindex">', "")),
+    ("error sin otro canal", "R11-paginas-respuesta", lambda r: reemplazar(r / "error.html", '<a href="https://wa.me/56912345678">Escríbenos por WhatsApp</a>', "")),
+    ("boton vacio", "R30-vacio", lambda r: reemplazar(r / "index.html", '<button type="submit">Enviar</button>', '<button type="submit"></button>')),
+    ("archivo sin uso", "R22-archivo-sin-uso", lambda r: (r / "assets" / "sobra.png").write_bytes(png(4, 4))),
+    ("nombre que delata", "R33-nombre-que-delata", lambda r: (r / "assets" / "mirador-simulado.png").write_bytes(png(4, 4))),
     ("whatsapp que abre correo", "R15-whatsapp", lambda r: reemplazar(r / "index.html", 'href="https://wa.me/56912345678"', 'href="mailto:hola@ejemplo.cl"')),
     ("letras de Google", "R12-externo", lambda r: reemplazar(r / "index.html", '<link rel="stylesheet" href="/assets/estilos.css">', '<link rel="stylesheet" href="/assets/estilos.css"><link href="https://fonts.googleapis.com/css2?family=Manrope" rel="stylesheet">')),
     ("grilla en la etiqueta", "R14-estilo-en-linea", lambda r: reemplazar(r / "index.html", "<p>", '<p style="grid-template-columns:1.2fr .8fr">')),

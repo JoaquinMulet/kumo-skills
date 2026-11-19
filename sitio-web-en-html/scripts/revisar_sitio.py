@@ -3,7 +3,7 @@ import json
 import re
 import struct
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -15,7 +15,7 @@ FOTO_MAX_BYTES = 200 * KB
 FOTO_OG_MAX_BYTES = 600 * KB
 FOTO_MAX_ANCHO_PX = 1600
 VIDEO_AUTOMATICO_MAX_BYTES = int(1.5 * MB)
-LIMITE_ARCHIVO_CLOUDFLARE_BYTES = 25 * MB
+ARCHIVO_MAX_BYTES = 25 * MB
 ANCHO_TELEFONO_PX = 375
 TEXTO_MINIMO_CARACTERES = 200
 
@@ -23,11 +23,15 @@ EXTENSIONES_FOTO = {".jpg", ".jpeg", ".png", ".webp", ".avif", ".gif"}
 EXTENSIONES_VIDEO = {".mp4", ".webm", ".mov"}
 EXTENSIONES_FUENTE_LENTA = {".ttf", ".otf", ".woff"}
 EXTENSIONES_TEXTO_REVISABLE = {".html", ".htm", ".css", ".js", ".json", ".txt", ".xml"}
-ARCHIVOS_DE_KUMO = {"_headers", "_redirects", "robots.txt", "sitemap.xml", "llms.txt"}
+ARCHIVOS_DE_KUMO = {"robots.txt", "sitemap.xml", "llms.txt", "huella.json", "amplify.yml", "customHttp.yml"}
 PAGINAS_DE_RESPUESTA = {"gracias.html", "error.html"}
+PAGINAS_DE_PRIVACIDAD = {"privacidad.html", "privacy.html"}
 IFRAMES_PERMITIDOS = ("www.google.com/maps", "maps.google.com", "www.youtube-nocookie.com", "www.youtube.com/embed", "player.vimeo.com")
 PREFIJOS_WHATSAPP = ("https://wa.me/", "https://api.whatsapp.com/")
+CAMPOS_SIN_ETIQUETA = {"submit", "button", "reset", "image", "hidden"}
+ID_SELLO_HUELLA = "kumo-huella"
 NOMBRE_VALIDO = re.compile(r"^_?[a-z0-9]+(?:[._-][a-z0-9]+)*$")
+PALABRAS_QUE_DELATAN = re.compile(r"(?:^|[-_.])(simulad[a-z]*|borrador|draft|prueba|test|copia|old|viejo|temp|tmp|maqueta|mockup|prompt|final)(?=$|[-_.0-9])", re.I)
 PATRONES_SECRETO = [
     re.compile(r"sk_(?:live|test)_[0-9A-Za-z]{10,}"),
     re.compile(r"AKIA[0-9A-Z]{16}"),
@@ -37,6 +41,7 @@ PATRONES_SECRETO = [
 ESTILO_GRILLA = re.compile(r"grid-template-columns", re.I)
 ESTILO_ANCHO = re.compile(r"(?<![-a-z])(?:min-)?width\s*:\s*(\d+(?:\.\d+)?)px", re.I)
 URL_EN_CSS = re.compile(r"url\(\s*['\"]?([^'\")]+)['\"]?\s*\)", re.I)
+ETIQUETAS_VACIAS = {"meta", "link", "img", "input", "source", "br", "hr", "base", "wbr", "area", "track", "embed", "col", "param"}
 
 
 @dataclass
@@ -54,37 +59,41 @@ class Pagina:
     charset: bool = False
     viewport: bool = False
     titulo: str = ""
-    metas: dict = None
-    links: list = None
     h1: int = 0
-    imagenes: list = None
-    videos: list = None
-    scripts: list = None
-    formularios: list = None
-    anclas: list = None
-    iframes: list = None
-    estilos_en_linea: list = None
-    referencias: list = None
     texto_visible: int = 0
+    metas: dict = field(default_factory=dict)
+    links: list = field(default_factory=list)
+    imagenes: list = field(default_factory=list)
+    videos: list = field(default_factory=list)
+    scripts: list = field(default_factory=list)
+    formularios: list = field(default_factory=list)
+    anclas: list = field(default_factory=list)
+    botones: list = field(default_factory=list)
+    iframes: list = field(default_factory=list)
+    estilos_en_linea: list = field(default_factory=list)
+    referencias: list = field(default_factory=list)
+    ids: set = field(default_factory=set)
+    etiquetas_para: set = field(default_factory=set)
 
 
 class LectorHtml(HTMLParser):
     def __init__(self, pagina):
         super().__init__(convert_charrefs=True)
         self.p = pagina
-        self.p.metas, self.p.links, self.p.imagenes, self.p.videos = {}, [], [], []
-        self.p.scripts, self.p.formularios, self.p.anclas, self.p.iframes = [], [], [], []
-        self.p.estilos_en_linea, self.p.referencias = [], []
         self.pila = []
         self.ancla_abierta = None
+        self.boton_abierto = None
         self.video_abierto = None
         self.formulario_abierto = None
+        self.etiquetas_abiertas = 0
         self.en_body = False
 
     def handle_starttag(self, tag, attrs_lista):
         a = {k.lower(): (v if v is not None else "") for k, v in attrs_lista}
-        if tag not in {"meta", "link", "img", "input", "source", "br", "hr", "base", "wbr", "area", "track", "embed", "col", "param"}:
+        if tag not in ETIQUETAS_VACIAS:
             self.pila.append(tag)
+        if a.get("id"):
+            self.p.ids.add(a["id"])
         if tag == "body":
             self.en_body = True
         if "style" in a:
@@ -110,8 +119,9 @@ class LectorHtml(HTMLParser):
             self.p.imagenes.append(a)
             self.p.referencias.append(a.get("src", ""))
             self.p.referencias.extend(partes_srcset(a.get("srcset", "")))
-        elif tag == "picture":
-            pass
+            for abierto in (self.ancla_abierta, self.boton_abierto):
+                if abierto is not None:
+                    abierto["texto"] += a.get("alt", "")
         elif tag == "source":
             if a.get("src"):
                 self.p.referencias.append(a["src"])
@@ -131,14 +141,21 @@ class LectorHtml(HTMLParser):
         elif tag == "form":
             self.formulario_abierto = {"attrs": a, "campos": []}
             self.p.formularios.append(self.formulario_abierto)
-        elif tag in {"input", "textarea", "select"} and self.formulario_abierto is not None:
-            self.formulario_abierto["campos"].append((tag, a))
+        elif tag == "label":
+            self.etiquetas_abiertas += 1
+            if a.get("for"):
+                self.p.etiquetas_para.add(a["for"])
         elif tag == "a":
             self.ancla_abierta = {"attrs": a, "texto": ""}
             self.p.anclas.append(self.ancla_abierta)
             self.p.referencias.append(a.get("href", ""))
+        elif tag == "button":
+            self.boton_abierto = {"attrs": a, "texto": ""}
+            self.p.botones.append(self.boton_abierto)
         elif tag == "iframe":
             self.p.iframes.append(a)
+        if tag in {"input", "textarea", "select"} and self.formulario_abierto is not None:
+            self.formulario_abierto["campos"].append({"tag": tag, "attrs": a, "dentro_de_etiqueta": self.etiquetas_abiertas > 0})
 
     def handle_endtag(self, tag):
         if tag in self.pila:
@@ -146,10 +163,14 @@ class LectorHtml(HTMLParser):
                 pass
         if tag == "a":
             self.ancla_abierta = None
+        elif tag == "button":
+            self.boton_abierto = None
         elif tag == "video":
             self.video_abierto = None
         elif tag == "form":
             self.formulario_abierto = None
+        elif tag == "label":
+            self.etiquetas_abiertas = max(0, self.etiquetas_abiertas - 1)
 
     def handle_data(self, datos):
         actual = self.pila[-1] if self.pila else ""
@@ -161,8 +182,9 @@ class LectorHtml(HTMLParser):
             return
         elif self.en_body:
             self.p.texto_visible += len(datos.strip())
-        if self.ancla_abierta is not None:
-            self.ancla_abierta["texto"] += datos
+        for abierto in (self.ancla_abierta, self.boton_abierto):
+            if abierto is not None:
+                abierto["texto"] += datos
 
 
 def partes_srcset(valor):
@@ -238,6 +260,10 @@ def es_pagina_de_respuesta(pagina):
     return pagina.ruta.name in PAGINAS_DE_RESPUESTA
 
 
+def es_pagina_de_privacidad(pagina):
+    return pagina.ruta.name in PAGINAS_DE_PRIVACIDAD
+
+
 def revisar_pagina(pagina, raiz, hallazgos):
     nombre = nombre_pagina(pagina, raiz)
 
@@ -254,7 +280,12 @@ def revisar_pagina(pagina, raiz, hallazgos):
     if not pagina.titulo:
         falla("R03-titulo-y-descripcion", "La página no tiene <title> con texto.")
     respuesta = es_pagina_de_respuesta(pagina)
-    if not respuesta:
+    secundaria = respuesta or es_pagina_de_privacidad(pagina)
+    if respuesta and "noindex" not in pagina.metas.get("robots", "").lower():
+        falla("R32-no-indexar", "Esta página no va en Google. Agrega <meta name=\"robots\" content=\"noindex\">.")
+    if pagina.ruta.name == "error.html" and not any(a["attrs"].get("href", "").startswith(PREFIJOS_WHATSAPP + ("tel:",)) for a in pagina.anclas):
+        falla("R11-paginas-respuesta", "error.html tiene que ofrecer otro canal, con un link a WhatsApp o a un teléfono.")
+    if not secundaria:
         if not pagina.metas.get("description"):
             falla("R03-titulo-y-descripcion", "Falta <meta name=\"description\"> con texto.")
         if pagina.h1 != 1:
@@ -266,6 +297,10 @@ def revisar_pagina(pagina, raiz, hallazgos):
             falla("R07-canonical", "Falta <link rel=\"canonical\"> con la dirección completa de la página.")
         if pagina.texto_visible < TEXTO_MINIMO_CARACTERES and pagina.scripts:
             falla("R17-texto-en-html", "La página casi no trae texto escrito y tiene programas. El texto tiene que venir escrito en el HTML.")
+        if ID_SELLO_HUELLA not in pagina.ids:
+            falla("R27-huella", f"Falta el espacio del sello de huella de carbono en el pie, <div id=\"{ID_SELLO_HUELLA}\"></div>.")
+        if not any(a["attrs"].get("href", "").startswith("tel:") for a in pagina.anclas):
+            aviso("R34-telefono", "La página no tiene un link tel:. Si el cliente atiende por teléfono, el número se marca con un toque.")
     if not any("icon" in l.get("rel", "").lower().split() for l in pagina.links):
         falla("R06-icono", "Falta <link rel=\"icon\">.")
 
@@ -284,12 +319,34 @@ def revisar_pagina(pagina, raiz, hallazgos):
             falla("R10-formulario", f"El formulario envía a \"{accion}\". Tiene que enviar a una dirección /api/, por ejemplo /api/contacto.")
         if a.get("method", "").lower() != "post":
             falla("R10-formulario", "El formulario no trae method=\"POST\".")
-        for tag, campo in formulario["campos"]:
-            tipo = campo.get("type", "text").lower()
+        casillas = []
+        for campo in formulario["campos"]:
+            c = campo["attrs"]
+            tipo = c.get("type", "text").lower()
+            descripcion = f"<{campo['tag']} name=\"{c.get('name', '')}\">"
+            if tipo == "checkbox":
+                casillas.append(c)
             if tipo in {"submit", "button", "reset", "image"}:
                 continue
-            if not campo.get("name"):
-                falla("R10-formulario", f"Un campo <{tag}> del formulario no tiene name.")
+            if not c.get("name"):
+                falla("R10-formulario", f"Un campo <{campo['tag']}> del formulario no tiene name.")
+            if tipo in CAMPOS_SIN_ETIQUETA:
+                continue
+            tiene_etiqueta = campo["dentro_de_etiqueta"] or (c.get("id") and c["id"] in pagina.etiquetas_para) or c.get("aria-label") or c.get("aria-labelledby")
+            if not tiene_etiqueta:
+                falla("R29-etiquetas", f"El campo {descripcion} no tiene una etiqueta <label> visible. El texto de ejemplo no cuenta como etiqueta.")
+        consentimiento = [c for c in casillas if "checked" not in c and "required" in c]
+        if not consentimiento:
+            falla("R28-privacidad", "El formulario necesita una casilla de consentimiento obligatoria y sin marcar, por la ley 21.719.")
+        if not any(any(p in a2["attrs"].get("href", "") for p in ("privacidad", "privacy")) for a2 in pagina.anclas):
+            falla("R28-privacidad", "La página del formulario no enlaza al aviso de privacidad.")
+
+    for elemento, lista in (("link", pagina.anclas), ("botón", pagina.botones)):
+        for item in lista:
+            at = item["attrs"]
+            if not item["texto"].strip() and not at.get("aria-label") and not at.get("title"):
+                destino = at.get("href", "") if elemento == "link" else at.get("type", "")
+                falla("R30-vacio", f"Un {elemento} no tiene texto ni aria-label ({destino}). Un lector de pantalla no sabe qué hace.")
 
     for script in pagina.scripts:
         if es_externa(script.get("src", "")):
@@ -320,7 +377,7 @@ def revisar_pagina(pagina, raiz, hallazgos):
 
 
 def revisar_idiomas(paginas, raiz, hallazgos):
-    principales = [p for p in paginas if not es_pagina_de_respuesta(p)]
+    principales = [p for p in paginas if not es_pagina_de_respuesta(p) and not es_pagina_de_privacidad(p)]
     idiomas = {p.lang.split("-")[0].lower() for p in principales if p.lang}
     if len(idiomas) <= 1:
         hallazgos.append(Hallazgo("AVISO", "R16-idiomas", "(sitio)", "El sitio tiene 1 solo idioma. Confirma que el cliente compró 1 solo idioma."))
@@ -375,6 +432,8 @@ def revisar_archivos(raiz, paginas, hallazgos):
         for nombre in sorted(PAGINAS_DE_RESPUESTA):
             if not (raiz / nombre).exists():
                 hallazgos.append(Hallazgo("FALLA", "R11-paginas-respuesta", "(sitio)", f"El sitio tiene formulario y falta {nombre} en la raíz."))
+        if not (raiz / "privacidad.html").exists():
+            hallazgos.append(Hallazgo("FALLA", "R28-privacidad", "(sitio)", "El sitio tiene formulario y falta privacidad.html con el aviso de privacidad."))
 
     if not (raiz / "CAMBIOS.txt").exists():
         hallazgos.append(Hallazgo("FALLA", "R23-cambios", "(sitio)", "Falta CAMBIOS.txt con la fecha y la lista de cambios de esta entrega."))
@@ -387,15 +446,20 @@ def revisar_archivos(raiz, paginas, hallazgos):
         tamano = archivo.stat().st_size
         extension = archivo.suffix.lower()
         en_raiz = len(relativo.parts) == 1
+        es_de_kumo = nombre in ARCHIVOS_DE_KUMO or (en_raiz and extension in {".txt", ".md"})
 
         for parte in relativo.parts:
             mayuscula_permitida = en_raiz and extension in {".txt", ".md"}
             if not NOMBRE_VALIDO.match(parte.lower() if mayuscula_permitida else parte):
                 hallazgos.append(Hallazgo("FALLA", "R21-nombre-archivo", nombre, f"El nombre \"{parte}\" tiene mayúsculas, espacios, tildes u otros signos."))
                 break
+        if not es_de_kumo:
+            delata = PALABRAS_QUE_DELATAN.search(archivo.stem)
+            if delata:
+                hallazgos.append(Hallazgo("FALLA", "R33-nombre-que-delata", nombre, f"El nombre trae \"{delata.group(1)}\". Cualquier visitante puede leer el nombre de un archivo publicado."))
 
-        if tamano > LIMITE_ARCHIVO_CLOUDFLARE_BYTES:
-            hallazgos.append(Hallazgo("FALLA", "R24-limite-cloudflare", nombre, f"Pesa {tamano / MB:.1f} MB. Cloudflare no publica archivos de más de 25 MB."))
+        if tamano > ARCHIVO_MAX_BYTES:
+            hallazgos.append(Hallazgo("FALLA", "R24-archivo-enorme", nombre, f"Pesa {tamano / MB:.1f} MB. Un archivo de más de 25 MB no va dentro del sitio."))
 
         if extension in EXTENSIONES_TEXTO_REVISABLE:
             texto = archivo.read_text(encoding="utf-8", errors="replace")
@@ -420,9 +484,8 @@ def revisar_archivos(raiz, paginas, hallazgos):
             hallazgos.append(Hallazgo("AVISO", "R25-fuentes", nombre, "Las letras van en formato woff2, que pesa menos."))
 
         es_pagina = extension in {".html", ".htm"}
-        es_de_kumo = nombre in ARCHIVOS_DE_KUMO or (en_raiz and extension in {".txt", ".md"})
         if not es_pagina and not es_de_kumo and destino not in referenciados:
-            hallazgos.append(Hallazgo("AVISO", "R22-archivo-sin-uso", nombre, "Ninguna página usa este archivo, pero igual se publica. Bórralo si sobra."))
+            hallazgos.append(Hallazgo("FALLA", "R22-archivo-sin-uso", nombre, "Ninguna página usa este archivo, pero igual se publica y cualquiera puede bajarlo. Bórralo."))
 
 
 def revisar(raiz):
@@ -468,7 +531,7 @@ def main():
             print(f"       {h.detalle}")
         print()
         print(f"Resultado: {len(fallas)} fallas y {len(avisos)} avisos.")
-        print("La entrega está lista para Kumo." if not fallas else "La entrega todavía no está lista. Corrige las fallas y vuelve a correr la revisión.")
+        print("La carpeta pasa la revisión 1. Sigue con la revisión de pantallas." if not fallas else "La entrega todavía no está lista. Corrige las fallas y vuelve a correr la revisión.")
     return 1 if fallas else 0
 
 

@@ -30,7 +30,7 @@ Para la gobernanza interna (cómo agregar una skill, convenciones, checklist ant
 | [`redaccion-narrativa-conjunta`](redaccion-narrativa-conjunta/) | Redacta con el usuario un texto narrativo largo, párrafo por párrafo, con mensaje central, plan aprobado y cada cita comprobada por un script. |
 | [`documentos-latex`](documentos-latex/) | Documentos LaTeX con calidad editorial, con geometría medida, gráficos de ECharts y cada cifra contra su fuente. |
 | [`aeo-sitios-web`](aeo-sitios-web/) | Deja un sitio listo para agentes y búsqueda por IA, verificado con curl y con el puntaje de isitagentready. |
-| [`sitio-web-en-html`](sitio-web-en-html/) | Guía al diseñador que arma un sitio en HTML puro para Kumo, con lo que resuelve el HTML, lo que queda para Kumo y cuándo hace falta Astro o Next.js. Trae 2 revisores que miden la carpeta y abren cada página en 3 anchos de pantalla. |
+| [`sitio-web-en-html`](sitio-web-en-html/) | Guía al diseñador que arma un sitio en HTML puro para Kumo, con el estándar de la casa (teléfono primero, WCAG 2.2 AA, ley 21.719, velocidad, SEO, sello de huella), lo que queda para Kumo en AWS Amplify y cuándo hace falta Next.js. Trae 2 revisores que miden la carpeta y abren cada página en 3 anchos de pantalla. |
 
 ## Skills de pstack
 
