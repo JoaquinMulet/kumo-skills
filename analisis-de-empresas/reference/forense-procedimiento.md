@@ -62,7 +62,9 @@ Las reglas de la tabla son 4.
 3. Los años que el informe actual no trae se sacan del informe anterior. Con 2 informes anuales
    salen 3 años de balance y 4 o 5 de resultados y de flujo.
 4. Con un informe trimestral, los resultados y el flujo se comparan con el mismo trimestre del año
-   anterior, que el informe trae. El balance solo se puede comparar con el cierre del año anterior.
+   anterior, que el informe trae. Un CSV no mezcla columnas de un trimestre con columnas de un año,
+   porque las razones que dividen por ingresos dejan de ser comparables. Si hacen falta los 2, van
+   en 2 CSV. El balance solo se puede comparar con el cierre del año anterior.
    Las razones de balance mezclan entonces la temporada, y un aviso que salga de ahí se anota con
    esa advertencia.
 
@@ -153,7 +155,8 @@ Las reglas del formato son 7.
    cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO. Si una prueba
    reúne varias prácticas, su veredicto es el de la más grave que no esté contada en otra prueba,
    y la fila «Misma práctica que» se usa solo cuando todo lo que sostiene el veredicto ya está
-   contado allá.
+   contado allá. La práctica se cuenta en la prueba de menor número en el orden del anexo, y las
+   demás llevan «Misma práctica que» con ese código.
 
 ```
 uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
@@ -181,23 +184,29 @@ misma evidencia.
 | LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación con cifras que se comprobó en la fuente |
 | BAJA | 0 | Hay señal y su efecto es menor que 5 por ciento, o no se puede medir. Es una observación menor. Queda anotada y no suma |
 | MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que explica la mayor parte de la mejora del período, cuando la empresa no dice que se vaya a repetir |
-| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación de un regulador o de la justicia sobre la contabilidad o la divulgación de la empresa |
+| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación abierta por un regulador o un fiscal sobre la contabilidad o la divulgación de la empresa. Una demanda de accionistas no cuenta como investigación, y va como BAJA |
 | CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso |
 | SIN DATO | No suma | Falta el documento o la cifra. El informe lo dice junto al puntaje |
 
 Cuando 2 filas calzan, manda la más alta. Un cambio de política sin explicación es ALTA aunque su
-efecto no se pueda medir, porque el libro trata el cambio mismo como la señal. Una explicación de la
-empresa que no trae cifras no baja el veredicto. Queda anotada en «Qué se revisó».
+efecto no se pueda medir, porque el libro trata el cambio mismo como la señal. Esa excepción vale
+solo para un cambio real en cómo se reconoce, se clasifica o se define una cifra. Cualquier otra
+señal que no se puede medir es BAJA. Una explicación de la empresa que no trae cifras no baja el
+veredicto. Queda anotada en «Qué se revisó».
 
 Esa regla tiene 3 límites, que salieron de la prueba a ciegas del 27 de noviembre de 2026.
 
 1. Un cambio que empeora la cifra, o que no mueve ninguna cifra consolidada, como un traslado de
-   costos entre segmentos con el total igual, es BAJA. Pasa a ALTA solo si tapa el deterioro del
-   segmento que la empresa destaca.
+   costos entre segmentos con el total igual, es BAJA. Pasa a MEDIA solo si cambia el signo del
+   crecimiento del segmento que trae más ingresos, porque eso tapa el deterioro de lo principal
+   del negocio.
 2. Una política que aparece escrita por primera vez no es un cambio. Lo es si contradice lo que el
    informe anterior decía de esa misma práctica.
-3. Un hecho posterior al cierre, como un acuerdo o una venta firmados después, no se mide contra
-   el período que se revisa. Se anota en «Qué estaría tapando» como dato para proyectar.
+3. Un hecho posterior al cierre, como un acuerdo, una venta o una demanda presentada después, no se
+   mide contra el período que se revisa. Se anota en «Qué estaría tapando» como dato para
+   proyectar. Un hecho anunciado dentro del período y que se cierra después sí cuenta.
+4. 2 cambios en la misma nota y con el mismo efecto, como 2 frases nuevas en la política de
+   ingresos, son una sola práctica. Van en una prueba, y la otra lleva «Misma práctica que».
 
 El efecto se mide contra una cifra distinta según la prueba.
 
@@ -205,7 +214,7 @@ El efecto se mide contra una cifra distinta según la prueba.
 |---|---|
 | EM 1 a EM 7 y AA 1 | La utilidad neta del período |
 | CF 1, CF 2 y AA 2 | El flujo operacional del período |
-| CF 3 | El flujo operacional del período. Se mide cuánto de él viene de las líneas de capital de trabajo que mejoraron |
+| CF 3 | El flujo operacional del período. Se mide cuánto de él viene de las líneas de capital de trabajo cuyos días mejoraron |
 | KM 1 y AA 3 | La cifra contable que la métrica reemplaza |
 | KM 2 | Lo que el indicador mide, como los días del DSO, la provisión o la deuda |
 | Obligaciones fuera de balance que funcionan como deuda, en cualquier prueba | La deuda financiera del balance |
@@ -213,7 +222,8 @@ El efecto se mide contra una cifra distinta según la prueba.
 
 Si la empresa pierde plata, o su utilidad neta es menor que 1 por ciento de los ingresos, la
 utilidad neta no sirve de vara, porque todo queda bajo 5 por ciento o sobre 20 según el año. El
-efecto se mide entonces contra los ingresos, con cortes de 0,5 y de 2 por ciento. Son los órdenes de
+efecto se mide entonces contra los ingresos totales del mismo período que el efecto, con cortes de
+0,5 y de 2 por ciento. Son los órdenes de
 magnitud con que la auditoría fija su materialidad, y aquí son también un supuesto sin medir. Lo
 mismo vale para las pruebas que se miden contra el flujo operacional cuando ese flujo es negativo o
 casi cero. Un efecto que cae en otro período, como un gasto que se evita el año siguiente, se mide

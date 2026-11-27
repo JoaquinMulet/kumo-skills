@@ -166,6 +166,15 @@ NOTA_2008 = (
 )
 
 
+def probar_busqueda(tmp):
+    print("buscar_en_fuente.py")
+    fuente = escribir(tmp / "garantias.txt", "The lease includes residual value guarantees. The process was reviewed.")
+    codigo, salida = correr("buscar_en_fuente.py", fuente, "--contar", "guarantee")
+    comprobar("Contar «guarantee» encuentra el plural «guarantees»", "1 veces" in salida, salida)
+    codigo, salida = correr("buscar_en_fuente.py", fuente, "--contar", "roce")
+    comprobar("Contar «roce» no lo encuentra dentro de «process»", "0 veces" in salida, salida)
+
+
 def probar_notas(tmp):
     print("comparar_notas.py")
     antes = escribir(tmp / "nota-2007.txt", NOTA_2007)
@@ -280,6 +289,7 @@ def main():
     with tempfile.TemporaryDirectory() as carpeta:
         tmp = Path(carpeta)
         probar_razones(tmp)
+        probar_busqueda(tmp)
         probar_notas(tmp)
         probar_validador(tmp)
     if FALLAS:

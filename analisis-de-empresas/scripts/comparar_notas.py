@@ -41,7 +41,7 @@ LARGO_MINIMO_DE_PALABRA_QUE_IDENTIFICA = 5
 MAXIMO_POR_LISTA = 40
 # Sin filtro, un informe entero entrega cientos de frases y lo primero que sale es la portada y la
 # descripción del negocio. Pasó en la prueba de campo del 27 de noviembre de 2026 (482 frases en
-# Sanmina). Por eso, si no se pide otra cosa, se muestran solo las frases que traen uno de estos
+# un 10-K). Por eso, si no se pide otra cosa, se muestran solo las frases que traen uno de estos
 # trozos de palabra, en inglés y en español.
 TERMINOS_CONTABLES = (
     "recogni", "revenue", "receivable", "allowance", "reserve", "accrual", "accrued", "estimate",

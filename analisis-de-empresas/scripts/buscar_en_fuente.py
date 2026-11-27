@@ -16,7 +16,8 @@ Por qué normaliza antes de buscar. Las 3 veces que una búsqueda dio cero y par
 texto sí estaba. Un XML de leychile escribe «séptimo» como entidad HTML, y el texto de un PDF trae
 saltos de línea dentro de las frases. Por eso el script decodifica las entidades, junta los
 espacios y compara sin mayúsculas. En --contar busca con bordes de palabra, porque «roce» está
-dentro de «proceso» y «eva» dentro de «eleva».
+dentro de «proceso» y «eva» dentro de «eleva». El plural sí cuenta. «guarantee» encuentra también
+«guarantees», y «garantía» encuentra «garantías».
 
 Un cero en --contar no prueba que el término no exista. Prueba que no está escrito así. Antes de
 publicar una ausencia, corre una 2.ª formulación.
@@ -58,7 +59,7 @@ def leer_partes(ruta):
 def buscar(partes, consulta, sin_acentos, contar):
     q = normalizar(consulta, sin_acentos)
     if contar:
-        patron = re.compile(r"(?<!\w)" + re.escape(q) + r"(?!\w)")
+        patron = re.compile(r"(?<!\w)" + re.escape(q) + r"(?:e?s)?(?!\w)")
     else:
         patron = re.compile(re.escape(q))
     hallazgos = []

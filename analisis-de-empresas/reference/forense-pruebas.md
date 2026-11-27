@@ -288,9 +288,11 @@ cuánto de la mejora va a seguir.
 Qué se hace.
 
 1. Descompón el cambio del flujo operacional en utilidad, cuentas por pagar, inventario, cuentas
-   por cobrar, anticipos de clientes e impuestos. El efecto es la suma de las líneas de capital de
-   trabajo que mejoraron, medida contra el flujo operacional del período. El DPO de la tabla de
-   razones confirma la dirección y no sirve para medir.
+   por cobrar, anticipos de clientes e impuestos. Una línea cuenta solo si sus días se movieron a
+   favor de la caja (DPO que sube, DSI o DSO que bajan). Su efecto es la diferencia entre el saldo
+   de cierre y el saldo que habría tenido con los días del período anterior. La suma de esas
+   diferencias se mide contra el flujo operacional del período. Un inventario que baja al mismo
+   ritmo que las ventas no cuenta, porque es un negocio que se achica.
 2. Lee la explicación de la gerencia sobre el flujo. Términos. `capital de trabajo`, `proveedores`,
    `confirming`, `anticipos`, `working capital`, `payables`, `days payable`, `early payment`,
    `deposits`, `supplier finance`.
@@ -357,14 +359,15 @@ Qué se hace.
 6. Lee el informe del auditor, la sección de control interno, la nota de juicios y los hechos
    esenciales. Busca deuda en entidades que no consolidan, debilidades materiales de control,
    ajustes de períodos anteriores, cifras comparativas que cambiaron respecto del informe anterior
-   e investigaciones de reguladores. Términos. `investigación`, `citación`, `investigation`,
-   `subpoena`, `material weakness`, `restated`, `reclassified`.
+   e investigaciones de reguladores o fiscales. Términos. `investigación`, `citación`,
+   `investigation`, `subpoena`, `material weakness`, `restated`, `reclassified`.
 
 Es hallazgo cuando el DSO ajustado sube aunque el reportado baje, cuando un saldo cambió de línea,
 cuando un indicador cambió de fórmula o de presentación, o cuando el auditor no puede certificar
 una operación. También cuando la empresa admite una debilidad material de control, cuando las
-cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o la
-justicia investigan su contabilidad o su divulgación.
+cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o un
+fiscal investigan su contabilidad o su divulgación. Una debilidad de control ya corregida dentro
+del período es BAJA, salvo que haya obligado a ajustar cifras.
 
 Lo descarga que la reclasificación esté explicada y aplicada también a los períodos anteriores.
 
@@ -418,9 +421,9 @@ cuando costos de captar clientes se registran como adquisiciones, o cuando la es
 compraventa pasó caja de inversión a operación. Si el flujo de caja libre ya era negativo antes de
 las compras, la causa es el capex y no esta prueba.
 
-Cuando una venta de negocios deja las cuentas por cobrar en la empresa, el efecto es el saldo
-retenido contra el flujo operacional del período, porque esa cobranza va a entrar como flujo
-operacional. Que el informe no separe cuánto entró ya no lo baja a BAJA.
+Cuando una venta de negocios, hecha o anunciada, deja las cuentas por cobrar en la empresa, el
+efecto es el saldo retenido contra el flujo operacional del período, porque esa cobranza va a
+entrar como flujo operacional. Que el informe no separe cuánto entró ya no lo baja a BAJA.
 
 Lo descarga una compra aislada y grande, con el flujo tras adquisiciones positivo en los demás años.
 
