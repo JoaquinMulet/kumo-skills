@@ -4,170 +4,32 @@ Estructura exacta de los tres informes finales.
 
 ---
 
-## Salida 1: Informe de manipulaciones contables
+## Salida 1: Informe de la revisión forense
+
+El cuerpo del informe es el anexo de 15 veredictos, con el formato exacto que da
+`forense-procedimiento.md` y validado por `scripts/validar_forense.py`. Antes del anexo va este
+resumen, y después la síntesis de `fase3-sintesis.md`.
 
 ```markdown
-# Financial Shenanigans Analysis - {COMPANY} {PERIOD}
+# Revisión forense. {EMPRESA}, {PERÍODO}
 
-## Executive Summary
+{Una frase con la conclusión, en palabras del negocio. Qué parte del resultado no se entiende o no
+se repite, y qué estaría tapando.}
 
-| Category | Techniques | Detected | Max Severity | Material Impact |
-|----------|------------|----------|--------------|-----------------|
-| Earnings Manipulation (EM) | 7 | {X} | {SEVERITY} | {%} of Net Income |
-| Cash Flow Shenanigans (CF) | 3 | {X} | {SEVERITY} | {%} of CFFO |
-| Key Metrics (KM) | 2 | {X} | {SEVERITY} | Qualitative |
-| Acquisition Accounting (AA) | 2 | {X} | {SEVERITY} | {%} of Equity |
-| **TOTAL** | **14** | **{X}** | **{MAX}** | |
+| Dato | Valor |
+|---|---|
+| Puntaje | {N} puntos, tramo «{Limpio, Dudas, Dudas importantes o Manipulación seria}» |
+| Hallazgos | {N}, el mayor de veredicto {VEREDICTO} |
+| Pruebas sin dato | {códigos, y qué falta} |
+| Efecto en la tasa de descuento | {lo que diga la tabla del puntaje} |
 
-### Overall Assessment: {LOW | MEDIUM | HIGH | CRITICAL}
+| Cifra | Reportada | Ajustada | De qué pruebas sale |
+|---|---|---|---|
+| Utilidad neta | {X} | {Y} | {códigos} |
+| Flujo operacional | {X} | {Y} | {códigos} |
+| Patrimonio | {X} | {Y} | {códigos} |
 
-### Primary Concerns
-
-1. **{Most serious finding}**: {One sentence description}
-2. **{Second most serious}**: {One sentence description}
-3. **{Third if applicable}**: {One sentence description}
-
-### Impact on Reported Results
-
-| Metric | Reported | Adjusted | Change |
-|--------|----------|----------|--------|
-| Net Income | M${X} | M${Y} | {-X%} |
-| Equity | M${X} | M${Y} | {-X%} |
-| CFFO | M${X} | M${Y} | {-X%} |
-
----
-
-## Category 1: Earnings Manipulation (EM)
-
-### EM-1: Recording Revenue Too Soon
-
-| Field | Value |
-|-------|-------|
-| Status | {DETECTED / NOT DETECTED} |
-| Severity | {LOW / MEDIUM / HIGH / CRITICAL / N/A} |
-| Impact | {M$ amount = X% of Net Income / N/A} |
-
-**Finding**: 
-{Detailed description of what was found, or "No material issues detected after reviewing revenue recognition policies, deferred revenue balances, and accounts receivable trends."}
-
-**Evidence**:
-| Item | Value | Source |
-|------|-------|--------|
-| {Metric 1} | {Value} | Note {X}, Page {Y} |
-| {Metric 2} | {Value} | {Document}, {Location} |
-
-**Red Flags Observed**:
-- {Flag 1, or "None identified"}
-- {Flag 2}
-
-**Analyst Note**: 
-{Why this matters or why it's not a concern}
-
-**Question for CFO**: 
-{If Severity >= MEDIUM, include specific question}
-
----
-
-### EM-2: Recording Bogus Revenue
-{Same structure as EM-1}
-
-### EM-3: Boosting Income with One-Time Gains
-{Same structure}
-
-### EM-4: Shifting Current Expenses to Later Period
-{Same structure}
-
-### EM-5: Failing to Record or Reducing Liabilities
-{Same structure}
-
-### EM-6: Shifting Current Income to Later Period
-{Same structure}
-
-### EM-7: Shifting Future Expenses to Current Period
-{Same structure}
-
----
-
-## Category 2: Cash Flow Shenanigans (CF)
-
-### CF-1: Shifting Financing Inflows to Operating
-{Same structure as EM techniques}
-
-### CF-2: Shifting Operating Outflows to Other Sections
-{Same structure}
-
-### CF-3: Boosting CFFO Using Unsustainable Activities
-{Same structure}
-
----
-
-## Category 3: Key Metrics Shenanigans (KM)
-
-### KM-1: Misleading Metrics that Overstate Performance
-{Same structure, Impact is qualitative}
-
-### KM-2: Distorting Balance Sheet Metrics
-{Same structure}
-
----
-
-## Category 4: Acquisition Accounting Shenanigans (AA)
-
-### AA-1: Artificially Boosting Revenue and Earnings
-{Same structure}
-
-### AA-2: Inflating Reported Cash Flow
-{Same structure}
-
----
-
-## Cross-Reference Matrix
-
-| # | Finding | NI Impact | CF Impact | Equity Impact | Related Findings |
-|---|---------|-----------|-----------|---------------|------------------|
-| 1 | {Finding 1} | {+/-M$} | {+/-M$} | {+/-M$} | {EM-X, CF-X} |
-| 2 | {Finding 2} | {+/-M$} | {+/-M$} | {+/-M$} | {Related} |
-
----
-
-## Questions for Management
-
-### High Priority Questions
-
-**Q1: {Topic}**
-> "{Exact question text with specific data references}"
-
-Supporting Data: Note {X}, showing {specific values}
-
----
-
-**Q2: {Topic}**
-> "{Question text}"
-
-Supporting Data: {References}
-
----
-
-### Medium Priority Questions
-
-{Same format as above}
-
----
-
-## Appendix: Data Sources
-
-| Data Point | Value | Document | Location |
-|------------|-------|----------|----------|
-| Net Income | M${X} | Income Statement | Line {Y} |
-| Total Equity | M${X} | Balance Sheet | Line {Y} |
-| CFFO | M${X} | Cash Flow Statement | Line {Y} |
-| {Other key data} | {Value} | {Source} | {Location} |
-
----
-
-**Analysis Date**: {Date}
-**Framework**: Financial Shenanigans (Schilit)
-**Documents Analyzed**: {List of source documents}
+Documentos revisados. {lista, con el período de cada uno}
 ```
 
 ---
@@ -207,7 +69,7 @@ Supporting Data: {References}
 ```
 REPORTED NET INCOME:                    M$ {X}
                                         ─────────
-ADJUSTMENTS FROM SHENANIGANS ANALYSIS:
+ADJUSTMENTS FROM THE FORENSIC REVIEW (PASO 4):
 - {Adjustment 1 description}:           M$ ({X})    <- {Reference}
 - {Adjustment 2 description}:           M$ ({X})    <- {Reference}
                                         ─────────
@@ -427,7 +289,7 @@ Valuation should focus on:
 
 **Analysis Date**: {Date}
 **Framework**: Owner Earnings (Buffett) + Inflation Adjustment (Greenwald)
-**Skills Used**: owner-earnings, financial-shenanigans
+**Skills Used**: analisis-de-empresas
 ```
 
 ---
@@ -586,7 +448,7 @@ Valuation should focus on:
 {COMPANY}_{TYPE}_{PERIOD}.md
 
 Examples:
-- ACME_Financial_Shenanigans_Q4_2025.md
+- ACME_Revision_Forense_Q4_2025.md
 - ACME_Owner_Earnings_Q4_2025.md
 - ACME_CFO_Questions_Q4_2025.md
 ```

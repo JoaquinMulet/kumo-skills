@@ -22,9 +22,9 @@ El CapEx de crecimiento se excluye porque crea valor FUTURO, no actual.
 
 ## Paso 4.1: Reunir los insumos de las fases anteriores
 
-De la Fase 2 (manipulaciones contables):
+Del paso 4 (revisión forense):
 - Utilidad neta ajustada (sin partidas no recurrentes)
-- Puntaje de calidad de las utilidades (afecta la tasa de descuento)
+- Puntaje forense y su tramo (afecta la tasa de descuento)
 
 De la Fase 3 (Owner Earnings):
 - Owner Earnings (3 escenarios: pesimista/base/optimista)
@@ -63,7 +63,7 @@ Buffett usa el Treasury a 10 años como tasa mínima exigida, con una prima por 
 | Riesgosa (manipulaciones contables detectadas, frágil) | Treasury a 10 años + 10%+ |
 
 **Ajustes según nuestro análisis:**
-- Si el puntaje de manipulaciones contables > 8: sumar +2% a la tasa de descuento
+- El puntaje forense suma a la tasa de descuento lo que diga su tramo, según la tabla de `forense-procedimiento.md`
 - Si el puntaje de fragilidad > 3.5: sumar +1.5%
 - Si el skin in the game de la administración = DÉBIL: sumar +1%
 

@@ -10,9 +10,9 @@ análisis está completo. Los pasos 4 a 8 dicen cuánto vale y qué puede salir 
 `gobernanza-primero` y `checklist-lehman` el 3 de noviembre de 2026, y `deep-financial-analysis` y
 `owner-earnings` el 4 de noviembre de 2026.
 
-Las 4 revisiones forenses que antes corrían como agentes en paralelo ahora se hacen una tras otra, y
-cada hallazgo se prueba con la cita de la nota en el archivo de la fuente. Es el criterio de Joaquín
-del 3 de noviembre de 2026. Un trabajo queda bien hecho cuando una comprobación lo demuestra.
+La revisión forense del paso 4 la hace una sola persona o un solo agente, en orden, y cada hallazgo
+se prueba con la cita de la nota en el archivo de la fuente. Es el criterio de Joaquín del 3 de
+noviembre de 2026. Un trabajo queda bien hecho cuando una comprobación lo demuestra.
 
 ## Paso 1. La puerta de gobernanza
 
@@ -268,36 +268,40 @@ está cada dato en un 10-K y en unos estados chilenos lo dice
 
 La carpeta de trabajo va en `C:/dev/`, fuera de OneDrive, con `fuente/`, `analisis/` y `salida/`.
 
-## Paso 4. Auditoría forense de manipulaciones contables
+## Paso 4. Revisión forense de manipulaciones contables
 
-Lee [`reference/fase2-revision-forense.md`](reference/fase2-revision-forense.md) y aplica sus 4
-revisiones una tras otra, sin agentes en paralelo.
+Lee [`reference/forense-procedimiento.md`](reference/forense-procedimiento.md) completo y sigue sus
+6 acciones en orden. La hace una sola persona o un solo agente, sin repartirla.
 
-| Revisión | Técnicas | Dónde mirar |
+1. Armar `analisis/cifras.csv` y calcular las razones.
+2. Comparar el informe con el del período anterior.
+3. Leer completas las secciones donde se esconden las cosas.
+4. Correr las 15 pruebas de [`reference/forense-pruebas.md`](reference/forense-pruebas.md), todas.
+5. Escribir el anexo de 15 veredictos y validarlo.
+6. Pasar los hallazgos al resto del análisis con [`reference/fase3-sintesis.md`](reference/fase3-sintesis.md).
+
+```
+uv run python -I scripts/razones_forenses.py analisis/cifras.csv
+uv run python -I scripts/comparar_notas.py fuente/anterior.txt fuente/actual.txt
+uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
+```
+
+| Familia | Pruebas | Qué mira |
 |---|---|---|
-| Manipulación de utilidades | EM-1 a EM-7 | Reconocimiento de ingresos, impuestos diferidos, partes relacionadas |
-| Flujo de caja | CF-1 a CF-3 | Estado de flujo completo, notas de cuentas por cobrar y por pagar |
-| Métricas clave | KM-1 a KM-2 | Segmentos, cifras fuera de norma, definición de cada indicador |
-| Contabilidad de adquisiciones | AA-1 a AA-3 | Combinaciones de negocios, plusvalía, intangibles |
+| Manipulación de utilidades | EM 1 a EM 7 | Ingresos adelantados o falsos, ganancias de una vez, gastos trasladados o escondidos, ingresos guardados y gastos adelantados |
+| Flujo de caja | CF 1 a CF 3 | Financiamiento mostrado como operación, costos mostrados como inversión, mejoras que no se repiten |
+| Métricas clave | KM 1 y KM 2 | Cifras que la empresa define a su modo, e indicadores del balance movidos o medidos distinto |
+| Contabilidad de adquisiciones | AA 1 a AA 3 | Ingresos, caja y crecimiento que vienen de comprar empresas |
 
-Cada hallazgo lleva su severidad (`CLEAN`, `LOW`, `MEDIUM`, `HIGH` o `CRITICAL`) y la cita de la nota.
-La cita se prueba con `scripts/buscar_en_fuente.py --cita` sobre el archivo de la fuente. Un hallazgo
-cuya cita no aparece no entra al informe. El detalle de cada técnica está en la skill
-`financial-shenanigans`, que es el resumen del libro de Schilit.
+Cada prueba termina en un veredicto (`LIMPIO`, `BAJA`, `MEDIA`, `ALTA`, `CRÍTICA` o `SIN DATO`). Un
+hallazgo lleva la cita de la fuente, y el validador falla si la cita no aparece en el archivo. Un
+hallazgo cuya cita no aparece no entra al informe. Cuando una prueba da señal, el caso del libro que
+sirve de vara está en [`reference/forense-casos.md`](reference/forense-casos.md).
 
-El puntaje de manipulaciones va de 0 a 100, ponderando la severidad de las 4 revisiones.
-
-| Puntaje | Lectura | Efecto en la tasa de descuento |
-|---|---|---|
-| 0 a 20 | Limpio | Ninguno |
-| 21 a 40 | Dudas menores | Suma 1 a 2 puntos |
-| 41 a 60 | Dudas importantes | Suma 3 a 5 puntos |
-| 61 a 80 | Manipulación seria | Suma 6 a 8 puntos, y se considera pasar |
-| 81 a 100 | Probable fraude | No se invierte |
-
-Con los hallazgos se arma la matriz de cruce (cuánto mueve cada uno la utilidad, el flujo y el
-patrimonio) y las preguntas para el gerente de finanzas, según
-[`reference/fase3-sintesis.md`](reference/fase3-sintesis.md).
+El puntaje suma los veredictos. Su escala y su efecto sobre la tasa de descuento del paso 6 y sobre
+la pregunta 4 del paso 8 están en una sola tabla, en `reference/forense-procedimiento.md`. Es una
+convención de Kumo, porque el libro de Schilit no da ninguna. Con un hallazgo crítico no se
+invierte, sume lo que sume el puntaje.
 
 ## Paso 5. Owner earnings
 
@@ -335,7 +339,7 @@ Valor terminal   = OE_n x (1+g) / (r-g), con g de largo plazo nunca mayor a 3 po
 ```
 
 La tasa mínima depende de la calidad. Es 15 por ciento para una empresa con foso amplio, 20 para una
-con foso angosto y 25 o más sin foso, y se le suman 3 a 8 puntos si el puntaje del paso 4 pasa de 40.
+con foso angosto y 25 o más sin foso, y se le suma lo que diga la tabla de puntaje del paso 4.
 Se muestra una matriz de 5 por 5 de crecimiento contra tasa, con el precio actual marcado.
 
 Los comparables se eligen por modelo de negocio, entre 5 y 10, y se usa EV sobre owner earnings además
@@ -364,7 +368,7 @@ veredicto van con su evidencia.
 | 1 | ¿Entiendo este negocio? |
 | 2 | ¿Tiene un foso competitivo durable? |
 | 3 | ¿La gerencia es honesta y capaz? (el paso 1) |
-| 4 | ¿Los estados están limpios? (puntaje del paso 4 menor a 40) |
+| 4 | ¿Los estados están limpios? (puntaje del paso 4 en el tramo «Limpio» o «Dudas», sin hallazgo crítico) |
 | 5 | ¿El owner earnings es positivo y crece? |
 | 6 | ¿El ROIC supera al WACC de forma consistente? |
 | 7 | ¿El balance es fuerte? (fragilidad mayor a 15 de 25) |

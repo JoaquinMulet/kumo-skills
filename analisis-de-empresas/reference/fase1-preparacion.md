@@ -1,6 +1,6 @@
 # Fase 1: Preparación de los datos
 
-Guía completa para preparar los documentos antes de lanzar el análisis forense.
+Guía completa para preparar los documentos antes de la revisión forense del paso 4.
 
 ---
 
@@ -73,7 +73,7 @@ Verifica que estos elementos se hayan convertido correctamente:
 
 ## Paso 1.3: Identificar las notas clave
 
-Antes de lanzar los agentes, crea una tabla de mapeo de notas:
+Antes de la revisión forense, crea una tabla de mapeo de notas:
 
 ### Notas esenciales para detectar manipulaciones contables
 
@@ -174,21 +174,20 @@ Inflation Data: {Source}, as of {Date}
 ```
 {COMPANY}_{PERIOD}/
 |
-+-- source/
-|   +-- EEFF.md                    # Financial Statements
-|   +-- MDA.md                     # Management Discussion
++-- fuente/
+|   +-- actual.txt                 # Informe del período, completo, con sus notas
+|   +-- anterior.txt               # El mismo informe del período anterior
+|   +-- analisis-razonado.txt      # Análisis razonado o MD&A, si viene aparte
 |   +-- note_reference.md          # Note mapping card
 |   +-- geographic_data.md         # Inflation weights
 |
-+-- analysis/
-|   +-- agent1_em_findings.md      # Earnings Manipulation
-|   +-- agent2_cf_findings.md      # Cash Flow
-|   +-- agent3_km_findings.md      # Key Metrics
-|   +-- agent4_aa_findings.md      # Acquisition Accounting
++-- analisis/
+|   +-- cifras.csv                 # Cifras de 5 años para las razones forenses
+|   +-- anexo-forense.md           # Los 15 veredictos del paso 4
 |   +-- owner_earnings_calc.md     # OE calculation
 |
-+-- output/
-    +-- {COMPANY}_Financial_Shenanigans_{PERIOD}.md
++-- salida/
+    +-- {COMPANY}_Revision_Forense_{PERIOD}.md
     +-- {COMPANY}_Owner_Earnings_{PERIOD}.md
     +-- {COMPANY}_CFO_Questions_{PERIOD}.md
 ```
@@ -197,7 +196,7 @@ Inflation Data: {Source}, as of {Date}
 
 ## Paso 1.6: Lista de verificación previa al lanzamiento
 
-Antes de lanzar los agentes de la Fase 2, verifica:
+Antes de partir la revisión forense del paso 4, verifica:
 
 ### Documentos listos
 - [ ] Estados financieros en formato Markdown
@@ -217,7 +216,7 @@ Antes de lanzar los agentes de la Fase 2, verifica:
 ### Directorio de trabajo creado
 - [ ] Estructura de directorios en su lugar
 - [ ] Archivos fuente copiados
-- [ ] Listo para las salidas de los agentes
+- [ ] El informe del período anterior está en `fuente/`, porque el paso 4 compara los 2
 
 ---
 

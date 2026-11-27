@@ -71,7 +71,7 @@ Para cada métrica: Máximo, percentil 75, mediana, percentil 25, mínimo
 ```
 Adjusted Multiple = Peer Median Multiple × Quality Premium/Discount
 
-Quality Factor = f(Shenanigans Score, OE/Reported Earnings Ratio, Moat Width)
+Quality Factor = f(Puntaje forense, OE/Reported Earnings Ratio, Moat Width)
 ```
 
 ### Cálculo del factor de calidad
@@ -88,7 +88,7 @@ Quality Factor = (ER × 0.4) + (SR × 0.3) + (MW × 0.2) + (MQ × 0.1)
 
 Example:
 - Earnings Reliability: OE = $500M, Reported NI = $450M → Ratio 1.11 → Score 1.1
-- Shenanigans Risk: Score 2/14 → Low risk → Score 1.15
+- Riesgo forense: 2 puntos, tramo «Limpio» → Score 1.15
 - Moat Width: Wide moat → Score 1.2
 - Management: Strong skin in game → Score 1.15
 
