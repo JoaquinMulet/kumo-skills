@@ -206,6 +206,14 @@ def probar_validador(tmp):
     comprobar("Con las citas presentes queda verde", codigo == 0, salida)
     comprobar("ALTA más BAJA suman 4 puntos", "4 puntos" in salida, salida)
 
+    trabajo = tmp / "carpeta de trabajo ñ"
+    (trabajo / "analisis").mkdir(parents=True)
+    (trabajo / "fuente").mkdir()
+    escribir(trabajo / "fuente" / "actual.txt", NOTA_2008)
+    como_el_ejemplo = {"EM 1": seccion("EM 1", "ALTA", "| Efecto | Adelanta ingresos |\n| Cita | «and in some cases upon product shipment» en fuente/actual.txt |")}
+    codigo, salida = correr("validar_forense.py", escribir(trabajo / "analisis" / "anexo-forense.md", anexo(como_el_ejemplo)))
+    comprobar("Con el anexo en analisis/ y la cita «en fuente/actual.txt», como el ejemplo del procedimiento, queda verde", codigo == 0, salida)
+
     sin_efecto = {"EM 1": seccion("EM 1", "MEDIA", "| Cita | «and in some cases upon product shipment» en fuente.txt |")}
     codigo, salida = correr("validar_forense.py", escribir(tmp / "sin-efecto.md", anexo(sin_efecto)))
     comprobar("Un hallazgo sin la fila Efecto queda rojo", codigo == 1 and "Efecto" in salida, salida)

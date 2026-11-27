@@ -13,8 +13,8 @@ y una tabla de 2 columnas con estas filas.
 Qué comprueba. Que estén las 15 pruebas. Que cada veredicto exista. Que un LIMPIO diga qué cifra o
 nota miró. Que un hallazgo (BAJA, MEDIA, ALTA o CRÍTICA) traiga su efecto y al menos una cita, y
 que cada cita aparezca en el archivo de la fuente. Una cita se busca sin mayúsculas y juntando los
-espacios, igual que en `buscar_en_fuente.py`. Las rutas de las citas se leen desde la carpeta del
-anexo, o desde la carpeta que diga --fuentes.
+espacios, igual que en `buscar_en_fuente.py`. La ruta de una cita se busca desde la carpeta
+del anexo y desde la que la contiene (la carpeta de trabajo), o solo desde la que diga --fuentes.
 
 Qué devuelve. El puntaje, que suma 1 punto por BAJA, 2 por MEDIA, 3 por ALTA y 4 por CRÍTICA, y su
 tramo. La escala es una convención de Kumo. El libro de Schilit no da ninguna. Sale con 0 si el
@@ -68,7 +68,7 @@ def filas(cuerpo):
     return salida
 
 
-def revisar(codigo, cuerpo, carpeta, cache):
+def revisar(codigo, cuerpo, carpetas, cache):
     f = filas(cuerpo)
     veredicto_crudo = (f.get("veredicto") or [""])[0].strip()
     veredicto = sin_tildes(veredicto_crudo).upper()
@@ -96,9 +96,11 @@ def revisar(codigo, cuerpo, carpeta, cache):
         if not m:
             problemas.append(f"{codigo}. La cita no tiene la forma «texto» en ruta. Dice: {cita[:80]}")
             continue
-        texto, ruta = m.group(1), (carpeta / m.group(2).strip())
-        if not ruta.is_file():
-            problemas.append(f"{codigo}. No existe el archivo de la cita, {ruta}.")
+        texto, escrita = m.group(1), m.group(2).strip()
+        ruta = next((base / escrita for base in carpetas if (base / escrita).is_file()), None)
+        if ruta is None:
+            donde = ", ".join(str(base) for base in carpetas)
+            problemas.append(f"{codigo}. No existe el archivo de la cita, {escrita}. Lo busqué en {donde}.")
             continue
         if ruta not in cache:
             cache[ruta] = leer_partes(ruta)
@@ -133,7 +135,9 @@ def main(argv):
     if not ruta.is_file():
         print(f"No existe {ruta}.", file=sys.stderr)
         return 2
-    carpeta = carpeta_fuentes or ruta.parent
+    # El anexo vive en analisis/ y las fuentes en fuente/, las 2 dentro de la carpeta de trabajo.
+    # Por eso una cita «en fuente/actual.txt» se busca también desde la carpeta que contiene a la del anexo.
+    carpetas = [carpeta_fuentes] if carpeta_fuentes else [ruta.resolve().parent, ruta.resolve().parent.parent]
     secciones = partir(ruta.read_bytes().decode("utf-8-sig"))
 
     problemas, veredictos, cache = [], {}, {}
@@ -141,7 +145,7 @@ def main(argv):
         if codigo not in secciones:
             problemas.append(f"{codigo}. Falta la sección.")
             continue
-        veredicto, lios = revisar(codigo, secciones[codigo], carpeta, cache)
+        veredicto, lios = revisar(codigo, secciones[codigo], carpetas, cache)
         veredictos[codigo] = veredicto
         problemas.extend(lios)
 
