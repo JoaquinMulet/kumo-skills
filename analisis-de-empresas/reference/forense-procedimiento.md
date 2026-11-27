@@ -41,18 +41,19 @@ uv run python -I scripts/razones_forenses.py analisis/cifras.csv
 | `utilidad_operacional` | Estado de resultados | No siempre viene. Se arma como ganancia bruta menos costos de distribución y gastos de administración | Operating income o Income from operations |
 | `flujo_operacional`, `capex`, `adquisiciones`, `dividendos` | Estado de flujo de efectivo | Flujos de actividades de operación, Compras de propiedades, planta y equipo, Flujos para obtener el control de subsidiarias, Dividendos pagados | Net cash provided by operating activities, Capital expenditures, Acquisitions net of cash acquired, Dividends paid |
 | `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, y su deterioro | Accounts receivable, net, y Allowance for doubtful accounts |
-| `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente | Receivables sold, factored o securitized que siguen pendientes |
+| `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente y que salió del balance. Si la empresa consolida al patrimonio separado o al vehículo que la compró, la cartera sigue en el balance y no va aquí, porque se contaría 2 veces | Receivables sold, factored o securitized que siguen pendientes y salieron del balance. Si el vehículo consolida, no van |
 | `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes | Notes receivable, y todo saldo por cobrar a clientes guardado en otra línea, como efectivo |
 | `inventario`, `inventario_largo_plazo` | Balance y nota de inventarios | Inventarios corrientes y no corrientes | Inventories, y el inventario que esté dentro de Other assets |
 | `cuentas_por_pagar` | Balance | Cuentas por pagar comerciales y otras cuentas por pagar | Accounts payable |
 | `ingreso_diferido` | Balance y notas | Ingresos diferidos, suele estar en Otros pasivos no financieros | Deferred revenue o Unearned revenue |
-| `pasivos_blandos` | Balance y su nota | Otras provisiones más Otros pasivos no financieros, sin el ingreso diferido | Accrued expenses más Other current liabilities, sin impuestos por pagar ni ingreso diferido. Si la nota no abre la línea, va entera y se dice |
+| `pasivos_blandos` | Balance y su nota | Otras provisiones más Otros pasivos no financieros, sin el ingreso diferido, sin los dividendos por pagar (también el dividendo mínimo legal) y sin el precio pendiente de una compra de empresa | Accrued expenses más Other current liabilities, sin impuestos por pagar, ingreso diferido, dividendos por pagar ni precio pendiente de una compra. Si la nota no abre la línea, va entera y se dice |
 | `activos_blandos` | Balance | Otros activos no financieros, gastos anticipados, costos diferidos | Prepaid expenses and other current assets más Other assets |
-| `cartera_morosa`, `provision_cartera` | Notas de una financiera | Cartera con mora o deteriorada, y su provisión | Nonaccrual o nonperforming loans, y Allowance for loan losses |
+| `cartera_morosa`, `provision_cartera` | Notas de una financiera o de quien vende con crédito propio | Cartera con mora o deteriorada (la suma de los tramos vencidos de la estratificación), y su provisión | Nonaccrual o nonperforming loans, y Allowance for loan losses |
+| `cartera_repactada` | Las mismas notas | Cartera repactada, renegociada o refinanciada, si la nota la da | Modifications to borrowers experiencing financial difficulty, antes Troubled debt restructurings |
 | `utilidad_antes_impuestos`, `impuestos` | Estado de resultados | Ganancia antes de impuestos, Gasto por impuestos a las ganancias | Income before income taxes, Provision for income taxes |
 | `dias` | Largo del período | Los días reales. 365 en un año, 371 en un año de 53 semanas, 91.25 en un trimestre | Igual |
 
-Las reglas de la tabla son 4.
+Las reglas de la tabla son 5.
 
 1. Si la empresa no tiene un concepto, porque no paga dividendos o no tiene costo de ventas, la
    fila no va. Si lo tiene y ese período vale 0, como un año sin compras de empresas, va 0. Los
@@ -67,6 +68,9 @@ Las reglas de la tabla son 4.
    en 2 CSV. El balance solo se puede comparar con el cierre del año anterior.
    Las razones de balance mezclan entonces la temporada, y un aviso que salga de ahí se anota con
    esa advertencia.
+5. Si hay un informe trimestral más nuevo que el anual, la revisión es del anual y su CSV es
+   `cifras.csv`. El trimestral se compara con el anual en la acción 2, y sus cifras van en un CSV
+   aparte, `cifras-trimestre.csv`, con el mismo trimestre del año anterior.
 
 El script entrega las razones y una lista de avisos. Un aviso dice qué pruebas abrir primero. No es
 un hallazgo, porque la tabla no ve las notas.
@@ -86,7 +90,8 @@ informe entero salen entre 30 y 250 por lista. Esa primera corrida sirve para ve
 cambio y leer por encima las que CAMBIARON. El trabajo se hace después, prueba por prueba, acotando
 con `--contiene` y los términos que da cada una en [`forense-pruebas.md`](forense-pruebas.md).
 Una política que cambió sin cambiar de redacción no aparece aquí. Por eso la acción 3 manda leer
-las secciones completas.
+las secciones completas. Tampoco aparece una tabla o una columna que se dejó de publicar, porque el
+script compara frases. Las tablas de la nota de cuentas por cobrar se comparan a mano, una por una.
 
 Por cada cambio de política, de estimación o de definición se hacen las 2 preguntas del libro. Por
 qué cambió, y por qué ahora. Después se calcula cómo se habría visto el período sin el cambio. La
@@ -150,13 +155,15 @@ Las reglas del formato son 7.
 6. SIN DATO es para cuando falta el documento que el paso principal de la prueba necesita. Si el
    paso principal se pudo hacer y faltó un documento de apoyo, la prueba lleva su veredicto y
    «Qué se revisó» dice qué no se pudo mirar.
-7. Una práctica que se ve desde 2 pruebas se anota en las 2. La segunda lleva la fila «Misma
-   práctica que» con el código de la primera, y no suma al puntaje. La venta de cuentas por
-   cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO. Si una prueba
-   reúne varias prácticas, su veredicto es el de la más grave que no esté contada en otra prueba,
-   y la fila «Misma práctica que» se usa solo cuando todo lo que sostiene el veredicto ya está
-   contado allá. La práctica se cuenta en la prueba de menor número en el orden del anexo, y las
-   demás llevan «Misma práctica que» con ese código.
+7. Una práctica que se ve desde 2 pruebas se anota en las 2, y suma una sola vez. La venta de
+   cuentas por cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO. La
+   práctica se cuenta en la prueba donde su veredicto es más alto, que suele ser la prueba donde
+   se pudo medir. Si empatan, se cuenta en la de menor número en el orden del anexo. Las demás
+   llevan la fila «Misma práctica que» con ese código, y no suman. Si una prueba reúne varias
+   prácticas, su veredicto es el de la más grave que no esté contada en otra prueba, y la fila
+   «Misma práctica que» se usa solo cuando todo lo que sostiene el veredicto ya está contado allá.
+   El validador marca en rojo una prueba con «Misma práctica que» cuyo veredicto es más alto que
+   el de la prueba que nombra.
 
 ```
 uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
@@ -184,8 +191,8 @@ misma evidencia.
 | LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación con cifras que se comprobó en la fuente |
 | BAJA | 0 | Hay señal y su efecto es menor que 5 por ciento, o no se puede medir. Es una observación menor. Queda anotada y no suma |
 | MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que explica la mayor parte de la mejora del período, cuando la empresa no dice que se vaya a repetir |
-| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación abierta por un regulador o un fiscal sobre la contabilidad o la divulgación de la empresa. Una demanda de accionistas no cuenta como investigación, y va como BAJA |
-| CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso |
+| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación abierta por un regulador o un fiscal sobre la contabilidad o la divulgación de la empresa, confirmada por un documento de la empresa o del regulador. Una demanda de accionistas no cuenta como investigación, y va como BAJA |
+| CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso sobre la contabilidad, la divulgación o el control interno. Una investigación interna sobre otro tema, como la conducta de un ejecutivo, va al paso 1 |
 | SIN DATO | No suma | Falta el documento o la cifra. El informe lo dice junto al puntaje |
 
 Cuando 2 filas calzan, manda la más alta. Un cambio de política sin explicación es ALTA aunque su
@@ -194,7 +201,7 @@ solo para un cambio real en cómo se reconoce, se clasifica o se define una cifr
 señal que no se puede medir es BAJA. Una explicación de la empresa que no trae cifras no baja el
 veredicto. Queda anotada en «Qué se revisó».
 
-Esa regla tiene 3 límites, que salieron de la prueba a ciegas del 27 de noviembre de 2026.
+Esa regla tiene 5 límites, que salieron de las pruebas a ciegas del 27 de noviembre de 2026.
 
 1. Un cambio que empeora la cifra, o que no mueve ninguna cifra consolidada, como un traslado de
    costos entre segmentos con el total igual, es BAJA. Pasa a MEDIA solo si cambia el signo del
@@ -204,9 +211,18 @@ Esa regla tiene 3 límites, que salieron de la prueba a ciegas del 27 de noviemb
    informe anterior decía de esa misma práctica.
 3. Un hecho posterior al cierre, como un acuerdo, una venta o una demanda presentada después, no se
    mide contra el período que se revisa. Se anota en «Qué estaría tapando» como dato para
-   proyectar. Un hecho anunciado dentro del período y que se cierra después sí cuenta.
+   proyectar. Un hecho anunciado dentro del período y que se cierra después sí cuenta. Una
+   investigación de un regulador o un fiscal no se mide, así que este límite no la toca. Cuenta si
+   está abierta a la fecha del análisis, aunque haya empezado después del cierre, cuando la
+   confirma un documento de la empresa o del regulador (un hecho esencial, un 8-K, un 10-Q, un
+   comunicado del regulador). Si solo la informa la prensa, es BAJA y va a las preguntas para el
+   gerente de finanzas.
 4. 2 cambios en la misma nota y con el mismo efecto, como 2 frases nuevas en la política de
    ingresos, son una sola práctica. Van en una prueba, y la otra lleva «Misma práctica que».
+5. Una clasificación que la norma deja elegir, como la de los intereses en la NIC 7, no es un
+   cambio si el informe la aplica igual a los 2 años y también la aplicaba así el informe
+   anterior. Se usa para dejar comparable la cifra y es BAJA, sea cual sea su tamaño. Si el
+   informe anterior la aplicaba de otra forma, es un cambio de clasificación y sigue la escala.
 
 El efecto se mide contra una cifra distinta según la prueba.
 
@@ -229,6 +245,11 @@ mismo vale para las pruebas que se miden contra el flujo operacional cuando ese 
 casi cero. Un efecto que cae en otro período, como un gasto que se evita el año siguiente, se mide
 contra la cifra del período en que cae si el informe la trae. Si no la trae, queda BAJA con su
 monto anotado.
+
+La cifra de comparación es la del período del documento donde aparece el hallazgo. Una garantía
+revelada en el informe anual se mide contra la deuda del balance de ese informe, aunque haya un
+trimestral más nuevo con otra deuda. Un hallazgo que aparece solo en el trimestral se mide contra
+las cifras de ese trimestre, que salen de `cifras-trimestre.csv`.
 
 Un hallazgo no exige fraude. El libro insiste en que muchas prácticas son legales y aun así no se
 repiten, como vender cuentas por cobrar o estirar el pago a proveedores. Se anotan igual, porque lo
@@ -257,10 +278,12 @@ quedaron entre 3 y 9.
 | Si la empresa | Entonces |
 |---|---|
 | Crece comprando empresas | El flujo operacional no sirve solo. Se usa el flujo de caja libre tras adquisiciones, y las 3 pruebas AA pesan más que las demás |
-| Es un banco, una financiera o vende con crédito propio | Mandan la provisión de cartera contra la cartera morosa y la forma en que se presenta |
+| Es un banco, una financiera o vende con crédito propio | Mandan la provisión de cartera contra la cartera morosa, la cartera repactada y la forma en que se presentan. La nota de cuentas por cobrar se lee entera en los 2 informes y se compara tabla por tabla. Si el informe dejó de traer una apertura que traía el anterior (tramos de mora, provisión por tramo, cartera repactada), es un cambio de presentación de KM 2, y se mide aplicando la apertura del año anterior a los saldos de este año. Si ninguno de los 2 informes cuantifica la cartera repactada, se anota en «Qué se revisó» de EM 4 y va a las preguntas para el gerente de finanzas |
 | Reconoce ingresos por grado de avance o por programa | Mandan los cambios de estimación del avance y los costos acumulados en el balance |
 | Vende por distribuidores | Manda saber si reconoce al despachar al distribuidor o cuando este vende |
-| Aplica NIIF | No existen partidas extraordinarias y las ganancias de una vez suelen ir en «Otras ganancias (pérdidas)». La NIC 7 deja elegir dónde van los intereses y los dividendos. La NIIF 16 llevó el pago de los arriendos al flujo de financiamiento. Un deterioro se puede reversar, salvo el de la plusvalía |
+| Aplica NIIF | No existen partidas extraordinarias y las ganancias de una vez suelen ir en «Otras ganancias (pérdidas)». La NIC 7 deja elegir dónde van los intereses y los dividendos. Desde 2019 la NIIF 16 lleva los arriendos al balance y su pago al flujo de financiamiento. Antes, con la NIC 17, un arriendo operativo no pasa por el balance ni por el flujo de financiamiento, y su compromiso está en la nota. Un deterioro se puede reversar, salvo el de la plusvalía |
+| Su informe anterior es el de la primera adopción de las NIIF, o uno preliminar o pro forma | Las cifras del año anterior salen del informe actual (regla 2 de la tabla). Un cambio de política o de clasificación frente al informe preliminar cuenta igual que cualquier otro, y lo descarga solo la nota de adopción con cifras. Las cifras comparativas que cambiaron se anotan en KM 2 |
+| Presenta el flujo por el método directo | La descomposición de CF 3 se arma con la variación de los saldos del balance, si el informe no trae la conciliación con la utilidad, y «Qué se revisó» lo dice |
 | Presume de una racha de metas cumplidas | Cada cambio contable del período se mira 2 veces |
 | Pierde plata o gana muy poco | El efecto se mide contra los ingresos, como dice la sección de veredictos |
 | Vende al contado, con poco margen y mucha rotación | Las pruebas de ingresos dan poca señal. Mandan las de inventario, proveedores y flujo |

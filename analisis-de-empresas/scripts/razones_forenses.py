@@ -18,7 +18,7 @@ un concepto, la fila no va o la celda queda vacía. No se pone 0.
   provision_incobrables         en positivo
   inventario, inventario_largo_plazo, cuentas_por_pagar
   ingreso_diferido, pasivos_blandos, activos_blandos
-  cartera_morosa, provision_cartera
+  cartera_morosa, provision_cartera, cartera_repactada
 
 Qué devuelve. Una tabla con las razones por período y una lista de avisos. Un aviso compara 2
 períodos seguidos y nombra las pruebas del paso forense que hay que abrir. No usa umbrales. Dice la
@@ -41,6 +41,7 @@ CONCEPTOS = {
     "cuentas_por_cobrar", "cuentas_por_cobrar_vendidas", "documentos_por_cobrar",
     "provision_incobrables", "inventario", "inventario_largo_plazo", "cuentas_por_pagar",
     "ingreso_diferido", "pasivos_blandos", "activos_blandos", "cartera_morosa", "provision_cartera",
+    "cartera_repactada",
 }
 
 
@@ -122,6 +123,8 @@ def calcular(periodos, datos):
     poner("Capex sobre ingresos, por ciento", 1, serie(datos, n, lambda i, c, v: c / v * 100, "capex", "ingresos"))
     poner("Provisión sobre cuentas por cobrar brutas, por ciento", 1, serie(datos, n, lambda i, p, c: p / (c + p) * 100, "provision_incobrables", "cuentas_por_cobrar"))
     poner("Provisión de cartera sobre cartera morosa, por ciento", 1, serie(datos, n, lambda i, p, m: p / m * 100, "provision_cartera", "cartera_morosa"))
+    poner("Cartera morosa sobre cuentas por cobrar, por ciento", 1, serie(datos, n, lambda i, m, c: m / c * 100, "cartera_morosa", "cuentas_por_cobrar"))
+    poner("Cartera repactada sobre cuentas por cobrar, por ciento", 1, serie(datos, n, lambda i, r, c: r / c * 100, "cartera_repactada", "cuentas_por_cobrar"))
     poner("Ingreso diferido sobre ingresos, por ciento", 1, serie(datos, n, lambda i, d, v: d / v * 100, "ingreso_diferido", "ingresos"))
     poner("Pasivos blandos sobre ingresos, por ciento", 1, serie(datos, n, lambda i, p, v: p / v * 100, "pasivos_blandos", "ingresos"))
     poner("Activos blandos sobre ingresos, por ciento", 1, serie(datos, n, lambda i, a, v: a / v * 100, "activos_blandos", "ingresos"))
@@ -209,6 +212,12 @@ def avisar(periodos, datos, razones):
         cartera = par("Provisión de cartera sobre cartera morosa, por ciento", i)
         if cartera and round(cartera[1], 1) < round(cartera[0], 1):
             poner(f"La provisión de cartera bajó de {numero(cartera[0], 1)} a {numero(cartera[1], 1)} por ciento de la cartera morosa.", "EM 4 y KM 2")
+        v_morosa = variacion(datos, "cartera_morosa", i)
+        if v_morosa is not None and v_cxc is not None and v_morosa < 0 < v_cxc:
+            poner(f"La cartera morosa bajó {numero(-v_morosa)} por ciento mientras las cuentas por cobrar subían {numero(v_cxc)}.", "EM 4 y KM 2")
+        v_repactada = variacion(datos, "cartera_repactada", i)
+        if v_repactada is not None and v_cxc is not None and round(v_repactada) > round(v_cxc):
+            poner(f"La cartera repactada creció más que las cuentas por cobrar ({numero(v_repactada)} contra {numero(v_cxc)} por ciento).", "EM 4 y KM 2")
         blandos_pasivo = par("Pasivos blandos sobre ingresos, por ciento", i)
         if blandos_pasivo and round(blandos_pasivo[1], 1) < round(blandos_pasivo[0], 1):
             poner(f"Los pasivos blandos bajaron de {numero(blandos_pasivo[0], 1)} a {numero(blandos_pasivo[1], 1)} por ciento de los ingresos.", "EM 5")

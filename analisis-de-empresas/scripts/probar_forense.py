@@ -144,6 +144,21 @@ def probar_razones(tmp):
     codigo, salida = correr("razones_forenses.py", impuestos)
     comprobar("Tasa efectiva de 40,0 y 34,0 por ciento", codigo == 0 and "| 40,0 | 34,0 |" in salida, salida)
     comprobar("Avisa EM 3 cuando la utilidad neta crece más que la de antes de impuestos por la tasa", "EM 3" in salida and "tasa de impuestos que bajó" in salida, salida)
+    # Cifras en miles de pesos de la nota 13 de los estados de La Polar al 31 de diciembre de 2010 y
+    # de 2009, bajados de la CMF el 27 de noviembre de 2026. La cartera morosa es la suma de los 4
+    # tramos vencidos de cada año. El script no avisaba nada sobre esta caída.
+    la_polar = escribir(
+        tmp / "la-polar.csv",
+        "concepto,2009,2010\ncuentas_por_cobrar,642461658,769465764\ncartera_morosa,182763505,105407483\n",
+    )
+    codigo, salida = correr("razones_forenses.py", la_polar)
+    comprobar("La Polar. Avisa EM 4 y KM 2 cuando la cartera morosa baja 42 por ciento con la cartera subiendo", codigo == 0 and "cartera morosa bajó 42" in salida and "EM 4 y KM 2" in salida, salida)
+    repactada = escribir(
+        tmp / "repactada.csv",
+        "concepto,2009,2010\ncuentas_por_cobrar,100,110\ncartera_repactada,10,15\n",
+    )
+    codigo, salida = correr("razones_forenses.py", repactada)
+    comprobar("Avisa cuando la cartera repactada crece más que las cuentas por cobrar", codigo == 0 and "cartera repactada creció" in salida, salida)
 
 
 NOTA_2007 = (
@@ -191,6 +206,10 @@ def probar_notas(tmp):
     comprobar("Con --todo muestra también la frase que no toca temas contables", "Massachusetts" in salida and "product shipment" in salida, salida)
     codigo, salida = correr("comparar_notas.py", antes, ahora, "--contiene", "recourse")
     comprobar("Con --contiene solo quedan las frases con ese término", "without recourse" in salida and "product shipment" not in salida, salida)
+    xbrl_antes = escribir(tmp / "xbrl-2025.txt", "nvda-20250126 0001045810 us-gaap:AccountingStandardsUpdate202307Member revenue recognized FY false. " + NOTA_2007)
+    xbrl_ahora = escribir(tmp / "xbrl-2026.txt", "nvda-20260125 0001045810 us-gaap:OtherAssetsNoncurrent revenue recognized FY true. " + NOTA_2007)
+    codigo, salida = correr("comparar_notas.py", xbrl_antes, xbrl_ahora)
+    comprobar("Los metadatos XBRL del encabezado no se reportan como cambio", codigo == 0 and "us-gaap" not in salida, salida)
     codigo, salida = correr("comparar_notas.py", antes, antes)
     comprobar("2 archivos iguales no reportan cambios", codigo == 0 and "Sin cambios" in salida, salida)
     codigo, salida = correr("comparar_notas.py", antes, tmp / "no-existe.txt")
@@ -251,6 +270,14 @@ def probar_validador(tmp):
     dos["KM 2"] = seccion("KM 2", "MEDIA", "| Efecto | El DSO ajustado sube 7 días |\n| Misma práctica que | EM 3 |\n" + cita_venta)
     codigo, salida = correr("validar_forense.py", escribir(tmp / "misma-mala.md", anexo(dos)))
     comprobar("«Misma práctica que» una prueba limpia queda rojo", codigo == 1 and "EM 3" in salida, salida)
+    # La forma del caso que encontró la revisión de NVIDIA del 27 de noviembre de 2026. La práctica
+    # se midió en CF 2 (MEDIA) y se contó en EM 2 (BAJA), así que no sumaba ningún punto.
+    al_reves = {
+        "EM 2": seccion("EM 2", "BAJA", "| Efecto | No se puede medir |\n" + cita_venta),
+        "CF 2": seccion("CF 2", "MEDIA", "| Efecto | 17 por ciento del flujo operacional |\n| Misma práctica que | EM 2 |\n" + cita_venta),
+    }
+    codigo, salida = correr("validar_forense.py", escribir(tmp / "misma-al-reves.md", anexo(al_reves)))
+    comprobar("«Misma práctica que» con un veredicto más alto que el de la prueba que nombra queda rojo", codigo == 1 and "más alto" in salida and "CF 2" in salida, salida)
     limpia_con_menores = {c: seccion(c, "BAJA", "| Efecto | Menor que 5 por ciento |\n" + cita_venta) for c in ("EM 3", "EM 5", "CF 3", "KM 1")}
     codigo, salida = correr("validar_forense.py", escribir(tmp / "menores.md", anexo(limpia_con_menores)))
     comprobar("4 observaciones menores dejan el puntaje en 0 y el tramo en «Limpio»", codigo == 0 and "0 puntos" in salida and "«Limpio»" in salida, salida)

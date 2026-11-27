@@ -31,6 +31,12 @@ antes (del despacho en vez de la entrega, del distribuidor en vez del usuario fi
 grado de avance), cuando cambió una estimación del grado de avance y eso sumó ingresos, o cuando
 aparecen ventas facturadas sin despachar, en consignación o con plazos nuevos.
 
+El efecto de un plazo de pago nuevo o más largo es la utilidad de las ventas que pudo adelantar.
+Si el informe da el monto vendido con el plazo nuevo, es ese monto por el margen bruto. Si no lo
+da, es el saldo de cuentas por cobrar que sobra frente al que habría con los días del período
+anterior, por el margen bruto. Las 2 formas dan una cifra antes de impuestos, que se mide contra la
+utilidad antes de impuestos.
+
 Lo descarga un cambio de mezcla de clientes o de países que la nota explica con cifras, o una
 adquisición que trajo cuentas por cobrar y que se puede separar.
 
@@ -118,7 +124,10 @@ Qué se hace.
 3. Compara las vidas útiles y los plazos de amortización con los del período anterior. Términos.
    `vida útil`, `useful life`, `useful lives`, `amortization period`.
 4. Mira el gasto por obsolescencia y la provisión de incobrables como proporción de su saldo. En una
-   financiera, la provisión contra la cartera morosa y la cartera repactada.
+   financiera o en quien vende con crédito propio, la provisión contra la cartera morosa y la
+   cartera repactada, con sus tramos de mora de los 2 años. Términos. `repactada`, `repactación`,
+   `renegociada`, `refinanciada`, `castigos`, `modification`, `troubled debt restructuring`,
+   `charge-off`.
 5. En NIIF revisa los costos de desarrollo activados (NIC 38) como proporción del gasto total en
    desarrollo.
 
@@ -126,7 +135,8 @@ Es hallazgo cuando el flujo de caja libre cae mientras el flujo operacional sube
 sube contra lo que la propia empresa anunció, cuando un costo pasó de gasto a activo, cuando una
 vida útil se alargó, cuando el inventario crece más que las ventas esperadas, o cuando una provisión
 baja mientras su saldo sube. Si bajan varias provisiones a la vez, la señal es de las más fuertes
-del libro.
+del libro. En quien presta, también cuando la cartera morosa baja mientras la cartera total sube y
+los castigos no la explican, porque un saldo vencido que se repacta vuelve a verse al día.
 
 Lo descarga un programa de inversión anunciado antes y que se ve en capacidad nueva, o una baja de
 provisión respaldada por una caída de la mora que la nota muestra.
@@ -237,8 +247,9 @@ Qué se hace.
    `recourse`, `transferred`.
 3. Compara los factores de riesgo con los del período anterior.
 4. Busca ventas con pacto de recompra a un banco o a una entidad que la empresa controla.
-5. En NIIF anota dónde clasifica la empresa los intereses y los dividendos (NIC 7) y deja el flujo
-   operacional comparable antes de usarlo.
+5. Si la cartera se vende a un vehículo que la empresa consolida, la cartera sigue en el balance y
+   la plata entra como deuda del vehículo. Eso no es una venta para esta prueba. Se anota en «Qué
+   se revisó» y se mira que la entrada esté en financiamiento.
 
 Es hallazgo cuando el flujo operacional mejoró por vender cuentas por cobrar, cuando la venta
 conserva el riesgo de no pago y aun así se muestra en la operación, o cuando una «venta» de
@@ -262,15 +273,22 @@ Qué se hace.
 1. Lee la sección de inversión línea por línea. Marca toda salida que suene a costo del negocio
    (contenido, licencias, derechos, contratos, clientes).
 2. Lee la sección de financiamiento. Busca pagos de arriendos y de deuda con proveedores que
-   reemplazan un gasto. En NIIF 16 todos los arriendos van ahí, así que se resta el pago de arriendos
-   para comparar con años anteriores o con empresas bajo otra norma.
-3. Lee la información complementaria de operaciones sin caja y busca compras pagadas con pagarés.
-4. Compara la clasificación con la de un competidor.
-5. Busca clientes que a la vez reciben pagos o compromisos de inversión de la empresa.
+   reemplazan un gasto. Con la NIIF 16, desde 2019, todos los arriendos van ahí, así que se resta el
+   pago de arriendos para comparar con años anteriores o con empresas bajo otra norma. Antes de 2019
+   un arriendo operativo va en la operación y no hay nada que restar.
+3. En NIIF anota dónde clasifica la empresa los intereses pagados y recibidos y los dividendos (NIC
+   7), en este informe y en el anterior. Calcula el flujo operacional con los intereses pagados
+   adentro, que es el que sigue. Si la clasificación es la misma en los 2 informes, es BAJA por el
+   límite 5 de los veredictos. Si el informe anterior ponía los intereses pagados en la operación y
+   este los saca, es un cambio de clasificación que mejora el flujo operacional.
+4. Lee la información complementaria de operaciones sin caja y busca compras pagadas con pagarés.
+5. Compara la clasificación con la de un competidor.
+6. Busca clientes que a la vez reciben pagos o compromisos de inversión de la empresa.
 
 Es hallazgo cuando una compra que se repite todos los años y sirve para operar está en inversión,
-cuando un gasto pasó a ser arriendo financiero o deuda, o cuando lo que se le cobra a un cliente
-entra por operación y lo que se le paga sale por inversión.
+cuando un gasto pasó a ser arriendo financiero o deuda, cuando los intereses pagados salieron de la
+operación respecto del informe anterior, o cuando lo que se le cobra a un cliente entra por
+operación y lo que se le paga sale por inversión.
 
 Se calcula el flujo operacional con esas salidas adentro, y el flujo de caja libre, que resiste
 este truco.
@@ -292,7 +310,8 @@ Qué se hace.
    favor de la caja (DPO que sube, DSI o DSO que bajan). Su efecto es la diferencia entre el saldo
    de cierre y el saldo que habría tenido con los días del período anterior. La suma de esas
    diferencias se mide contra el flujo operacional del período. Un inventario que baja al mismo
-   ritmo que las ventas no cuenta, porque es un negocio que se achica.
+   ritmo que las ventas no cuenta, porque es un negocio que se achica. Con el flujo por el método
+   directo y sin conciliación, las líneas salen de la variación de los saldos del balance.
 2. Lee la explicación de la gerencia sobre el flujo. Términos. `capital de trabajo`, `proveedores`,
    `confirming`, `anticipos`, `working capital`, `payables`, `days payable`, `early payment`,
    `deposits`, `supplier finance`.
@@ -355,7 +374,10 @@ Qué se hace.
 3. Busca inventario fuera de la línea de inventarios, en no corrientes o en otros activos.
 4. Revisa si la empresa cambió la forma de calcular o de presentar un indicador, o estrenó uno
    justo cuando el habitual empeoraba.
-5. En una financiera, compara cómo se presenta la provisión en el comunicado con cómo estaba antes.
+5. En una financiera o en quien vende con crédito propio, compara cómo se presentan la provisión y
+   la cartera con cómo estaban en el informe anterior, tabla por tabla. Mira si se dejó de publicar
+   una apertura, como los tramos de mora, la provisión por tramo o la cartera repactada, o si una
+   parte de la cartera cambió de línea en el balance.
 6. Lee el informe del auditor, la sección de control interno, la nota de juicios y los hechos
    esenciales. Busca deuda en entidades que no consolidan, debilidades materiales de control,
    ajustes de períodos anteriores, cifras comparativas que cambiaron respecto del informe anterior
@@ -363,8 +385,8 @@ Qué se hace.
    `investigation`, `subpoena`, `material weakness`, `restated`, `reclassified`.
 
 Es hallazgo cuando el DSO ajustado sube aunque el reportado baje, cuando un saldo cambió de línea,
-cuando un indicador cambió de fórmula o de presentación, o cuando el auditor no puede certificar
-una operación. También cuando la empresa admite una debilidad material de control, cuando las
+cuando un indicador cambió de fórmula o de presentación, cuando se dejó de publicar una apertura que
+el informe anterior traía, o cuando el auditor no puede certificar una operación. También cuando la empresa admite una debilidad material de control, cuando las
 cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o un
 fiscal investigan su contabilidad o su divulgación. Una debilidad de control ya corregida dentro
 del período es BAJA, salvo que haya obligado a ajustar cifras.
@@ -379,6 +401,9 @@ de 5 días que con su fórmula anterior era de 16. Parmalat discutió en públic
 Las 3 pruebas que siguen se corren si la empresa compró o vendió negocios en los últimos 3 años.
 Si no lo hizo, el veredicto es LIMPIO y «Qué se revisó» lo dice con la nota de combinaciones de
 negocios, o con el conteo de `acquisition`, `adquisición` y `goodwill` cuando esa nota no existe.
+Una compra que se paga como licencia más el traspaso de la gente, y que deja plusvalía o
+intangibles en el balance, es una compra de un negocio para estas 3 pruebas, aunque no se llame
+así. Va en AA 1, no en EM 4.
 
 Qué se hace.
 

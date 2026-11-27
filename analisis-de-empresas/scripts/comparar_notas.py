@@ -60,6 +60,7 @@ TERMINOS_CONTABLES = (
     "reclasific", "reexpres", "política contable", "cambio contable", "contraprestación contingente",
     "tasa de descuento", "garantía", "consignación", "grado de avance", "cobertura", "fuera de balance",
 )
+METADATOS_XBRL = re.compile(r"\b(?:us-gaap|ifrs-full|dei|xbrli|srt|iso4217):|https?://(?:fasb|xbrl)", re.I)
 CORTE_DE_FRASE = re.compile(r"(?<=[.;:!?])\s+(?=[A-ZÁÉÍÓÚÑ«\"“(\[])")
 ESPACIO_EN_NUMERO = re.compile(r"(?<=#) (?=#)")
 
@@ -82,7 +83,10 @@ def leer(ruta):
 
 
 def frases(texto):
-    return [f.strip() for f in CORTE_DE_FRASE.split(texto) if len(f.strip()) >= LARGO_MINIMO_DE_FRASE]
+    return [
+        f.strip() for f in CORTE_DE_FRASE.split(texto)
+        if len(f.strip()) >= LARGO_MINIMO_DE_FRASE and not METADATOS_XBRL.search(f)
+    ]
 
 
 def clave(frase):

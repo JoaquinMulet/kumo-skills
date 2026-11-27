@@ -172,6 +172,11 @@ def main(argv):
         if otra not in hallazgos or otra in repetidas:
             problemas.append(f"{codigo}. Dice «Misma práctica que {otra}», y {otra} no es un hallazgo que sume por su cuenta.")
             del repetidas[codigo]
+        elif codigo in hallazgos and PUNTOS[hallazgos[codigo]] > PUNTOS[hallazgos[otra]]:
+            problemas.append(
+                f"{codigo}. Dice «Misma práctica que {otra}» con un veredicto más alto que el de {otra}. "
+                f"La práctica se cuenta donde su veredicto es más alto, así que {codigo} lleva el veredicto y {otra} la fila «Misma práctica que»."
+            )
     sin_dato = [c for c, v in veredictos.items() if v == SIN_DATO]
     suman = {c: v for c, v in hallazgos.items() if PUNTOS[v] > 0 and c not in repetidas}
     menores = [c for c, v in hallazgos.items() if PUNTOS[v] == 0]
