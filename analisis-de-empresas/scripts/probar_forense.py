@@ -134,6 +134,16 @@ def probar_razones(tmp):
     codigo, salida = correr("razones_forenses.py", sin_reparto)
     comprobar("Una empresa que no paga dividendos no recibe el aviso de KM 1", codigo == 0 and "KM 1" not in salida, salida)
     comprobar("Una empresa que no compró nada no recibe el aviso de AA 2", codigo == 0 and "AA 2" not in salida, salida)
+    # Cifras inventadas para la prueba: la utilidad antes de impuestos casi no se mueve, la tasa baja
+    # de 40 a 34 por ciento y la utilidad neta sube 10 por ciento. Es la forma del caso que la prueba
+    # a ciegas del 27 de noviembre de 2026 encontró sin que el script avisara.
+    impuestos = escribir(
+        tmp / "impuestos.csv",
+        "concepto,2015,2016\nutilidad_antes_impuestos,1000,1000\nimpuestos,400,340\nutilidad_neta,600,660\n",
+    )
+    codigo, salida = correr("razones_forenses.py", impuestos)
+    comprobar("Tasa efectiva de 40,0 y 34,0 por ciento", codigo == 0 and "| 40,0 | 34,0 |" in salida, salida)
+    comprobar("Avisa EM 3 cuando la utilidad neta crece más que la de antes de impuestos por la tasa", "EM 3" in salida and "tasa de impuestos que bajó" in salida, salida)
 
 
 NOTA_2007 = (

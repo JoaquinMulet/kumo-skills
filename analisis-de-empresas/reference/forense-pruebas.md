@@ -45,9 +45,11 @@ Qué se hace.
 
 1. Lee completa la nota de partes relacionadas y la de concentración de clientes. Anota qué parte de
    los ingresos y de las cuentas por cobrar viene de la matriz, de socios, de proveedores o de
-   entidades relacionadas.
+   entidades relacionadas. Anota también lo que la empresa le compra a sus ejecutivos o a su
+   controlador.
 2. Compara el crecimiento de los ingresos con el de la utilidad y mira el margen neto en la tabla de
-   razones.
+   razones. La comparación con competidores se hace si hay cifras de ellos. Si no las hay, se salta y
+   «Qué se revisó» lo dice.
 3. Busca operaciones en que la plata va y vuelve con la misma contraparte. Términos. `permuta`, `no
    monetaria`, `recompra`, `relacionada`, `negocio conjunto`, `barter`, `nonmonetary`, `repurchase`,
    `related party`, `joint venture`, `reciprocal`.
@@ -60,7 +62,8 @@ Es hallazgo cuando un cliente relacionado explica una parte importante del creci
 no se cobran, cuando hay ventas sin dinero cuyo monto fija la propia empresa, cuando la empresa
 recompra a su cliente, o cuando los ingresos crecen mucho más rápido que cualquier competidor con un
 margen mínimo. Lo último es la prueba de Enron. Un crecimiento sin precedente en la industria se
-presume falso.
+presume falso. También es hallazgo una compra relevante a un ejecutivo o al controlador sin un
+precio de mercado revelado.
 
 Lo descarga que la venta a la relacionada se cobre en plazo normal y a precio de mercado, con la
 caja a la vista en el flujo operacional.
@@ -148,13 +151,19 @@ Qué se hace.
    sueldos y la fecha de medición con las del período anterior.
 5. Busca entradas de caja o créditos desde proveedores. Términos. `descuentos de proveedores`,
    `rebates`, `vendor credits`, `allowances`.
-6. Lee la nota de compromisos y contingencias y anota lo que no está en el balance.
+6. Lee la nota de compromisos y contingencias y separa 2 cosas. Las obligaciones que funcionan como
+   deuda (garantías de valor residual, arriendos con entidades de propósito especial, deuda de
+   entidades que no consolidan, recurso sobre cuentas vendidas). Y los compromisos del giro normal
+   (compras, arriendos corrientes, patrocinios), que se anotan en «Qué se revisó».
+   Términos. `garantía`, `valor residual`, `propósito especial`, `guarantee`, `residual value`,
+   `special purpose`, `synthetic lease`, `variable interest`.
 7. En arriendos como arrendador, mira el valor residual estimado.
 
 Es hallazgo cuando una provisión se revierte contra resultados, cuando un supuesto actuarial cambió
 y bajó el gasto, cuando un proveedor le paga a la empresa, cuando el ingreso por pensiones explica
-buena parte de la utilidad operacional, o cuando hay compromisos fuera de balance de tamaño
-comparable a la deuda.
+buena parte de la utilidad operacional, o cuando las obligaciones que funcionan como deuda son de
+tamaño comparable a la deuda del balance. Los compromisos del giro normal son BAJA, y solo si
+crecen mucho más que el negocio.
 
 Lo descarga que la reversión esté revelada en su propia línea y que la empresa la excluya de sus
 cifras recurrentes.
@@ -173,11 +182,14 @@ Qué se hace.
 2. Compara la volatilidad de la utilidad con la del entorno del negocio (tasas, precios, ciclo).
 3. Lee la nota de derivados. Compara la ganancia de cobertura con la pérdida de lo cubierto.
 4. Si la empresa compró otra, mira los ingresos de la adquirida en sus últimos meses por separado.
+5. Sigue las reservas de devoluciones, descuentos y garantías contra los ingresos. Términos.
+   `devoluciones`, `descuentos`, `returns`, `allowances`, `markdowns`, `sales reserve`.
 
 Es hallazgo cuando el ingreso diferido crece mucho más que las ventas en un período muy bueno y
 después deja de crecer, cuando la utilidad es mucho más pareja que el negocio, cuando una cobertura
 gana varias veces lo que pierde lo cubierto, o cuando los ingresos de la adquirida se desploman
-justo antes del cierre de la compra.
+justo antes del cierre de la compra. También cuando una reserva de devoluciones o descuentos crece
+mucho más que las ventas sin una explicación con cifras.
 
 Lo descarga un cambio en la forma de vender, como pasar a suscripciones, que la empresa haya
 anunciado y que explique el ingreso diferido.
@@ -220,8 +232,9 @@ Qué se hace.
    se explica.
 2. Busca ventas o cesiones de cuentas por cobrar y anota el saldo vendido que sigue pendiente al
    cierre. Va al CSV como `cuentas_por_cobrar_vendidas`. El ajuste del flujo usa la variación de
-   ese saldo entre un cierre y el siguiente, no el total vendido en el año. Términos. `factoring`, `securitización`,
-   `cesión`, `con responsabilidad`, `securitization`, `factored`, `sold`, `recourse`, `transferred`.
+   ese saldo entre un cierre y el siguiente, no el total vendido en el año. Términos. `factoring`,
+   `securitización`, `cesión`, `con responsabilidad`, `securitization`, `factored`, `sold`,
+   `recourse`, `transferred`.
 3. Compara los factores de riesgo con los del período anterior.
 4. Busca ventas con pacto de recompra a un banco o a una entidad que la empresa controla.
 5. En NIIF anota dónde clasifica la empresa los intereses y los dividendos (NIC 7) y deja el flujo
@@ -275,8 +288,8 @@ cuánto de la mejora va a seguir.
 Qué se hace.
 
 1. Descompón el cambio del flujo operacional en utilidad, cuentas por pagar, inventario, cuentas
-   por cobrar, anticipos de clientes e impuestos. El efecto se mide con esa descomposición, como
-   la parte de la mejora que explican las líneas de capital de trabajo. El DPO de la tabla de
+   por cobrar, anticipos de clientes e impuestos. El efecto es la suma de las líneas de capital de
+   trabajo que mejoraron, medida contra el flujo operacional del período. El DPO de la tabla de
    razones confirma la dirección y no sirve para medir.
 2. Lee la explicación de la gerencia sobre el flujo. Términos. `capital de trabajo`, `proveedores`,
    `confirming`, `anticipos`, `working capital`, `payables`, `days payable`, `early payment`,
@@ -294,8 +307,8 @@ que un cobro único esté sosteniendo un flujo que sin él habría caído más.
 Lo descarga un cambio permanente de condiciones con proveedores que se mantiene los años siguientes.
 
 Vara. Home Depot subió su flujo operacional de 2.796 a 5.963 millones, y 2.233 de esos 3.167 venían
-de cuentas por pagar, pasivos acumulados e inventario, según su informe de ese año. Al año siguiente cayó a 4.802. En Tesla, 88 por ciento de la
-mejora de 2016 eran depósitos de clientes.
+de cuentas por pagar, pasivos acumulados e inventario, según su informe de ese año. Al año
+siguiente cayó a 4.802. En Tesla, 88 por ciento de la mejora de 2016 eran depósitos de clientes.
 
 ## KM 1. Exhibir métricas que exageran el desempeño
 
@@ -312,7 +325,8 @@ Qué se hace.
 4. Si la métrica es de ventas comparables, calcula el ingreso por tienda y compara las 2 tendencias.
 5. Si la empresa informa pedidos o cartera, comprueba que cartera inicial más pedidos netos menos
    ingresos dé la cartera final.
-6. Compara los dividendos con el flujo de caja libre, que ya está en la tabla de razones.
+6. Compara los dividendos pagados en efectivo con el flujo de caja libre, que ya está en la tabla
+   de razones.
 
 Es hallazgo cuando la definición cambió, cuando la métrica ajustada es siempre mucho mejor que la
 contable, cuando excluye costos que se pagan en efectivo todos los períodos, cuando una partida se
@@ -340,14 +354,17 @@ Qué se hace.
 4. Revisa si la empresa cambió la forma de calcular o de presentar un indicador, o estrenó uno
    justo cuando el habitual empeoraba.
 5. En una financiera, compara cómo se presenta la provisión en el comunicado con cómo estaba antes.
-6. Lee el informe del auditor, la sección de control interno y los hechos esenciales. Busca deuda
-   en entidades que no consolidan, debilidades materiales de control, ajustes de períodos
-   anteriores y cifras comparativas que cambiaron respecto del informe anterior.
+6. Lee el informe del auditor, la sección de control interno, la nota de juicios y los hechos
+   esenciales. Busca deuda en entidades que no consolidan, debilidades materiales de control,
+   ajustes de períodos anteriores, cifras comparativas que cambiaron respecto del informe anterior
+   e investigaciones de reguladores. Términos. `investigación`, `citación`, `investigation`,
+   `subpoena`, `material weakness`, `restated`, `reclassified`.
 
 Es hallazgo cuando el DSO ajustado sube aunque el reportado baje, cuando un saldo cambió de línea,
 cuando un indicador cambió de fórmula o de presentación, o cuando el auditor no puede certificar
-una operación. También cuando la empresa admite una debilidad material de control, o cuando las
-cifras de un año ya publicado cambiaron sin una explicación específica.
+una operación. También cuando la empresa admite una debilidad material de control, cuando las
+cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o la
+justicia investigan su contabilidad o su divulgación.
 
 Lo descarga que la reclasificación esté explicada y aplicada también a los períodos anteriores.
 
@@ -396,15 +413,20 @@ Qué se hace.
 5. Busca líneas nuevas en el estado de flujo de efectivo y efectivo restringido que financie a una
    unidad.
 
-Es hallazgo cuando el flujo operacional es positivo y el flujo de caja libre tras adquisiciones es
-negativo año tras año, cuando costos de captar clientes se registran como adquisiciones, o cuando
-la estructura de una compraventa pasó caja de inversión a operación.
+Es hallazgo cuando el flujo de caja libre es positivo y las compras lo dejan negativo año tras año,
+cuando costos de captar clientes se registran como adquisiciones, o cuando la estructura de una
+compraventa pasó caja de inversión a operación. Si el flujo de caja libre ya era negativo antes de
+las compras, la causa es el capex y no esta prueba.
+
+Cuando una venta de negocios deja las cuentas por cobrar en la empresa, el efecto es el saldo
+retenido contra el flujo operacional del período, porque esa cobranza va a entrar como flujo
+operacional. Que el informe no separe cuánto entró ya no lo baja a BAJA.
 
 Lo descarga una compra aislada y grande, con el flujo tras adquisiciones positivo en los demás años.
 
 Con un flujo operacional negativo el paso 1 no dice nada, y la prueba se decide con los pasos 3 a 5.
 
-Vara. Tyco mostró flujo operacional positivo y flujo tras adquisiciones negativo los 4 años, hasta
+Vara. Tyco mostró flujo de caja libre positivo y flujo tras adquisiciones negativo los 4 años, hasta
 8.971 millones negativos en 2001. Tenet vendió hospitales y se quedó con 394 millones por cobrar.
 
 ## AA 3. Manipular métricas con una adquisición
@@ -418,7 +440,8 @@ Qué se hace.
 2. Lee cómo define la empresa su crecimiento orgánico.
 3. Mira si las tiendas o unidades compradas entran de inmediato a la base comparable.
 4. Suma los costos de adquisición e integración que la empresa excluye, año por año.
-5. Revisa si dejó de publicar una métrica.
+5. Revisa si dejó de publicar una métrica. Con 2 informes no se sabe si se había vuelto negativa.
+   Se anota la última tendencia que mostró.
 
 Es hallazgo cuando el crecimiento orgánico informado es mayor que el recalculado, cuando la base
 comparable cambia con cada compra, cuando una empresa que compra todos los años excluye sus costos

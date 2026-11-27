@@ -49,12 +49,14 @@ uv run python -I scripts/razones_forenses.py analisis/cifras.csv
 | `pasivos_blandos` | Balance y su nota | Otras provisiones más Otros pasivos no financieros, sin el ingreso diferido | Accrued expenses más Other current liabilities, sin impuestos por pagar ni ingreso diferido. Si la nota no abre la línea, va entera y se dice |
 | `activos_blandos` | Balance | Otros activos no financieros, gastos anticipados, costos diferidos | Prepaid expenses and other current assets más Other assets |
 | `cartera_morosa`, `provision_cartera` | Notas de una financiera | Cartera con mora o deteriorada, y su provisión | Nonaccrual o nonperforming loans, y Allowance for loan losses |
+| `utilidad_antes_impuestos`, `impuestos` | Estado de resultados | Ganancia antes de impuestos, Gasto por impuestos a las ganancias | Income before income taxes, Provision for income taxes |
 | `dias` | Largo del período | Los días reales. 365 en un año, 371 en un año de 53 semanas, 91.25 en un trimestre | Igual |
 
 Las reglas de la tabla son 4.
 
 1. Si la empresa no tiene un concepto, porque no paga dividendos o no tiene costo de ventas, la
-   fila no va o la celda queda vacía. No se pone 0.
+   fila no va. Si lo tiene y ese período vale 0, como un año sin compras de empresas, va 0. Los
+   dividendos son solo los pagados en efectivo. Un dividendo pagado en acciones no va.
 2. Si el informe actual cambió cifras de años ya publicados, se usan las del informe más nuevo, y
    el cambio se anota como señal para KM 2.
 3. Los años que el informe actual no trae se sacan del informe anterior. Con 2 informes anuales
@@ -148,7 +150,10 @@ Las reglas del formato son 7.
    «Qué se revisó» dice qué no se pudo mirar.
 7. Una práctica que se ve desde 2 pruebas se anota en las 2. La segunda lleva la fila «Misma
    práctica que» con el código de la primera, y no suma al puntaje. La venta de cuentas por
-   cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO.
+   cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO. Si una prueba
+   reúne varias prácticas, su veredicto es el de la más grave que no esté contada en otra prueba,
+   y la fila «Misma práctica que» se usa solo cuando todo lo que sostiene el veredicto ya está
+   contado allá.
 
 ```
 uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
@@ -176,7 +181,7 @@ misma evidencia.
 | LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación con cifras que se comprobó en la fuente |
 | BAJA | 0 | Hay señal y su efecto es menor que 5 por ciento, o no se puede medir. Es una observación menor. Queda anotada y no suma |
 | MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que explica la mayor parte de la mejora del período, cuando la empresa no dice que se vaya a repetir |
-| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que va en la dirección de mejorar el resultado |
+| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación de un regulador o de la justicia sobre la contabilidad o la divulgación de la empresa |
 | CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso |
 | SIN DATO | No suma | Falta el documento o la cifra. El informe lo dice junto al puntaje |
 
@@ -184,23 +189,36 @@ Cuando 2 filas calzan, manda la más alta. Un cambio de política sin explicaci�
 efecto no se pueda medir, porque el libro trata el cambio mismo como la señal. Una explicación de la
 empresa que no trae cifras no baja el veredicto. Queda anotada en «Qué se revisó».
 
+Esa regla tiene 3 límites, que salieron de la prueba a ciegas del 27 de noviembre de 2026.
+
+1. Un cambio que empeora la cifra, o que no mueve ninguna cifra consolidada, como un traslado de
+   costos entre segmentos con el total igual, es BAJA. Pasa a ALTA solo si tapa el deterioro del
+   segmento que la empresa destaca.
+2. Una política que aparece escrita por primera vez no es un cambio. Lo es si contradice lo que el
+   informe anterior decía de esa misma práctica.
+3. Un hecho posterior al cierre, como un acuerdo o una venta firmados después, no se mide contra
+   el período que se revisa. Se anota en «Qué estaría tapando» como dato para proyectar.
+
 El efecto se mide contra una cifra distinta según la prueba.
 
 | Prueba | Se mide contra |
 |---|---|
 | EM 1 a EM 7 y AA 1 | La utilidad neta del período |
 | CF 1, CF 2 y AA 2 | El flujo operacional del período |
-| CF 3 | La mejora del flujo operacional. Se mide qué parte explican las líneas de capital de trabajo |
+| CF 3 | El flujo operacional del período. Se mide cuánto de él viene de las líneas de capital de trabajo que mejoraron |
 | KM 1 y AA 3 | La cifra contable que la métrica reemplaza |
 | KM 2 | Lo que el indicador mide, como los días del DSO, la provisión o la deuda |
-| Compromisos y deuda fuera de balance, en cualquier prueba | La deuda financiera del balance |
+| Obligaciones fuera de balance que funcionan como deuda, en cualquier prueba | La deuda financiera del balance |
+| Un efecto antes de impuestos, como una provisión revertida | La utilidad antes de impuestos |
 
 Si la empresa pierde plata, o su utilidad neta es menor que 1 por ciento de los ingresos, la
 utilidad neta no sirve de vara, porque todo queda bajo 5 por ciento o sobre 20 según el año. El
 efecto se mide entonces contra los ingresos, con cortes de 0,5 y de 2 por ciento. Son los órdenes de
-magnitud con que la auditoría fija su materialidad, y aquí son también un supuesto sin medir. Un
-efecto que cae en otro período, como un gasto que se evita el año siguiente, se mide contra la cifra
-del período actual y se dice.
+magnitud con que la auditoría fija su materialidad, y aquí son también un supuesto sin medir. Lo
+mismo vale para las pruebas que se miden contra el flujo operacional cuando ese flujo es negativo o
+casi cero. Un efecto que cae en otro período, como un gasto que se evita el año siguiente, se mide
+contra la cifra del período en que cae si el informe la trae. Si no la trae, queda BAJA con su
+monto anotado.
 
 Un hallazgo no exige fraude. El libro insiste en que muchas prácticas son legales y aun así no se
 repiten, como vender cuentas por cobrar o estirar el pago a proveedores. Se anotan igual, porque lo

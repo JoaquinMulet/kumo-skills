@@ -9,7 +9,9 @@ Conceptos que entiende. Solo se calculan las razones cuyos conceptos están. Si 
 un concepto, la fila no va o la celda queda vacía. No se pone 0.
   dias                          días del período, 365 si falta (91.25 en un trimestre)
   ingresos, costo_ventas, utilidad_operacional, utilidad_neta
-  flujo_operacional, capex, adquisiciones, dividendos
+  utilidad_antes_impuestos, impuestos   el gasto por impuestos, en positivo
+  flujo_operacional, capex, adquisiciones
+  dividendos                    solo los pagados en efectivo
   cuentas_por_cobrar            saldo del balance, neto de provisión
   cuentas_por_cobrar_vendidas   vendidas o cedidas que siguen pendientes al cierre
   documentos_por_cobrar         pagarés y letras recibidos de clientes
@@ -34,6 +36,7 @@ from pathlib import Path
 DIAS_DE_UN_ANO = 365.0
 CONCEPTOS = {
     "dias", "ingresos", "costo_ventas", "utilidad_operacional", "utilidad_neta",
+    "utilidad_antes_impuestos", "impuestos",
     "flujo_operacional", "capex", "adquisiciones", "dividendos",
     "cuentas_por_cobrar", "cuentas_por_cobrar_vendidas", "documentos_por_cobrar",
     "provision_incobrables", "inventario", "inventario_largo_plazo", "cuentas_por_pagar",
@@ -115,6 +118,7 @@ def calcular(periodos, datos):
     poner("Flujo de caja libre", 0, serie(datos, n, lambda i, f, c: f - c, "flujo_operacional", "capex"))
     poner("Flujo de caja libre tras adquisiciones", 0, serie(datos, n, lambda i, f, c, a: f - c - a, "flujo_operacional", "capex", "adquisiciones"))
     poner("Margen neto, por ciento", 1, serie(datos, n, lambda i, u, v: u / v * 100, "utilidad_neta", "ingresos"))
+    poner("Tasa efectiva de impuestos, por ciento", 1, serie(datos, n, lambda i, t, a: t / a * 100, "impuestos", "utilidad_antes_impuestos"))
     poner("Capex sobre ingresos, por ciento", 1, serie(datos, n, lambda i, c, v: c / v * 100, "capex", "ingresos"))
     poner("Provisión sobre cuentas por cobrar brutas, por ciento", 1, serie(datos, n, lambda i, p, c: p / (c + p) * 100, "provision_incobrables", "cuentas_por_cobrar"))
     poner("Provisión de cartera sobre cartera morosa, por ciento", 1, serie(datos, n, lambda i, p, m: p / m * 100, "provision_cartera", "cartera_morosa"))
@@ -175,6 +179,16 @@ def avisar(periodos, datos, razones):
             poner(f"El DPO subió de {numero(dpo[0])} a {numero(dpo[1])} días.", "CF 3")
         if v_op is not None and v_ing is not None and round(v_op) > round(v_ing):
             poner(f"La utilidad operacional creció más que los ingresos ({numero(v_op)} contra {numero(v_ing)} por ciento).", "EM 3, EM 4 y EM 5")
+
+        v_neta = variacion(datos, "utilidad_neta", i)
+        v_antes = variacion(datos, "utilidad_antes_impuestos", i)
+        tasa = par("Tasa efectiva de impuestos, por ciento", i)
+        if v_neta is not None and v_antes is not None and round(v_neta) > round(v_antes) and tasa and round(tasa[1], 1) < round(tasa[0], 1):
+            poner(
+                f"La utilidad neta creció más que la utilidad antes de impuestos ({numero(v_neta)} contra {numero(v_antes)} por ciento), "
+                f"con una tasa de impuestos que bajó de {numero(tasa[0], 1)} a {numero(tasa[1], 1)} por ciento.",
+                "EM 3",
+            )
 
         u0, u1 = dato("utilidad_neta", i - 1), dato("utilidad_neta", i)
         f0, f1 = dato("flujo_operacional", i - 1), dato("flujo_operacional", i)
