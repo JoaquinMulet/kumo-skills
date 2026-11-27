@@ -5,7 +5,8 @@ nuevo. La primera columna se llama `concepto`. Las cifras van con punto decimal 
 miles, todas en la misma unidad. Los períodos tienen que ser comparables entre sí (años completos,
 o el mismo trimestre de cada año, porque comparar un trimestre con el anterior mezcla la temporada).
 
-Conceptos que entiende. Solo se calculan las razones cuyos conceptos están.
+Conceptos que entiende. Solo se calculan las razones cuyos conceptos están. Si la empresa no tiene
+un concepto, la fila no va o la celda queda vacía. No se pone 0.
   dias                          días del período, 365 si falta (91.25 en un trimestre)
   ingresos, costo_ventas, utilidad_operacional, utilidad_neta
   flujo_operacional, capex, adquisiciones, dividendos
@@ -211,11 +212,12 @@ def avisar(periodos, datos, razones):
     for i in range(len(periodos)):
         libre_adq = valor("Flujo de caja libre tras adquisiciones", i)
         flujo = dato("flujo_operacional", i)
-        if libre_adq is not None and flujo is not None and flujo > 0 and libre_adq < 0:
+        compras = dato("adquisiciones", i)
+        if libre_adq is not None and flujo is not None and compras and flujo > 0 and libre_adq < 0:
             avisos.append(f"{periodos[i]}. El flujo operacional es positivo y el flujo de caja libre tras adquisiciones es negativo. Mirar AA 2.")
         libre = valor("Flujo de caja libre", i)
         dividendos = dato("dividendos", i)
-        if libre is not None and dividendos is not None and dividendos > libre:
+        if libre is not None and dividendos and dividendos > libre:
             avisos.append(f"{periodos[i]}. Los dividendos ({numero(dividendos)}) superan al flujo de caja libre ({numero(libre)}). Mirar KM 1.")
     return avisos
 

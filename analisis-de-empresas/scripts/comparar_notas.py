@@ -9,8 +9,12 @@ frases que DESAPARECIERON. Una frase que solo cambió sus cifras o sus fechas no
 las cifras cambian todos los años y taparían lo que importa. Sale con 0 si pudo comparar y con 2 si
 el uso o un archivo están mal.
 
+Sin opciones muestra solo las frases que tocan temas contables (ingresos, provisiones, estimaciones,
+cuentas por cobrar, inventario, reservas, reclasificaciones), y dice cuántas dejó fuera.
+
 Opciones.
   --contiene TÉRMINO   deja solo las frases que traen ese término. Se puede repetir.
+  --todo               muestra todas las frases, también las que no tocan temas contables.
   --max N              frases que se muestran por lista. 40 si falta.
 
 Uso.
@@ -35,6 +39,27 @@ PARECIDO_MINIMO_PARA_SER_LA_MISMA_FRASE = 0.6
 CANDIDATAS_POR_FRASE = 6
 LARGO_MINIMO_DE_PALABRA_QUE_IDENTIFICA = 5
 MAXIMO_POR_LISTA = 40
+# Sin filtro, un informe entero entrega cientos de frases y lo primero que sale es la portada y la
+# descripción del negocio. Pasó en la prueba de campo del 27 de noviembre de 2026 (482 frases en
+# Sanmina). Por eso, si no se pide otra cosa, se muestran solo las frases que traen uno de estos
+# trozos de palabra, en inglés y en español.
+TERMINOS_CONTABLES = (
+    "recogni", "revenue", "receivable", "allowance", "reserve", "accrual", "accrued", "estimate",
+    "useful li", "capitaliz", "deferred", "recourse", "factoring", "securitiz", "impairment",
+    "write-down", "written down", "restructuring", "inventor", "payable", "payment terms",
+    "related part", "reclassif", "restate", "material weakness", "change in accounting",
+    "days sales", "non-gaap", "contingent consideration", "pension", "discount rate", "warrant",
+    "consignment", "bill-and-hold", "percentage-of-completion", "hedg", "off-balance",
+    "recorded", "netted", "expensed", "amortiz", "depreciat", "classified", "incentive", "rebate",
+    "returns", "fair value", "accounting", "income statement", "balance sheet", "cash flow",
+    "se registra", "contabiliz", "depreciaci", "clasific", "descuento", "devoluci", "valor razonable",
+    "contable", "estado de resultados", "flujo de efectivo",
+    "se reconoce", "reconocimiento", "ingresos ordinarios", "por cobrar", "deudores comerciales",
+    "provisi", "deterioro", "estimaci", "vida útil", "vidas útiles", "activad", "diferid",
+    "securitiza", "cesión", "reestructuraci", "inventario", "por pagar", "confirming", "relacionad",
+    "reclasific", "reexpres", "política contable", "cambio contable", "contraprestación contingente",
+    "tasa de descuento", "garantía", "consignación", "grado de avance", "cobertura", "fuera de balance",
+)
 CORTE_DE_FRASE = re.compile(r"(?<=[.;:!?])\s+(?=[A-ZÁÉÍÓÚÑ«\"“(\[])")
 ESPACIO_EN_NUMERO = re.compile(r"(?<=#) (?=#)")
 
@@ -69,10 +94,15 @@ def palabras_que_identifican(frase):
     return {p for p in clave(frase).split() if len(p) >= LARGO_MINIMO_DE_PALABRA_QUE_IDENTIFICA}
 
 
+def sin_tipografia(palabra):
+    return palabra.replace(chr(0x2019), "'").replace(chr(0x2018), "'").replace(chr(0x201C), '"').replace(chr(0x201D), '"')
+
+
 def marcar(antes, ahora):
     a, b = antes.split(), ahora.split()
     partes = []
-    for op, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+    iguales = difflib.SequenceMatcher(None, [sin_tipografia(p) for p in a], [sin_tipografia(p) for p in b], autojunk=False)
+    for op, i1, i2, j1, j2 in iguales.get_opcodes():
         if op == "equal":
             partes.append(" ".join(b[j1:j2]))
         if op in ("delete", "replace"):
@@ -117,7 +147,7 @@ def comparar(texto_antes, texto_ahora):
 def main(argv):
     for flujo in (sys.stdout, sys.stderr):
         flujo.reconfigure(encoding="utf-8", errors="replace")
-    rutas, terminos, maximo, i = [], [], MAXIMO_POR_LISTA, 1
+    rutas, terminos, maximo, todo, i = [], [], MAXIMO_POR_LISTA, False, 1
     while i < len(argv):
         if argv[i] == "--contiene" and i + 1 < len(argv):
             terminos.append(argv[i + 1].casefold())
@@ -125,8 +155,11 @@ def main(argv):
         elif argv[i] == "--max" and i + 1 < len(argv) and argv[i + 1].isdigit():
             maximo = int(argv[i + 1])
             i += 2
+        elif argv[i] == "--todo":
+            todo = True
+            i += 1
         elif argv[i].startswith("--"):
-            print(f"No entiendo «{argv[i]}». Usa --contiene o --max.", file=sys.stderr)
+            print(f"No entiendo «{argv[i]}». Usa --contiene, --todo o --max.", file=sys.stderr)
             return 2
         else:
             rutas.append(Path(argv[i]))
@@ -145,22 +178,33 @@ def main(argv):
             return 2
 
     cambiadas, nuevas, desaparecidas = comparar(*textos)
-    if terminos:
-        def trae(frase):
-            return any(t in frase.casefold() for t in terminos)
-        cambiadas = [(a, b) for a, b in cambiadas if trae(a) or trae(b)]
-        nuevas = [f for f in nuevas if trae(f)]
-        desaparecidas = [f for f in desaparecidas if trae(f)]
-
     print(f"Comparé {rutas[0].name} (anterior) con {rutas[1].name} (actual).")
     print(f"Cambiaron {len(cambiadas)} frases, hay {len(nuevas)} nuevas y desaparecieron {len(desaparecidas)}.")
     if not (cambiadas or nuevas or desaparecidas):
         print("Sin cambios de redacción fuera de cifras y fechas.")
         return 0
-    for titulo, lista in (("CAMBIÓ", [marcar(a, b) for a, b in cambiadas]), ("NUEVA", nuevas), ("DESAPARECIÓ", desaparecidas)):
-        if not lista:
+
+    filtro = terminos or (None if todo else TERMINOS_CONTABLES)
+
+    def trae(frase):
+        return filtro is None or any(t in frase.casefold() for t in filtro)
+
+    listas = (
+        ("CAMBIÓ", [marcar(a, b) for a, b in cambiadas if trae(a) or trae(b)], len(cambiadas)),
+        ("NUEVA", [f for f in nuevas if trae(f)], len(nuevas)),
+        ("DESAPARECIÓ", [f for f in desaparecidas if trae(f)], len(desaparecidas)),
+    )
+    if terminos:
+        print("Muestro solo las frases que traen: " + ", ".join(terminos) + ".")
+    elif not todo:
+        print("Muestro solo las frases que tocan temas contables (ingresos, provisiones, estimaciones,")
+        print("cuentas por cobrar, inventario, reservas, reclasificaciones). Con --todo se ven todas.")
+    for titulo, lista, total in listas:
+        if not total:
             continue
-        print(f"\n{titulo} ({len(lista)})")
+        resto = total - len(lista)
+        aparte = f", y otras {resto} que no se muestran" if resto else ""
+        print(f"\n{titulo} ({len(lista)}{aparte})")
         for frase in lista[:maximo]:
             print(f"- {frase}")
         if len(lista) > maximo:

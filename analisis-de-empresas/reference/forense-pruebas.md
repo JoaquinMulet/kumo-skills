@@ -85,11 +85,15 @@ Qué se hace.
    comprador, lee la revelación de las 2 partes.
 6. Mira cuántas filiales se consolidan con poco más de 50 por ciento y el tamaño del interés
    minoritario.
+7. Compara el crecimiento de la utilidad antes de impuestos con el de la utilidad neta, y la tasa
+   efectiva de impuestos con la del período anterior. Lee la conciliación de la tasa en la nota de
+   impuestos.
 
 Es hallazgo cuando una ganancia por venta de un activo o un negocio está dentro de una línea
 operacional, cuando los cargos «de una vez» aparecen casi todos los años, cuando la unidad que sale
 absorbe más costos que antes, o cuando un contrato firmado junto con la venta convierte precio de
-venta en ingresos futuros.
+venta en ingresos futuros. También cuando la utilidad neta crece más que la utilidad antes de
+impuestos por una baja de la tasa que no se repite, como un beneficio tributario de una vez.
 
 Lo descarga que la ganancia esté en una línea propia, bajo la utilidad operacional, y explicada.
 
@@ -215,7 +219,8 @@ Qué se hace.
 1. Mira la línea de cuentas por cobrar del flujo operacional, período contra período. Un giro grande
    se explica.
 2. Busca ventas o cesiones de cuentas por cobrar y anota el saldo vendido que sigue pendiente al
-   cierre. Va al CSV como `cuentas_por_cobrar_vendidas`. Términos. `factoring`, `securitización`,
+   cierre. Va al CSV como `cuentas_por_cobrar_vendidas`. El ajuste del flujo usa la variación de
+   ese saldo entre un cierre y el siguiente, no el total vendido en el año. Términos. `factoring`, `securitización`,
    `cesión`, `con responsabilidad`, `securitization`, `factored`, `sold`, `recourse`, `transferred`.
 3. Compara los factores de riesgo con los del período anterior.
 4. Busca ventas con pacto de recompra a un banco o a una entidad que la empresa controla.
@@ -270,7 +275,9 @@ cuánto de la mejora va a seguir.
 Qué se hace.
 
 1. Descompón el cambio del flujo operacional en utilidad, cuentas por pagar, inventario, cuentas
-   por cobrar, anticipos de clientes e impuestos. Mira el DPO en la tabla de razones.
+   por cobrar, anticipos de clientes e impuestos. El efecto se mide con esa descomposición, como
+   la parte de la mejora que explican las líneas de capital de trabajo. El DPO de la tabla de
+   razones confirma la dirección y no sirve para medir.
 2. Lee la explicación de la gerencia sobre el flujo. Términos. `capital de trabajo`, `proveedores`,
    `confirming`, `anticipos`, `working capital`, `payables`, `days payable`, `early payment`,
    `deposits`, `supplier finance`.
@@ -281,10 +288,13 @@ Es hallazgo cuando la mayor parte de la mejora viene de pagar más tarde, cobrar
 menos inventario, cuando un banco paga a los proveedores, o cuando un cobro único está dentro del
 flujo operacional sin línea propia.
 
+Si el flujo operacional no mejoró, no hay mejora que explicar y la prueba queda en LIMPIO, salvo
+que un cobro único esté sosteniendo un flujo que sin él habría caído más.
+
 Lo descarga un cambio permanente de condiciones con proveedores que se mantiene los años siguientes.
 
-Vara. Home Depot subió su flujo operacional de 2.796 a 5.963 millones, y 2.519 de esos 3.167 venían
-de cuentas por pagar e inventario. Al año siguiente cayó a 4.802. En Tesla, 88 por ciento de la
+Vara. Home Depot subió su flujo operacional de 2.796 a 5.963 millones, y 2.233 de esos 3.167 venían
+de cuentas por pagar, pasivos acumulados e inventario, según su informe de ese año. Al año siguiente cayó a 4.802. En Tesla, 88 por ciento de la
 mejora de 2016 eran depósitos de clientes.
 
 ## KM 1. Exhibir métricas que exageran el desempeño
@@ -294,7 +304,8 @@ La empresa dirige la atención a una cifra que ella misma define.
 Qué se hace.
 
 1. Lista cada métrica que el comunicado destaca y copia su definición. Compárala con la del período
-   anterior y con la de un competidor.
+   anterior y con la de un competidor. Sin comunicado, se usan las métricas que destaca la
+   explicación de la gerencia, y «Qué se revisó» dice que faltó el comunicado.
 2. Arma, para varios años, la diferencia entre la utilidad ajustada y la utilidad neta, y entre la
    métrica de caja de la empresa y el flujo de caja libre.
 3. Lee qué se excluye. Marca lo que es un costo normal del negocio o lo que aparece todos los años.
@@ -324,16 +335,19 @@ Qué se hace.
 1. Mira si el DSO cayó de golpe después de subir. Calcula el DSO ajustado, con las cuentas vendidas
    y los documentos por cobrar.
 2. Busca cuentas por cobrar fuera de la línea comercial (documentos, letras, «otras»), también
-   dentro de efectivo y equivalentes.
+   dentro de efectivo y equivalentes. Lo que aparezca va al CSV como `documentos_por_cobrar`.
 3. Busca inventario fuera de la línea de inventarios, en no corrientes o en otros activos.
 4. Revisa si la empresa cambió la forma de calcular o de presentar un indicador, o estrenó uno
    justo cuando el habitual empeoraba.
 5. En una financiera, compara cómo se presenta la provisión en el comunicado con cómo estaba antes.
-6. Lee el informe del auditor y los hechos esenciales. Busca deuda en entidades que no consolidan.
+6. Lee el informe del auditor, la sección de control interno y los hechos esenciales. Busca deuda
+   en entidades que no consolidan, debilidades materiales de control, ajustes de períodos
+   anteriores y cifras comparativas que cambiaron respecto del informe anterior.
 
 Es hallazgo cuando el DSO ajustado sube aunque el reportado baje, cuando un saldo cambió de línea,
 cuando un indicador cambió de fórmula o de presentación, o cuando el auditor no puede certificar
-una operación.
+una operación. También cuando la empresa admite una debilidad material de control, o cuando las
+cifras de un año ya publicado cambiaron sin una explicación específica.
 
 Lo descarga que la reclasificación esté explicada y aplicada también a los períodos anteriores.
 
@@ -344,7 +358,7 @@ de 5 días que con su fórmula anterior era de 16. Parmalat discutió en públic
 
 Las 3 pruebas que siguen se corren si la empresa compró o vendió negocios en los últimos 3 años.
 Si no lo hizo, el veredicto es LIMPIO y «Qué se revisó» lo dice con la nota de combinaciones de
-negocios.
+negocios, o con el conteo de `acquisition`, `adquisición` y `goodwill` cuando esa nota no existe.
 
 Qué se hace.
 
@@ -387,6 +401,8 @@ negativo año tras año, cuando costos de captar clientes se registran como adqu
 la estructura de una compraventa pasó caja de inversión a operación.
 
 Lo descarga una compra aislada y grande, con el flujo tras adquisiciones positivo en los demás años.
+
+Con un flujo operacional negativo el paso 1 no dice nada, y la prueba se decide con los pasos 3 a 5.
 
 Vara. Tyco mostró flujo operacional positivo y flujo tras adquisiciones negativo los 4 años, hasta
 8.971 millones negativos en 2001. Tenet vendió hospitales y se quedó con 394 millones por cobrar.

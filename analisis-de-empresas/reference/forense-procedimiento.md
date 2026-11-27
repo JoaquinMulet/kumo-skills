@@ -35,21 +35,34 @@ tienen que ser comparables entre sí, o sea años completos o el mismo trimestre
 uv run python -I scripts/razones_forenses.py analisis/cifras.csv
 ```
 
-| Concepto del CSV | De dónde sale | Nombre habitual en estados chilenos |
-|---|---|---|
-| `ingresos`, `costo_ventas`, `utilidad_neta` | Estado de resultados | Ingresos de actividades ordinarias, Costo de ventas, Ganancia |
-| `utilidad_operacional` | Estado de resultados | No siempre viene. Se arma como ganancia bruta menos costos de distribución y gastos de administración |
-| `flujo_operacional`, `capex`, `adquisiciones`, `dividendos` | Estado de flujo de efectivo | Flujos de actividades de operación, Compras de propiedades, planta y equipo, Flujos para obtener el control de subsidiarias, Dividendos pagados |
-| `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, y su deterioro |
-| `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente |
-| `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes |
-| `inventario`, `inventario_largo_plazo` | Balance y nota de inventarios | Inventarios corrientes y no corrientes |
-| `cuentas_por_pagar` | Balance | Cuentas por pagar comerciales y otras cuentas por pagar |
-| `ingreso_diferido` | Balance y notas | Ingresos diferidos, suele estar en Otros pasivos no financieros |
-| `pasivos_blandos` | Balance | Otras provisiones más Otros pasivos no financieros, sin el ingreso diferido |
-| `activos_blandos` | Balance | Otros activos no financieros, gastos anticipados, costos diferidos |
-| `cartera_morosa`, `provision_cartera` | Notas de una financiera | Cartera con mora o deteriorada, y su provisión |
-| `dias` | Largo del período | 365 en un año, 91.25 en un trimestre |
+| Concepto del CSV | De dónde sale | En estados chilenos | En un 10-K |
+|---|---|---|---|
+| `ingresos`, `costo_ventas`, `utilidad_neta` | Estado de resultados | Ingresos de actividades ordinarias, Costo de ventas, Ganancia atribuible a los propietarios de la controladora | Total revenues o Net sales, Cost of sales, Net income de la empresa, sin el interés minoritario |
+| `utilidad_operacional` | Estado de resultados | No siempre viene. Se arma como ganancia bruta menos costos de distribución y gastos de administración | Operating income o Income from operations |
+| `flujo_operacional`, `capex`, `adquisiciones`, `dividendos` | Estado de flujo de efectivo | Flujos de actividades de operación, Compras de propiedades, planta y equipo, Flujos para obtener el control de subsidiarias, Dividendos pagados | Net cash provided by operating activities, Capital expenditures, Acquisitions net of cash acquired, Dividends paid |
+| `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, y su deterioro | Accounts receivable, net, y Allowance for doubtful accounts |
+| `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente | Receivables sold, factored o securitized que siguen pendientes |
+| `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes | Notes receivable, y todo saldo por cobrar a clientes guardado en otra línea, como efectivo |
+| `inventario`, `inventario_largo_plazo` | Balance y nota de inventarios | Inventarios corrientes y no corrientes | Inventories, y el inventario que esté dentro de Other assets |
+| `cuentas_por_pagar` | Balance | Cuentas por pagar comerciales y otras cuentas por pagar | Accounts payable |
+| `ingreso_diferido` | Balance y notas | Ingresos diferidos, suele estar en Otros pasivos no financieros | Deferred revenue o Unearned revenue |
+| `pasivos_blandos` | Balance y su nota | Otras provisiones más Otros pasivos no financieros, sin el ingreso diferido | Accrued expenses más Other current liabilities, sin impuestos por pagar ni ingreso diferido. Si la nota no abre la línea, va entera y se dice |
+| `activos_blandos` | Balance | Otros activos no financieros, gastos anticipados, costos diferidos | Prepaid expenses and other current assets más Other assets |
+| `cartera_morosa`, `provision_cartera` | Notas de una financiera | Cartera con mora o deteriorada, y su provisión | Nonaccrual o nonperforming loans, y Allowance for loan losses |
+| `dias` | Largo del período | Los días reales. 365 en un año, 371 en un año de 53 semanas, 91.25 en un trimestre | Igual |
+
+Las reglas de la tabla son 4.
+
+1. Si la empresa no tiene un concepto, porque no paga dividendos o no tiene costo de ventas, la
+   fila no va o la celda queda vacía. No se pone 0.
+2. Si el informe actual cambió cifras de años ya publicados, se usan las del informe más nuevo, y
+   el cambio se anota como señal para KM 2.
+3. Los años que el informe actual no trae se sacan del informe anterior. Con 2 informes anuales
+   salen 3 años de balance y 4 o 5 de resultados y de flujo.
+4. Con un informe trimestral, los resultados y el flujo se comparan con el mismo trimestre del año
+   anterior, que el informe trae. El balance solo se puede comparar con el cierre del año anterior.
+   Las razones de balance mezclan entonces la temporada, y un aviso que salga de ahí se anota con
+   esa advertencia.
 
 El script entrega las razones y una lista de avisos. Un aviso dice qué pruebas abrir primero. No es
 un hallazgo, porque la tabla no ve las notas.
@@ -64,9 +77,12 @@ uv run python -I scripts/comparar_notas.py fuente/anterior.txt fuente/actual.txt
 ```
 
 El script lista las frases que cambiaron, las nuevas y las que desaparecieron, sin contar las que
-solo cambiaron sus cifras. En un informe entero salen cientos. Primero se lee la lista de las que
-CAMBIARON, que son pocas y son las que más dicen. Después se acota por tema con `--contiene`, usando
-los términos que da cada prueba en [`forense-pruebas.md`](forense-pruebas.md).
+solo cambiaron sus cifras. Sin opciones muestra solo las que tocan temas contables, y aun así en un
+informe entero salen entre 30 y 250 por lista. Esa primera corrida sirve para ver el tamaño del
+cambio y leer por encima las que CAMBIARON. El trabajo se hace después, prueba por prueba, acotando
+con `--contiene` y los términos que da cada una en [`forense-pruebas.md`](forense-pruebas.md).
+Una política que cambió sin cambiar de redacción no aparece aquí. Por eso la acción 3 manda leer
+las secciones completas.
 
 Por cada cambio de política, de estimación o de definición se hacen las 2 preguntas del libro. Por
 qué cambió, y por qué ahora. Después se calcula cómo se habría visto el período sin el cambio. La
@@ -117,14 +133,22 @@ El anexo tiene 15 secciones con este formato exacto, una por prueba.
 | Cita | «texto exacto copiado de la fuente» en fuente/actual.txt |
 ```
 
-Las reglas del formato son 5.
+Las reglas del formato son 7.
 
 1. El veredicto es LIMPIO, BAJA, MEDIA, ALTA, CRÍTICA o SIN DATO.
 2. «Qué se revisó» nombra las cifras, la nota o la página que se miraron, también en un LIMPIO.
+   Un LIMPIO no necesita cita.
 3. Un hallazgo lleva «Efecto», «Qué estaría tapando» y al menos una fila «Cita».
 4. La cita es texto copiado tal cual, corto, de una sola frase y sin el carácter `|`. Va una fila
-   por cita.
+   por cita. Se copia con sus espacios y sus símbolos, y se prueba antes con
+   `scripts/buscar_en_fuente.py --cita`.
 5. Un SIN DATO lleva la fila «Qué falta» en vez de «Qué se revisó».
+6. SIN DATO es para cuando falta el documento que el paso principal de la prueba necesita. Si el
+   paso principal se pudo hacer y faltó un documento de apoyo, la prueba lleva su veredicto y
+   «Qué se revisó» dice qué no se pudo mirar.
+7. Una práctica que se ve desde 2 pruebas se anota en las 2. La segunda lleva la fila «Misma
+   práctica que» con el código de la primera, y no suma al puntaje. La venta de cuentas por
+   cobrar, por ejemplo, se anota en CF 1 y también en KM 2, porque baja el DSO.
 
 ```
 uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
@@ -142,21 +166,41 @@ preguntas para el gerente de finanzas. Los ajustes entran al paso 5, y el puntaj
 
 ## Los veredictos
 
-La escala es una convención de Kumo. El libro no da ninguna, y los cortes de 5 y de 20 por ciento
-son un supuesto sin medir. Sirven para que 2 personas lleguen al mismo veredicto con la misma
-evidencia.
+La escala es una convención de Kumo. El libro no da ninguna. Los cortes de 5 y de 20 por ciento son
+un supuesto sin medir. Los puntos y los tramos se ajustaron con una prueba de campo sobre 7 informes
+reales, el 27 de noviembre de 2026. Sirven para que 2 personas lleguen al mismo veredicto con la
+misma evidencia.
 
 | Veredicto | Puntos | Cuándo corresponde |
 |---|---|---|
-| LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación comprobada en la fuente |
-| BAJA | 1 | Hay señal y su efecto es menor que 5 por ciento de la utilidad neta o del flujo operacional, o no se puede medir |
-| MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que no se repite y que explica la mayor parte de la mejora del período |
-| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora el resultado |
+| LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación con cifras que se comprobó en la fuente |
+| BAJA | 0 | Hay señal y su efecto es menor que 5 por ciento, o no se puede medir. Es una observación menor. Queda anotada y no suma |
+| MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que explica la mayor parte de la mejora del período, cuando la empresa no dice que se vaya a repetir |
+| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que va en la dirección de mejorar el resultado |
 | CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso |
 | SIN DATO | No suma | Falta el documento o la cifra. El informe lo dice junto al puntaje |
 
-El efecto se mide contra la utilidad neta en las pruebas EM, contra el flujo operacional en las CF
-y en AA 2, y contra la cifra contable equivalente en las KM y en AA 3.
+Cuando 2 filas calzan, manda la más alta. Un cambio de política sin explicación es ALTA aunque su
+efecto no se pueda medir, porque el libro trata el cambio mismo como la señal. Una explicación de la
+empresa que no trae cifras no baja el veredicto. Queda anotada en «Qué se revisó».
+
+El efecto se mide contra una cifra distinta según la prueba.
+
+| Prueba | Se mide contra |
+|---|---|
+| EM 1 a EM 7 y AA 1 | La utilidad neta del período |
+| CF 1, CF 2 y AA 2 | El flujo operacional del período |
+| CF 3 | La mejora del flujo operacional. Se mide qué parte explican las líneas de capital de trabajo |
+| KM 1 y AA 3 | La cifra contable que la métrica reemplaza |
+| KM 2 | Lo que el indicador mide, como los días del DSO, la provisión o la deuda |
+| Compromisos y deuda fuera de balance, en cualquier prueba | La deuda financiera del balance |
+
+Si la empresa pierde plata, o su utilidad neta es menor que 1 por ciento de los ingresos, la
+utilidad neta no sirve de vara, porque todo queda bajo 5 por ciento o sobre 20 según el año. El
+efecto se mide entonces contra los ingresos, con cortes de 0,5 y de 2 por ciento. Son los órdenes de
+magnitud con que la auditoría fija su materialidad, y aquí son también un supuesto sin medir. Un
+efecto que cae en otro período, como un gasto que se evita el año siguiente, se mide contra la cifra
+del período actual y se dice.
 
 Un hallazgo no exige fraude. El libro insiste en que muchas prácticas son legales y aun así no se
 repiten, como vender cuentas por cobrar o estirar el pago a proveedores. Se anotan igual, porque lo
@@ -164,16 +208,21 @@ que se mide es cuánto del resultado va a seguir ahí el próximo año.
 
 ## El puntaje y su efecto
 
-El puntaje es la suma de los puntos de las 15 pruebas. Los efectos de esta tabla son también
-convención de Kumo, sin medir.
+El puntaje suma 2 puntos por cada MEDIA, 3 por cada ALTA y 4 por cada CRÍTICA. Una BAJA no suma. Una
+prueba que dice «Misma práctica que» otra tampoco, porque esa práctica ya se contó. Los efectos de
+esta tabla son también convención de Kumo, sin medir.
 
 | Puntaje | Lectura | En la tasa de descuento del paso 6 | En la pregunta 4 del paso 8 |
 |---|---|---|---|
-| 0 a 3 | Limpio | No cambia | Aprobada |
-| 4 a 7 | Dudas | Suma 2 puntos | Aprobada |
-| 8 a 12 | Dudas importantes | Suma 5 puntos | Reprobada |
-| 13 o más | Manipulación seria | Suma 8 puntos, y se considera pasar | Reprobada |
+| 0 a 2 | Limpio | No cambia | Aprobada |
+| 3 a 6 | Dudas | Suma 2 puntos | Aprobada |
+| 7 a 11 | Dudas importantes | Suma 5 puntos | Reprobada |
+| 12 o más | Manipulación seria | Suma 8 puntos, y se considera pasar | Reprobada |
 | Cualquier CRÍTICA | No se invierte | No aplica | Reprobada |
+
+Junto al puntaje, el informe dice siempre cuántas observaciones menores hubo y qué pruebas quedaron
+sin dato. En la prueba de campo, la empresa de control quedó en 0 puntos y los 6 casos del libro
+quedaron entre 3 y 9.
 
 ## Lo que cambia según la empresa
 
@@ -185,6 +234,8 @@ convención de Kumo, sin medir.
 | Vende por distribuidores | Manda saber si reconoce al despachar al distribuidor o cuando este vende |
 | Aplica NIIF | No existen partidas extraordinarias y las ganancias de una vez suelen ir en «Otras ganancias (pérdidas)». La NIC 7 deja elegir dónde van los intereses y los dividendos. La NIIF 16 llevó el pago de los arriendos al flujo de financiamiento. Un deterioro se puede reversar, salvo el de la plusvalía |
 | Presume de una racha de metas cumplidas | Cada cambio contable del período se mira 2 veces |
+| Pierde plata o gana muy poco | El efecto se mide contra los ingresos, como dice la sección de veredictos |
+| Vende al contado, con poco margen y mucha rotación | Las pruebas de ingresos dan poca señal. Mandan las de inventario, proveedores y flujo |
 
 ## Lo que la revisión no hace
 

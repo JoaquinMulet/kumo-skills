@@ -127,9 +127,17 @@ def probar_razones(tmp):
     raro = escribir(tmp / "raro.csv", "concepto,2019,2020\ningresos,100,110\nventas_netas,100,110\n")
     codigo, salida = correr("razones_forenses.py", raro)
     comprobar("Un concepto desconocido se avisa por su nombre", "ventas_netas" in salida, salida)
+    sin_reparto = escribir(
+        tmp / "sin-reparto.csv",
+        "concepto,2007,2008\nflujo_operacional,30,40\ncapex,50,70\ndividendos,0,0\nadquisiciones,0,0\n",
+    )
+    codigo, salida = correr("razones_forenses.py", sin_reparto)
+    comprobar("Una empresa que no paga dividendos no recibe el aviso de KM 1", codigo == 0 and "KM 1" not in salida, salida)
+    comprobar("Una empresa que no compró nada no recibe el aviso de AA 2", codigo == 0 and "AA 2" not in salida, salida)
 
 
 NOTA_2007 = (
+    "Our stores are located in Vermont and offer many coffee varieties to loyal consumers nationwide. "
     "Revenue from wholesale and consumer direct sales is recognized upon product delivery. "
     "In addition, the Company's customers can earn certain incentives, which are netted against sales "
     "in the consolidated income statements. "
@@ -137,6 +145,7 @@ NOTA_2007 = (
     "Inventories are stated at the lower of cost or market, with cost determined by the first-in first-out method. "
 )
 NOTA_2008 = (
+    "Our stores are located in Vermont and Massachusetts and offer many coffee varieties to loyal consumers nationwide. "
     "Revenue from wholesale and consumer direct sales is recognized upon product delivery, and in some "
     "cases upon product shipment. "
     "In addition, the Company's customers can earn certain incentives, which are netted against sales "
@@ -157,6 +166,10 @@ def probar_notas(tmp):
     comprobar("Una frase que solo cambió sus cifras no se reporta", "employees" not in salida, salida)
     comprobar("Una frase idéntica no se reporta", "first-in first-out" not in salida, salida)
     comprobar("Una frase nueva sin pareja se lista como nueva", "NUEVA" in salida and "without recourse" in salida, salida)
+    codigo, salida = correr("comparar_notas.py", antes, ahora)
+    comprobar("Sin opciones no muestra la frase que no toca temas contables, y dice que dejó 1 fuera", "Massachusetts" not in salida and "otras 1 que no se muestran" in salida, salida)
+    codigo, salida = correr("comparar_notas.py", antes, ahora, "--todo")
+    comprobar("Con --todo muestra también la frase que no toca temas contables", "Massachusetts" in salida and "product shipment" in salida, salida)
     codigo, salida = correr("comparar_notas.py", antes, ahora, "--contiene", "recourse")
     comprobar("Con --contiene solo quedan las frases con ese término", "without recourse" in salida and "product shipment" not in salida, salida)
     codigo, salida = correr("comparar_notas.py", antes, antes)
@@ -204,7 +217,24 @@ def probar_validador(tmp):
     }
     codigo, salida = correr("validar_forense.py", escribir(tmp / "bueno.md", anexo(buena)))
     comprobar("Con las citas presentes queda verde", codigo == 0, salida)
-    comprobar("ALTA más BAJA suman 4 puntos", "4 puntos" in salida, salida)
+    comprobar("ALTA más BAJA suman 3 puntos, porque una BAJA no suma", "3 puntos" in salida and "1 observaciones menores" in salida, salida)
+
+    cita_venta = "| Cita | «market certain client receivable balances without recourse» en fuente.txt |"
+    dos = {
+        "CF 1": seccion("CF 1", "ALTA", "| Efecto | Flujo operacional 54 por ciento menor |\n" + cita_venta),
+        "KM 2": seccion("KM 2", "MEDIA", "| Efecto | El DSO ajustado sube 7 días |\n" + cita_venta),
+    }
+    codigo, salida = correr("validar_forense.py", escribir(tmp / "dos.md", anexo(dos)))
+    comprobar("ALTA más MEDIA de prácticas distintas suman 5 puntos", codigo == 0 and "5 puntos" in salida, salida)
+    dos["KM 2"] = seccion("KM 2", "MEDIA", "| Efecto | El DSO ajustado sube 7 días |\n| Misma práctica que | CF 1 |\n" + cita_venta)
+    codigo, salida = correr("validar_forense.py", escribir(tmp / "misma.md", anexo(dos)))
+    comprobar("Con «Misma práctica que CF 1» la segunda no suma y quedan 3 puntos", codigo == 0 and "3 puntos" in salida and "no suma" in salida, salida)
+    dos["KM 2"] = seccion("KM 2", "MEDIA", "| Efecto | El DSO ajustado sube 7 días |\n| Misma práctica que | EM 3 |\n" + cita_venta)
+    codigo, salida = correr("validar_forense.py", escribir(tmp / "misma-mala.md", anexo(dos)))
+    comprobar("«Misma práctica que» una prueba limpia queda rojo", codigo == 1 and "EM 3" in salida, salida)
+    limpia_con_menores = {c: seccion(c, "BAJA", "| Efecto | Menor que 5 por ciento |\n" + cita_venta) for c in ("EM 3", "EM 5", "CF 3", "KM 1")}
+    codigo, salida = correr("validar_forense.py", escribir(tmp / "menores.md", anexo(limpia_con_menores)))
+    comprobar("4 observaciones menores dejan el puntaje en 0 y el tramo en «Limpio»", codigo == 0 and "0 puntos" in salida and "«Limpio»" in salida, salida)
 
     trabajo = tmp / "carpeta de trabajo ñ"
     (trabajo / "analisis").mkdir(parents=True)

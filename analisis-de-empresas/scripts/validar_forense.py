@@ -8,6 +8,7 @@ y una tabla de 2 columnas con estas filas.
   | Qué se revisó | la cifra, la nota o la página que se miró |
   | Efecto | cuánto mueve la utilidad, el flujo o el patrimonio (solo en un hallazgo) |
   | Cita | «texto exacto de la fuente» en ruta/del/archivo (una fila por cita) |
+  | Misma práctica que | el código de otra prueba, cuando es la misma práctica vista desde otro lado |
   | Qué falta | lo que hay que conseguir (solo con SIN DATO) |
 
 Qué comprueba. Que estén las 15 pruebas. Que cada veredicto exista. Que un LIMPIO diga qué cifra o
@@ -16,9 +17,11 @@ que cada cita aparezca en el archivo de la fuente. Una cita se busca sin mayúsc
 espacios, igual que en `buscar_en_fuente.py`. La ruta de una cita se busca desde la carpeta
 del anexo y desde la que la contiene (la carpeta de trabajo), o solo desde la que diga --fuentes.
 
-Qué devuelve. El puntaje, que suma 1 punto por BAJA, 2 por MEDIA, 3 por ALTA y 4 por CRÍTICA, y su
-tramo. La escala es una convención de Kumo. El libro de Schilit no da ninguna. Sale con 0 si el
-anexo está completo, con 1 si tiene huecos y con 2 si el uso o el archivo están mal.
+Qué devuelve. El puntaje y su tramo. Suma 2 puntos por MEDIA, 3 por ALTA y 4 por CRÍTICA. Una BAJA
+es una observación menor y no suma. Una prueba que dice «Misma práctica que» otra tampoco suma,
+porque esa práctica ya se contó allá. La escala es una convención de Kumo, calibrada con 7 informes
+reales el 27 de noviembre de 2026. El libro de Schilit no da ninguna. Sale con 0 si el anexo está
+completo, con 1 si tiene huecos y con 2 si el uso o el archivo están mal.
 
 Uso.
   uv run python -I scripts/validar_forense.py analisis/anexo-forense.md
@@ -34,13 +37,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from buscar_en_fuente import buscar, leer_partes
 
 CODIGOS = ["EM 1", "EM 2", "EM 3", "EM 4", "EM 5", "EM 6", "EM 7", "CF 1", "CF 2", "CF 3", "KM 1", "KM 2", "AA 1", "AA 2", "AA 3"]
-PUNTOS = {"LIMPIO": 0, "BAJA": 1, "MEDIA": 2, "ALTA": 3, "CRITICA": 4}
+LIMPIO = "LIMPIO"
 SIN_DATO = "SIN DATO"
-TRAMOS = [(3, "Limpio"), (7, "Dudas"), (12, "Dudas importantes")]
+# Una BAJA no suma. En la prueba de campo del 27 de noviembre de 2026 una empresa sin hallazgos
+# graves quedó castigada por 4 observaciones menores cuando cada BAJA valía 1 punto.
+PUNTOS = {"BAJA": 0, "MEDIA": 2, "ALTA": 3, "CRITICA": 4}
+TRAMOS = [(2, "Limpio"), (6, "Dudas"), (11, "Dudas importantes")]
 TRAMO_MAYOR = "Manipulación seria"
 TITULO = re.compile(r"^##[ \t]+((?:EM|CF|KM|AA)[ \t-]?\d)\b.*$", re.M)
 FILA = re.compile(r"^\|[ \t]*([^|]+?)[ \t]*\|[ \t]*(.*?)[ \t]*\|[ \t]*$", re.M)
 CITA = re.compile(r"^«(.+)»[ \t]+en[ \t]+(\S.*)$")
+CODIGO_SUELTO = re.compile(r"\b(EM|CF|KM|AA)[ \t-]?(\d)\b")
 EVIDENCIA_DE_REVISION = re.compile(r"\d|\bnota\b|\bpágina\b|\bpagina\b", re.I)
 
 
@@ -69,23 +76,24 @@ def filas(cuerpo):
 
 
 def revisar(codigo, cuerpo, carpetas, cache):
+    """Devuelve (veredicto, problemas, código de la prueba donde la práctica ya se contó)."""
     f = filas(cuerpo)
     veredicto_crudo = (f.get("veredicto") or [""])[0].strip()
     veredicto = sin_tildes(veredicto_crudo).upper()
     if not veredicto:
-        return None, [f"{codigo}. Falta la fila Veredicto."]
+        return None, [f"{codigo}. Falta la fila Veredicto."], None
     if veredicto == SIN_DATO:
         if not any(v.strip() for v in f.get("que falta", [])):
-            return SIN_DATO, [f"{codigo}. Dice SIN DATO y no trae la fila «Qué falta»."]
-        return SIN_DATO, []
-    if veredicto not in PUNTOS:
-        return None, [f"{codigo}. El veredicto «{veredicto_crudo}» no existe. Usa LIMPIO, BAJA, MEDIA, ALTA, CRÍTICA o SIN DATO."]
+            return SIN_DATO, [f"{codigo}. Dice SIN DATO y no trae la fila «Qué falta»."], None
+        return SIN_DATO, [], None
+    if veredicto != LIMPIO and veredicto not in PUNTOS:
+        return None, [f"{codigo}. El veredicto «{veredicto_crudo}» no existe. Usa LIMPIO, BAJA, MEDIA, ALTA, CRÍTICA o SIN DATO."], None
     problemas = []
     revisado = " ".join(f.get("que se reviso", []))
     if not EVIDENCIA_DE_REVISION.search(revisado):
         problemas.append(f"{codigo}. «Qué se revisó» no nombra ninguna cifra, nota ni página.")
-    if PUNTOS[veredicto] == 0:
-        return veredicto, problemas
+    if veredicto == LIMPIO:
+        return veredicto, problemas, None
     if not any(v.strip() for v in f.get("efecto", [])):
         problemas.append(f"{codigo}. Es un hallazgo y le falta la fila Efecto.")
     citas = f.get("cita", [])
@@ -106,7 +114,15 @@ def revisar(codigo, cuerpo, carpetas, cache):
             cache[ruta] = leer_partes(ruta)
         if not buscar(cache[ruta], texto, False, False):
             problemas.append(f"{codigo}. La cita no aparece en {ruta.name}. Dice: «{texto[:90]}»")
-    return veredicto, problemas
+    misma = None
+    escrito = " ".join(f.get("misma practica que", [])).strip()
+    if escrito:
+        m = CODIGO_SUELTO.search(escrito.upper())
+        misma = f"{m.group(1)} {m.group(2)}" if m else None
+        if misma is None or misma not in CODIGOS or misma == codigo:
+            problemas.append(f"{codigo}. «Misma práctica que» tiene que nombrar el código de otra prueba. Dice: {escrito[:60]}")
+            misma = None
+    return veredicto, problemas, misma
 
 
 def tramo(puntos):
@@ -140,23 +156,35 @@ def main(argv):
     carpetas = [carpeta_fuentes] if carpeta_fuentes else [ruta.resolve().parent, ruta.resolve().parent.parent]
     secciones = partir(ruta.read_bytes().decode("utf-8-sig"))
 
-    problemas, veredictos, cache = [], {}, {}
+    problemas, veredictos, repetidas, cache = [], {}, {}, {}
     for codigo in CODIGOS:
         if codigo not in secciones:
             problemas.append(f"{codigo}. Falta la sección.")
             continue
-        veredicto, lios = revisar(codigo, secciones[codigo], carpetas, cache)
+        veredicto, lios, misma = revisar(codigo, secciones[codigo], carpetas, cache)
         veredictos[codigo] = veredicto
         problemas.extend(lios)
+        if misma:
+            repetidas[codigo] = misma
 
-    hallazgos = {c: v for c, v in veredictos.items() if v in PUNTOS and PUNTOS[v] > 0}
+    hallazgos = {c: v for c, v in veredictos.items() if v in PUNTOS}
+    for codigo, otra in list(repetidas.items()):
+        if otra not in hallazgos or otra in repetidas:
+            problemas.append(f"{codigo}. Dice «Misma práctica que {otra}», y {otra} no es un hallazgo que sume por su cuenta.")
+            del repetidas[codigo]
     sin_dato = [c for c, v in veredictos.items() if v == SIN_DATO]
-    puntos = sum(PUNTOS[v] for v in hallazgos.values())
+    suman = {c: v for c, v in hallazgos.items() if PUNTOS[v] > 0 and c not in repetidas}
+    menores = [c for c, v in hallazgos.items() if PUNTOS[v] == 0]
+    puntos = sum(PUNTOS[v] for v in suman.values())
     criticos = [c for c, v in hallazgos.items() if v == "CRITICA"]
     print(f"Leí {ruta}. Encontré {len(secciones.keys() & set(CODIGOS))} de {len(CODIGOS)} pruebas.")
     for codigo, veredicto in hallazgos.items():
-        print(f"  {codigo}. {veredicto}")
-    print(f"Puntaje de {puntos} puntos, tramo «{tramo(puntos)}». {len(hallazgos)} hallazgos y {len(sin_dato)} sin dato.")
+        nota = f" (misma práctica que {repetidas[codigo]}, no suma)" if codigo in repetidas else ""
+        print(f"  {codigo}. {veredicto}{nota}")
+    print(
+        f"Puntaje de {puntos} puntos, tramo «{tramo(puntos)}». {len(suman)} hallazgos que suman, "
+        f"{len(menores)} observaciones menores y {len(sin_dato)} sin dato."
+    )
     if sin_dato:
         print(f"  Sin dato en {', '.join(sin_dato)}. El puntaje no las cuenta, y el informe tiene que decirlo.")
     if criticos:
