@@ -42,7 +42,7 @@ uv run python -I scripts/razones_forenses.py analisis/cifras.csv
 | `flujo_operacional`, `capex`, `adquisiciones`, `dividendos` | Estado de flujo de efectivo | Flujos de actividades de operación, Compras de propiedades, planta y equipo, Flujos para obtener el control de subsidiarias, Dividendos pagados | Net cash provided by operating activities, Capital expenditures, Acquisitions net of cash acquired, Dividends paid |
 | `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, corrientes y no corrientes, y su deterioro. La parte no corriente puede estar en «Otros activos financieros, no corrientes». Lo que la nota ya cuenta dentro de la línea, como los cheques por cobrar, no se suma otra vez en `documentos_por_cobrar` | Accounts receivable, net, y Allowance for doubtful accounts |
 | `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente y que salió del balance. Si la empresa consolida al patrimonio separado o al vehículo que la compró, la cartera sigue en el balance y no va aquí, porque se contaría 2 veces | Receivables sold, factored o securitized que siguen pendientes y salieron del balance. Si el vehículo consolida, no van |
-| `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes | Notes receivable, y todo saldo por cobrar a clientes guardado en otra línea, como efectivo |
+| `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes | Notes receivable, y todo saldo por cobrar a clientes guardado en otra línea, como efectivo. Los cobros de tarjetas en tránsito no van |
 | `inventario`, `inventario_largo_plazo` | Balance y nota de inventarios | Inventarios corrientes y no corrientes | Inventories, y el inventario que esté dentro de Other assets |
 | `cuentas_por_pagar` | Balance | Cuentas por pagar comerciales y otras cuentas por pagar | Accounts payable |
 | `ingreso_diferido` | Balance y notas | Ingresos diferidos, suele estar en Otros pasivos no financieros | Deferred revenue o Unearned revenue |
@@ -224,6 +224,9 @@ Esa regla tiene 5 límites, que salieron de las pruebas a ciegas del 27 de novie
    cambio si el informe la aplica igual a los 2 años y también la aplicaba así el informe
    anterior. Se usa para dejar comparable la cifra y es BAJA, sea cual sea su tamaño. Si el
    informe anterior la aplicaba de otra forma, es un cambio de clasificación y sigue la escala.
+   En los principios de Estados Unidos (ASC 230) casi no hay elección. Los intereses pagados van en
+   la operación, y las retenciones de impuestos por acciones entregadas a empleados van en
+   financiamiento. Una clasificación que la norma fija no es hallazgo, y la prueba queda LIMPIO.
    Lo que dice si cambió es el informe anterior, aunque el nuevo haya rehecho las cifras del año
    anterior con la clasificación nueva. El CSV lleva las cifras del informe nuevo (regla 2 de la
    tabla), y el flujo comparable con los intereses adentro va en «Efecto».
@@ -235,7 +238,7 @@ El efecto se mide contra una cifra distinta según la prueba.
 | EM 1 a EM 7 y AA 1 | La utilidad neta del período |
 | CF 1, CF 2 y AA 2 | El flujo operacional del período |
 | CF 3 | El flujo operacional del período. Se mide cuánto de él viene de las líneas de capital de trabajo cuyos días mejoraron |
-| KM 1 y AA 3 | La cifra contable que la métrica reemplaza |
+| KM 1 y AA 3 | La cifra contable de lo mismo que mide la métrica. Para un EBITDA, la utilidad operacional más la depreciación y la amortización |
 | KM 2 | Lo que el indicador mide, como los días del DSO, la provisión o la deuda |
 | Obligaciones fuera de balance que funcionan como deuda, en cualquier prueba | La deuda financiera del balance |
 | Un efecto antes de impuestos, como una provisión revertida | La utilidad antes de impuestos |

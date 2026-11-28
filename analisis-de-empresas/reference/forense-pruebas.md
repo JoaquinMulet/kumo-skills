@@ -52,7 +52,8 @@ Qué se hace.
 1. Lee completa la nota de partes relacionadas y la de concentración de clientes. Anota qué parte de
    los ingresos y de las cuentas por cobrar viene de la matriz, de socios, de proveedores o de
    entidades relacionadas. Anota también lo que la empresa le compra a sus ejecutivos o a su
-   controlador.
+   controlador. Si el 10-K manda las partes relacionadas al proxy (Item 13) y el proxy no está, la
+   prueba sigue con los pasos 2 a 5, y «Qué se revisó» dice que faltó el proxy.
 2. Compara el crecimiento de los ingresos con el de la utilidad y mira el margen neto en la tabla de
    razones. La comparación con competidores se hace si hay cifras de ellos. Si no las hay, se salta y
    «Qué se revisó» lo dice.
@@ -137,6 +138,13 @@ vida útil se alargó, cuando el inventario crece más que las ventas esperadas,
 baja mientras su saldo sube. Si bajan varias provisiones a la vez, la señal es de las más fuertes
 del libro. En quien presta, también cuando la cartera morosa baja mientras la cartera total sube y
 los castigos no la explican, porque un saldo vencido que se repacta vuelve a verse al día.
+
+Esa caída no se puede medir por sí sola, porque la morosa que falta es justo la que no se ve. Lo que
+se mide es la provisión. La provisión esperada es la cartera bruta de este año por la proporción de
+provisión sobre cartera bruta del año anterior, que es lo mismo que suponer que la morosa y su
+cobertura siguieron como el año anterior. El efecto es lo que falta a la provisión del balance para
+llegar a la esperada, contra la utilidad antes de impuestos. Si no falta nada, es BAJA. Si el mismo informe dejó de publicar la apertura de la cartera, es la misma práctica que KM 2,
+que lleva el veredicto más alto por la regla 7 del anexo.
 
 Lo descarga un programa de inversión anunciado antes y que se ve en capacidad nueva, o una baja de
 provisión respaldada por una caída de la mora que la nota muestra.
@@ -325,6 +333,9 @@ flujo operacional sin línea propia.
 Si el flujo operacional no mejoró, no hay mejora que explicar y la prueba queda en LIMPIO, salvo
 que un cobro único sin línea propia esté sosteniendo un flujo que sin él habría caído más. Un cobro
 único que el flujo muestra en su propia línea, como una devolución de impuestos, se anota y es BAJA.
+Si el flujo cayó por una salida única que la empresa nombra, como un pago adelantado a proveedores,
+la prueba es LIMPIO para este período, y la salida va en «Qué estaría tapando» con su monto, porque
+el año siguiente va a mostrar una mejora que no se repite.
 
 Lo descarga un cambio permanente de condiciones con proveedores que se mantiene los años siguientes.
 
@@ -356,6 +367,12 @@ incluye un período y se excluye al siguiente, o cuando la empresa reparte más 
 libre. La prueba que propone el libro es formular qué pregunta responde la métrica y juzgar si esa
 pregunta sirve.
 
+El efecto se mide contra la cifra contable de lo mismo. Para un EBITDA es la utilidad operacional
+más la depreciación y la amortización del flujo de efectivo. Para una utilidad ajustada es la
+utilidad neta. Para un flujo de la empresa es el flujo de caja libre. En quien presta, el interés
+que paga por financiar su cartera es un costo normal del negocio, aunque vaya en el costo de ventas,
+y un EBITDA que lo suma de vuelta lo excluye.
+
 Lo descarga una conciliación completa con la cifra contable, con exclusiones que de verdad no se
 repiten.
 
@@ -371,7 +388,9 @@ Qué se hace.
 1. Mira si el DSO cayó de golpe después de subir. Calcula el DSO ajustado, con las cuentas vendidas
    y los documentos por cobrar.
 2. Busca cuentas por cobrar fuera de la línea comercial (documentos, letras, «otras»), también
-   dentro de efectivo y equivalentes. Lo que aparezca va al CSV como `documentos_por_cobrar`.
+   dentro de efectivo y equivalentes. Lo que aparezca va al CSV como `documentos_por_cobrar`. Los
+   cobros de tarjetas de crédito y débito en tránsito, que el banco liquida en pocos días, no son
+   cuentas de clientes y no van.
 3. Busca inventario fuera de la línea de inventarios, en no corrientes o en otros activos.
 4. Revisa si la empresa cambió la forma de calcular o de presentar un indicador, o estrenó uno
    justo cuando el habitual empeoraba.
@@ -392,6 +411,11 @@ se dejó de publicar es ALTA aunque no se pueda medir, como dice la escala de ve
 cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o un
 fiscal investigan su contabilidad o su divulgación. Una debilidad de control ya corregida dentro
 del período es BAJA, salvo que haya obligado a ajustar cifras.
+
+Unas cifras comparativas que cambiaron sin explicación se miden por lo que mueven. Si cambian la
+utilidad neta o el flujo operacional del año ya publicado, el efecto es ese cambio contra la misma
+cifra de ese año. Si solo mueven líneas entre sí y dejan iguales esos 2 totales, es BAJA, salvo el
+caso de los segmentos del límite 1 de la escala.
 
 Lo descarga que la reclasificación esté explicada y aplicada también a los períodos anteriores.
 
