@@ -323,7 +323,8 @@ menos inventario, cuando un banco paga a los proveedores, o cuando un cobro úni
 flujo operacional sin línea propia.
 
 Si el flujo operacional no mejoró, no hay mejora que explicar y la prueba queda en LIMPIO, salvo
-que un cobro único esté sosteniendo un flujo que sin él habría caído más.
+que un cobro único sin línea propia esté sosteniendo un flujo que sin él habría caído más. Un cobro
+único que el flujo muestra en su propia línea, como una devolución de impuestos, se anota y es BAJA.
 
 Lo descarga un cambio permanente de condiciones con proveedores que se mantiene los años siguientes.
 
@@ -386,7 +387,8 @@ Qué se hace.
 
 Es hallazgo cuando el DSO ajustado sube aunque el reportado baje, cuando un saldo cambió de línea,
 cuando un indicador cambió de fórmula o de presentación, cuando se dejó de publicar una apertura que
-el informe anterior traía, o cuando el auditor no puede certificar una operación. También cuando la empresa admite una debilidad material de control, cuando las
+el informe anterior traía, o cuando el auditor no puede certificar una operación. Una apertura que
+se dejó de publicar es ALTA aunque no se pueda medir, como dice la escala de veredictos. También cuando la empresa admite una debilidad material de control, cuando las
 cifras de un año ya publicado cambiaron sin una explicación específica, o cuando un regulador o un
 fiscal investigan su contabilidad o su divulgación. Una debilidad de control ya corregida dentro
 del período es BAJA, salvo que haya obligado a ajustar cifras.

@@ -37,10 +37,10 @@ uv run python -I scripts/razones_forenses.py analisis/cifras.csv
 
 | Concepto del CSV | De dónde sale | En estados chilenos | En un 10-K |
 |---|---|---|---|
-| `ingresos`, `costo_ventas`, `utilidad_neta` | Estado de resultados | Ingresos de actividades ordinarias, Costo de ventas, Ganancia atribuible a los propietarios de la controladora | Total revenues o Net sales, Cost of sales, Net income de la empresa, sin el interés minoritario |
+| `ingresos`, `costo_ventas`, `utilidad_neta` | Estado de resultados | Ingresos de actividades ordinarias, Costo de ventas, Ganancia atribuible a los propietarios de la controladora. Si la empresa vende con crédito propio y el costo de ventas trae intereses o provisiones de la cartera, `costo_ventas` lleva solo el costo de la mercadería, que la nota abre, para que el DSI y el DPO tengan sentido | Total revenues o Net sales, Cost of sales, Net income de la empresa, sin el interés minoritario |
 | `utilidad_operacional` | Estado de resultados | No siempre viene. Se arma como ganancia bruta menos costos de distribución y gastos de administración | Operating income o Income from operations |
 | `flujo_operacional`, `capex`, `adquisiciones`, `dividendos` | Estado de flujo de efectivo | Flujos de actividades de operación, Compras de propiedades, planta y equipo, Flujos para obtener el control de subsidiarias, Dividendos pagados | Net cash provided by operating activities, Capital expenditures, Acquisitions net of cash acquired, Dividends paid |
-| `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, y su deterioro | Accounts receivable, net, y Allowance for doubtful accounts |
+| `cuentas_por_cobrar`, `provision_incobrables` | Balance y nota de cuentas por cobrar | Deudores comerciales y otras cuentas por cobrar, corrientes y no corrientes, y su deterioro. La parte no corriente puede estar en «Otros activos financieros, no corrientes». Lo que la nota ya cuenta dentro de la línea, como los cheques por cobrar, no se suma otra vez en `documentos_por_cobrar` | Accounts receivable, net, y Allowance for doubtful accounts |
 | `cuentas_por_cobrar_vendidas` | Nota de cuentas por cobrar | Cartera cedida, securitizada o en factoring que sigue pendiente y que salió del balance. Si la empresa consolida al patrimonio separado o al vehículo que la compró, la cartera sigue en el balance y no va aquí, porque se contaría 2 veces | Receivables sold, factored o securitized que siguen pendientes y salieron del balance. Si el vehículo consolida, no van |
 | `documentos_por_cobrar` | Balance y notas | Documentos por cobrar, pagarés y letras de clientes | Notes receivable, y todo saldo por cobrar a clientes guardado en otra línea, como efectivo |
 | `inventario`, `inventario_largo_plazo` | Balance y nota de inventarios | Inventarios corrientes y no corrientes | Inventories, y el inventario que esté dentro de Other assets |
@@ -191,14 +191,15 @@ misma evidencia.
 | LIMPIO | 0 | Se miró lo que la prueba pide y no hay señal, o la señal tiene una explicación con cifras que se comprobó en la fuente |
 | BAJA | 0 | Hay señal y su efecto es menor que 5 por ciento, o no se puede medir. Es una observación menor. Queda anotada y no suma |
 | MEDIA | 2 | El efecto está entre 5 y 20 por ciento. También una práctica legítima que explica la mayor parte de la mejora del período, cuando la empresa no dice que se vaya a repetir |
-| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación abierta por un regulador o un fiscal sobre la contabilidad o la divulgación de la empresa, confirmada por un documento de la empresa o del regulador. Una demanda de accionistas no cuenta como investigación, y va como BAJA |
+| ALTA | 3 | El efecto es de 20 por ciento o más. También un cambio de política contable o de definición de una métrica, sin explicación, que mejora una cifra que la empresa reporta o destaca. También una investigación abierta por un regulador o un fiscal sobre la contabilidad o la divulgación de la empresa, confirmada por un documento de la empresa o del regulador. Una demanda de accionistas no cuenta como investigación, y va como BAJA. También dejar de publicar, sin explicación, una métrica o una apertura que el informe anterior traía y que mide el riesgo principal del negocio, como la mora por tramos de quien presta |
 | CRÍTICA | 4 | El efecto cambia el signo de la utilidad o del flujo operacional. También ingresos o activos sin sustancia, un auditor que no certifica, una reformulación o una investigación interna en curso sobre la contabilidad, la divulgación o el control interno. Una investigación interna sobre otro tema, como la conducta de un ejecutivo, va al paso 1 |
 | SIN DATO | No suma | Falta el documento o la cifra. El informe lo dice junto al puntaje |
 
 Cuando 2 filas calzan, manda la más alta. Un cambio de política sin explicación es ALTA aunque su
 efecto no se pueda medir, porque el libro trata el cambio mismo como la señal. Esa excepción vale
-solo para un cambio real en cómo se reconoce, se clasifica o se define una cifra. Cualquier otra
-señal que no se puede medir es BAJA. Una explicación de la empresa que no trae cifras no baja el
+solo para un cambio real en cómo se reconoce, se clasifica o se define una cifra, y para una métrica
+o una apertura del riesgo principal que se dejó de publicar. Cualquier otra señal que no se puede
+medir es BAJA. Una explicación de la empresa que no trae cifras no baja el
 veredicto. Queda anotada en «Qué se revisó».
 
 Esa regla tiene 5 límites, que salieron de las pruebas a ciegas del 27 de noviembre de 2026.
@@ -223,6 +224,9 @@ Esa regla tiene 5 límites, que salieron de las pruebas a ciegas del 27 de novie
    cambio si el informe la aplica igual a los 2 años y también la aplicaba así el informe
    anterior. Se usa para dejar comparable la cifra y es BAJA, sea cual sea su tamaño. Si el
    informe anterior la aplicaba de otra forma, es un cambio de clasificación y sigue la escala.
+   Lo que dice si cambió es el informe anterior, aunque el nuevo haya rehecho las cifras del año
+   anterior con la clasificación nueva. El CSV lleva las cifras del informe nuevo (regla 2 de la
+   tabla), y el flujo comparable con los intereses adentro va en «Efecto».
 
 El efecto se mide contra una cifra distinta según la prueba.
 
@@ -278,7 +282,7 @@ quedaron entre 3 y 9.
 | Si la empresa | Entonces |
 |---|---|
 | Crece comprando empresas | El flujo operacional no sirve solo. Se usa el flujo de caja libre tras adquisiciones, y las 3 pruebas AA pesan más que las demás |
-| Es un banco, una financiera o vende con crédito propio | Mandan la provisión de cartera contra la cartera morosa, la cartera repactada y la forma en que se presentan. La nota de cuentas por cobrar se lee entera en los 2 informes y se compara tabla por tabla. Si el informe dejó de traer una apertura que traía el anterior (tramos de mora, provisión por tramo, cartera repactada), es un cambio de presentación de KM 2, y se mide aplicando la apertura del año anterior a los saldos de este año. Si ninguno de los 2 informes cuantifica la cartera repactada, se anota en «Qué se revisó» de EM 4 y va a las preguntas para el gerente de finanzas |
+| Es un banco, una financiera o vende con crédito propio | Mandan la provisión de cartera contra la cartera morosa, la cartera repactada y la forma en que se presentan. La nota de cuentas por cobrar se lee entera en los 2 informes y se compara tabla por tabla. Si el informe dejó de traer una apertura que traía el anterior (tramos de mora, provisión por tramo, cartera repactada), es un cambio de presentación de KM 2 y es ALTA aunque no se pueda medir, porque el libro trata como señal dejar de publicar una métrica justo cuando empeora. Aplicar las tasas de la apertura vieja a los saldos nuevos no lo descarga, porque lo que está en duda son los saldos. Lo descarga solo una explicación con cifras, como un cambio de norma que el informe nombre. Si ninguno de los 2 informes cuantifica la cartera repactada, se anota en «Qué se revisó» de EM 4 y va a las preguntas para el gerente de finanzas |
 | Reconoce ingresos por grado de avance o por programa | Mandan los cambios de estimación del avance y los costos acumulados en el balance |
 | Vende por distribuidores | Manda saber si reconoce al despachar al distribuidor o cuando este vende |
 | Aplica NIIF | No existen partidas extraordinarias y las ganancias de una vez suelen ir en «Otras ganancias (pérdidas)». La NIC 7 deja elegir dónde van los intereses y los dividendos. Desde 2019 la NIIF 16 lleva los arriendos al balance y su pago al flujo de financiamiento. Antes, con la NIC 17, un arriendo operativo no pasa por el balance ni por el flujo de financiamiento, y su compromiso está en la nota. Un deterioro se puede reversar, salvo el de la plusvalía |
