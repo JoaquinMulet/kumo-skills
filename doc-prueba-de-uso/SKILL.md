@@ -26,7 +26,15 @@ datos». Resumir exige lo que está. Ejecutar exige lo que falta.
    un esquema, las llaves y las restricciones. Para un método, inventa casos con números que no estén
    en el documento y calcula tú las respuestas.
 3. Copia la sección sola a un archivo de la carpeta de borradores. El lector recibe solo ese archivo.
-4. Lanza el lector con `Agent`, modelo `haiku`, comandos en primer plano. Su encargo tiene 4 partes.
+4. Lanza el lector con DeepSeek V4.1 Flash por OpenCode Go, que usa la suscripción de Joaquín y no
+   gasta cuota de Claude. Lo decidió él el 28 de noviembre de 2026. Escribe el encargo en un archivo y
+   corre, en primer plano, `uv run python -I scripts/lector_deepseek.py --documento seccion.md
+   --encargo encargo.md --salida respuesta.md`. El programa copia la sección sola a una carpeta
+   temporal, llama a `opencode run` con el agente `plan`, que no puede editar, y deja un registro
+   junto a la respuesta. Un PDF se pasa antes a texto, para que el lector vea lo mismo que el lector
+   humano. Si `opencode` no está o falla, el lector de reserva es `Agent` con modelo `haiku`. En la
+   primera prueba, sobre una nota de 12 páginas, DeepSeek cumplió la pauta en 117 segundos y encontró
+   3 cifras que no calzaban. Su encargo tiene 4 partes.
    - El rol y la tarea, con la ruta exacta del archivo.
    - 2 o 3 preguntas que exigen haber leído (citar una línea, nombrar un elemento). Un lector que
      no leyó inventa, y esto lo delata.
@@ -43,7 +51,8 @@ datos». Resumir exige lo que está. Ejecutar exige lo que falta.
 
 Un modelo débil mide si la información alcanza. Un modelo fuerte mide si el texto admite una sola
 lectura, y cuando entiende mal, el defecto es del documento. Usa el fuerte en la última ronda de un
-documento que otro va a ejecutar al pie de la letra.
+documento que otro va a ejecutar al pie de la letra. Por OpenCode Go el fuerte es
+`--modelo opencode-go/deepseek-v4-pro`, con la misma suscripción.
 
 ## El orden de los términos, con un script
 
